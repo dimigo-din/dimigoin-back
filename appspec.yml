@@ -4,6 +4,12 @@ hooks:
   ApplicationStop:
     - location: /.aws/cd_scripts/rm_docker.sh
       runas: root
+  BeforeInstall:
+    - location: /.aws/cd_scripts/login_ecr.sh
+      runas: root
+  AfterInstall:
+    - location: /.aws/cd_scripts/install_dependancies.sh
+      runas: root
   ApplicationStart:
     - location: /.aws/cd_scripts/start_docker.sh
       runas: root

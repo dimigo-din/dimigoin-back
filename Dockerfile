@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM public.ecr.aws/docker/library/node:lts-alpine
 
 WORKDIR /app
 
