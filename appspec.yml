@@ -1,0 +1,9 @@
+version: 0.0
+os: linux
+hooks:
+  ApplicationStop:
+    - location: /.aws/cd_scripts/rm_docker.sh
+      runas: root
+  ApplicationStart:
+    - location: /.aws/cd_scripts/start_docker.sh
+      runas: root
