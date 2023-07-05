@@ -24,4 +24,5 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
 
 artifacts:
-  files: README.md
+  files:
+    - appspec.yml
