@@ -1,5 +1,9 @@
 version: 0.0
 os: linux
+file_exists_behavior: OVERWRITE
+files:
+  - source: / 
+    destination: /app
 hooks:
   ApplicationStop:
     - location: /.aws/cd_scripts/rm_docker.sh

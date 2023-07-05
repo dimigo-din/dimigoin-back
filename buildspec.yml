@@ -25,4 +25,6 @@ phases:
 
 artifacts:
   files:
+    - .aws/cd_scripts/*
+    - .aws/*
     - appspec.yml
