@@ -81,6 +81,8 @@ export class AuthService {
   async getAccessToken(user: StudentDocument | TeacherDocument): Promise<any> {
     const refreshKey = crypto.randomBytes(20).toString('hex');
     const payload = { ...user };
+    delete payload['password_salt'];
+    delete payload['password_hash'];
     await this.setRefresh({ refreshToken: refreshKey, userId: user._id });
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_KEY,
