@@ -1,32 +1,23 @@
-import { NestFactory } from '@nestjs/core';
+import {
+  Logger,
+  NestFactory,
+  setupNestjsTools,
+} from '@danieluhm2004/nestjs-tools';
+
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { JwtExpirationMiddleware } from './common/middlewares/jwt-expiration.middleware';
+import { Opcode } from './common/opcode';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  //await setupNestjsTools(app, { swagger: { opcode: Opcode } });
+  if (process.env.IS_SCHEDULER === 'true') {
+    Logger.log('스케줄러 모드로 실행되었습니다.');
+    await app.init();
+    return;
+  }
 
-  const config = new DocumentBuilder()
-    .setTitle('API Documentation')
-    .setDescription('API documentation for your application')
-    .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'User Identify',
-        in: 'header',
-      },
-      'accessToken',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-doc', app, document);
-
-  app.use(JwtExpirationMiddleware);
-
-  await app.listen(3000);
+  const port = parseInt(process.env.WEB_PORT) || 3000;
+  await app.listen(port);
 }
+
 bootstrap();

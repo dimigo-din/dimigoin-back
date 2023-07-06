@@ -11,7 +11,7 @@ ConfigModule.forRoot();
 @Module({
   imports: [
     NTAppModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    //MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AuthModule,
     JwtModule.register({

@@ -52,11 +52,13 @@ export class UserService {
     const existingUser = await this.studentModel.findOne({
       id: data.id,
     });
+
     if (existingUser) throw new HttpException('아이디가 중복됩니다.', 404);
 
     const salt = crypto.randomBytes(20).toString('hex');
     const hashedPassword = await bcrypt.hash(data.password + salt, 10);
     delete data['password'];
+
     const student = new this.studentModel({
       ...data,
       password_hash: hashedPassword,

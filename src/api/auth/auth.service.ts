@@ -16,10 +16,13 @@ export class AuthService {
   constructor(
     @InjectModel(Student.name)
     private studentModel: Model<StudentDocument>,
+
     @InjectModel(Teacher.name)
     private teacherModel: Model<TeacherDocument>,
+
     @InjectModel(Token.name)
     private tokenModule: Model<TokenDocument>,
+
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
@@ -61,11 +64,13 @@ export class AuthService {
         refreshToken: token,
       })
       .lean();
+
     if (!existingToken)
       throw new HttpException(
         'refresh토큰이 올바르지 않습니다. 다시 로그인해주세요.',
         404,
       );
+
     return this.userService.getUserByObjectId(existingToken.userId);
   }
 
@@ -76,16 +81,21 @@ export class AuthService {
   async getAccessToken(user: StudentDocument | TeacherDocument): Promise<any> {
     const refreshKey = crypto.randomBytes(20).toString('hex');
     const payload = { ...user };
+
     delete payload['password_salt'];
     delete payload['password_hash'];
+
     await this.setRefresh({ refreshToken: refreshKey, userId: user._id });
+
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_KEY,
     });
+
     const refreshToken = this.jwtService.sign(
       { refreshToken: refreshKey },
       { secret: process.env.JWT_SECRET_KEY },
     );
+
     return {
       accessToken,
       refreshToken,
@@ -98,11 +108,13 @@ export class AuthService {
         refreshToken: token,
       })
       .lean();
+
     if (!existingToken)
       throw new HttpException(
         'refresh토큰이 올바르지 않습니다. 다시 로그인해주세요.',
         404,
       );
+
     return true;
   }
 }
