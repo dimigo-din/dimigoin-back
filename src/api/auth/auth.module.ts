@@ -1,14 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import {
-  Student,
-  StudentSchema,
-  Teacher,
-  TeacherSchema,
-  Token,
-  TokenSchema,
-} from 'src/common/models';
+import { Student, StudentSchema } from 'src/common/schemas/student.schema';
+import { Teacher, TeacherSchema } from 'src/common/schemas/teacher.schema';
+import { Token, TokenSchema } from 'src/common/schemas/token.schema';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';

@@ -1,8 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import { JwtExpirationMiddleware } from './common/middleware';
+import { JwtExpirationMiddleware } from './common/middlewares/jwt-expiration.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +26,6 @@ async function bootstrap() {
   SwaggerModule.setup('api-doc', app, document);
 
   app.use(JwtExpirationMiddleware);
-  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);
 }

@@ -1,14 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
-import { Student, Teacher } from 'src/common/models';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Student } from 'src/common/schemas/student.schema';
+import { Teacher } from 'src/common/schemas/teacher.schema';
 import { UserService } from './user.service';
 import { CreateStudentDto } from 'src/common/dto';
 // import { Request } from 'express';
