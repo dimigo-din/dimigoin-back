@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClusterDto, Deployment } from './common/dto';
 
-import _ from 'lodash';
-import os from 'os';
+import * as _ from 'lodash';
+import * as os from 'os';
 
 @Injectable()
 export class AppService {
@@ -39,5 +39,6 @@ export class AppService {
     const mode = (process.env.NODE_ENV as Deployment) || 'prod';
 
     this.cluster = { ...packageInfo, hostname, mode };
+    return this.cluster;
   }
 }

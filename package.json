@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "dev": "nest start --watch",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -45,7 +45,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "29.5.0",
     "@types/lodash": "^4.14.195",
-    "@types/node": "18.15.11",
+    "@types/node": "^20.4.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
