@@ -34,9 +34,9 @@ ConfigModule.forRoot();
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
-    consumer
+    /*consumer
       .apply(DIMIJwtExpireMiddleware)
-      .exclude({ path: '/auth', method: RequestMethod.POST })
-      .forRoutes('*');
+      .exclude({ path: 'auth', method: RequestMethod.POST })
+      .forRoutes('*');*/
   }
 }
