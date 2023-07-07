@@ -1,17 +1,16 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { NTAppModule } from '@danieluhm2004/nestjs-tools';
+import { DIMILoggerMiddleware } from './common/middlewares';
 
 ConfigModule.forRoot();
 
 @Module({
   imports: [
-    NTAppModule,
-    //MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AuthModule,
     JwtModule.register({
@@ -23,4 +22,8 @@ ConfigModule.forRoot();
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DIMILoggerMiddleware).forRoutes('*');
+  }
+}

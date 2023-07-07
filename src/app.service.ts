@@ -27,14 +27,13 @@ export class AppService {
   async getBackendInfo(): Promise<ClusterDto> {
     if (this.cluster) return this.cluster;
 
-    const packageFile = await import('../package.json');
-    const packageInfo = _.pick(
-      packageFile,
+    const packageFile = await import(`${process.cwd()}/package.json`);
+    const packageInfo = _.pick(packageFile, [
       'name',
       'version',
       'description',
       'author',
-    );
+    ]);
 
     const hostname = os.hostname();
     const mode = (process.env.NODE_ENV as Deployment) || 'prod';
