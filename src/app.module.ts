@@ -4,7 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { DIMILoggerMiddleware } from './common/middlewares';
+import {
+  DIMIJwtExpireMiddleware,
+  DIMILoggerMiddleware,
+} from './common/middlewares';
 import { AppService } from './app.service';
 
 ConfigModule.forRoot();
@@ -26,5 +29,6 @@ ConfigModule.forRoot();
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
+    consumer.apply(DIMIJwtExpireMiddleware).forRoutes('*');
   }
 }
