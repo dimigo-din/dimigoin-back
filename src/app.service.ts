@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClusterDto, Deployment } from './common/dto/cluster';
+import { ClusterDto, Deployment } from './common/dto';
 
 import _ from 'lodash';
 import os from 'os';

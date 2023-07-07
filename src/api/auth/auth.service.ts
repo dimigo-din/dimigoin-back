@@ -1,15 +1,22 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { LoginDto } from 'src/common/dto';
+
+import {
+  Student,
+  StudentDocument,
+  Teacher,
+  TeacherDocument,
+  Token,
+  TokenDocument,
+} from 'src/common/schemas';
+import { refreshTokenVerified } from 'src/common/types';
+import { UserService } from '../user/user.service';
+
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { Student, StudentDocument } from 'src/common/schemas/student.schema';
-import { Teacher, TeacherDocument } from 'src/common/schemas/teacher.schema';
-import { Token, TokenDocument } from 'src/common/schemas/token.schema';
-import { UserService } from '../user/user.service';
-import { refreshTokenVerified } from 'src/common/types';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {

@@ -1,11 +1,17 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+
+import {
+  Student,
+  StudentDocument,
+  Teacher,
+  TeacherDocument,
+} from 'src/common/schemas';
 import { CreateStudentDto } from 'src/common/dto';
+
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { Student, StudentDocument } from 'src/common/schemas/student.schema';
-import { Teacher, TeacherDocument } from 'src/common/schemas/teacher.schema';
 
 @Injectable()
 export class UserService {
