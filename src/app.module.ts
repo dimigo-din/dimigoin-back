@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
@@ -29,6 +34,9 @@ ConfigModule.forRoot();
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
-    consumer.apply(DIMIJwtExpireMiddleware).forRoutes('*');
+    consumer
+      .apply(DIMIJwtExpireMiddleware)
+      .exclude({ path: '/auth', method: RequestMethod.POST })
+      .forRoutes('*');
   }
 }
