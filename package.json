@@ -32,6 +32,7 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "helmet": "^7.0.0",
     "mongoose": "^7.3.1",
     "nestjs-swagger-dto": "^3.5.0",
     "reflect-metadata": "^0.1.13",

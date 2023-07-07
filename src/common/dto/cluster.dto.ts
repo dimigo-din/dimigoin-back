@@ -3,7 +3,7 @@ import { IsString, IsEnum } from 'nestjs-swagger-dto';
 export const deployment = ['prod', 'dev'] as const;
 export type Deployment = (typeof deployment)[number];
 
-export class AppInfoDto {
+export class ClusterDto {
   @IsString({
     description: '프로젝트 이름',
     example: 'Backend',

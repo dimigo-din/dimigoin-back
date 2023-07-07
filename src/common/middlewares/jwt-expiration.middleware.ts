@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 
-export async function JwtExpirationMiddleware(
+export async function DIMIJwtExpireMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -13,12 +13,9 @@ export async function JwtExpirationMiddleware(
       const decodedToken = await this.jwtService.verifyAsync(token);
 
       if (decodedToken && decodedToken.exp) {
-        const expirationTime = decodedToken.exp * 1000;
-        const currentTime = Date.now();
-
-        // refresh Token
-        if (expirationTime < currentTime)
+        if (decodedToken.exp * 1000 <= Date.now())
           throw new HttpException('JWT 토큰이 만료되었습니다.', 401);
+
         req.user = decodedToken;
       }
     } catch (error) {

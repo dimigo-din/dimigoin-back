@@ -1,20 +1,20 @@
-import {
-  Logger,
-  NestFactory,
-  setupNestjsTools,
-} from '@danieluhm2004/nestjs-tools';
-
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Opcode } from './common/opcode';
+import { DIMIValidationPipe } from './common/pipes';
+import { DIMINotFoundFilter, DIMIUnauthorizedFilter } from './common/filters';
+
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  //await setupNestjsTools(app, { swagger: { opcode: Opcode } });
-  if (process.env.IS_SCHEDULER === 'true') {
-    Logger.log('스케줄러 모드로 실행되었습니다.');
-    await app.init();
-    return;
-  }
+
+  app.enableCors();
+  app.use(helmet());
+
+  app.useGlobalPipes(DIMIValidationPipe());
+
+  app.useGlobalFilters(new DIMINotFoundFilter());
+  app.useGlobalFilters(new DIMIUnauthorizedFilter());
 
   const port = parseInt(process.env.WEB_PORT) || 3000;
   await app.listen(port);
