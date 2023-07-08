@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Permissions } from '../types';
 
 export type TeacherDocument = Teacher & Document;
 
@@ -32,22 +33,21 @@ export class Teacher {
   password_hash: string;
 
   @Prop({
-    required: true,
     type: Types.ObjectId,
     ref: 'Group',
   })
   groups: Types.ObjectId[];
 
   @Prop({
-    required: true,
-    type: Types.ObjectId,
-    ref: 'Permission',
+    type: Object,
+    default: { view: [], edit: [] },
   })
-  permissions: Types.ObjectId[];
+  permissions: Permissions;
 
+  // TBD: class-validation 고치면 테스트하기
   @Prop({
     required: true,
-    type: String,
+    type: [String],
     enum: ['A', 'T', 'D'],
   })
   positions: string[];

@@ -6,7 +6,16 @@ export type Class = (typeof ClassValues)[number];
 
 export const GenderValues = ['M', 'F'] as const;
 
+// A = Admin, T = Teacher, D = Domitory
+export const PositionValues = ['A', 'T', 'D'] as const;
+
 export interface refreshTokenVerified {
   refreshToken: string;
   userId: string;
+}
+
+// TBD: 다른 권한 필요시 추가
+export interface Permissions {
+  view: string[];
+  edit: string[];
 }

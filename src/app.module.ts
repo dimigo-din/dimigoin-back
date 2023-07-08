@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
+import { GroupModule } from './api/group/group.module';
 import { JwtModule } from '@nestjs/jwt';
 import {
   DIMIJwtExpireMiddleware,
@@ -22,6 +23,7 @@ ConfigModule.forRoot();
     MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AuthModule,
+    GroupModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,

@@ -3,12 +3,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
 import {
+  Group,
+  GroupDocument,
   Student,
   StudentDocument,
   Teacher,
   TeacherDocument,
 } from 'src/common/schemas';
-import { CreateStudentDto } from 'src/common/dto';
+import {
+  addGroupDto,
+  CreateStudentDto,
+  CreateTeacherDto,
+} from 'src/common/dto';
 
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -18,8 +24,12 @@ export class UserService {
   constructor(
     @InjectModel(Student.name)
     private studentModel: Model<StudentDocument>,
+
     @InjectModel(Teacher.name)
     private teacherModel: Model<TeacherDocument>,
+
+    @InjectModel(Group.name)
+    private groupModel: Model<GroupDocument>,
   ) {}
 
   async getUserByObjectId(
@@ -39,7 +49,7 @@ export class UserService {
     return students;
   }
 
-  async getStudent(_id: string): Promise<Student> {
+  async getStudentById(_id: string): Promise<Student> {
     if (!Types.ObjectId.isValid(_id))
       throw new HttpException('ObjectId 형식이 아닙니다.', 404);
 
@@ -52,6 +62,16 @@ export class UserService {
   async getAllTeacher(): Promise<Teacher[]> {
     const teachers = await this.teacherModel.find();
     return teachers;
+  }
+
+  async getTeacherById(_id: string): Promise<Teacher> {
+    if (!Types.ObjectId.isValid(_id))
+      throw new HttpException('ObjectId 형식이 아닙니다.', 404);
+
+    const teacher = await this.teacherModel.findById(_id);
+    if (!teacher) throw new HttpException('선생님이 존재하지 않습니다.', 404);
+
+    return teacher;
   }
 
   async createStudent(data: CreateStudentDto): Promise<Student> {
@@ -74,5 +94,44 @@ export class UserService {
     await student.save();
 
     return student;
+  }
+
+  async createTeacher(data: CreateTeacherDto): Promise<Teacher> {
+    const existingUser = await this.teacherModel.findOne({
+      id: data.id,
+    });
+
+    if (existingUser) throw new HttpException('아이디가 중복됩니다.', 404);
+
+    const salt = crypto.randomBytes(20).toString('hex');
+    const hashedPassword = await bcrypt.hash(data.password + salt, 10);
+    delete data['password'];
+
+    const teacher = new this.teacherModel({
+      ...data,
+      password_hash: hashedPassword,
+      password_salt: salt,
+    });
+
+    await teacher.save();
+
+    return teacher;
+  }
+
+  async addTeacherGroup(data: addGroupDto): Promise<Teacher> {
+    if (!Types.ObjectId.isValid(data.groupId))
+      throw new HttpException('ObjectId 형식이 아닙니다.', 404);
+
+    const group = await this.groupModel.findById(data.groupId);
+    if (!group) throw new HttpException('해당 Group이 존재하지 않습니다.', 404);
+
+    const teacher = await this.teacherModel.findById(data.teacherId);
+    if (!teacher)
+      throw new HttpException('해당 선생님이 존재하지 않습니다.', 404);
+
+    teacher.groups.push(data.groupId);
+
+    await teacher.save();
+    return teacher;
   }
 }

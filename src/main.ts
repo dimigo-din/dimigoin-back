@@ -12,7 +12,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet({ contentSecurityPolicy: false }));
 
-  app.useGlobalPipes(DIMIValidationPipe());
+  // app.useGlobalPipes(DIMIValidationPipe());
 
   app.useGlobalFilters(new DIMINotFoundFilter());
   app.useGlobalFilters(new DIMIUnauthorizedFilter());
