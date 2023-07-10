@@ -17,6 +17,7 @@ import { UserService } from '../user/user.service';
 
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Injectable()
 export class AuthService {
@@ -86,6 +87,11 @@ export class AuthService {
   }
 
   async getAccessToken(user: StudentDocument | TeacherDocument): Promise<any> {
+    // existing RefreshToken remove
+    await this.tokenModule.findOneAndDelete({
+      userId: user._id,
+    });
+
     const refreshKey = crypto.randomBytes(20).toString('hex');
     const payload = { ...user };
 
@@ -109,7 +115,7 @@ export class AuthService {
     };
   }
 
-  async logout(token: string): Promise<boolean> {
+  async logout(token: string): Promise<ResponseDto> {
     const existingToken = await this.tokenModule
       .findOneAndDelete({
         refreshToken: token,
@@ -122,6 +128,6 @@ export class AuthService {
         404,
       );
 
-    return true;
+    return { status: 200, message: 'success' };
   }
 }

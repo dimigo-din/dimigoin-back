@@ -1,24 +1,29 @@
-import { HttpException } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
-export async function DIMIJwtExpireMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  const token = req.headers.authorization;
-  if (!token) throw new HttpException('JWT 토큰이 전달되어야 합니다.', 401);
-  try {
-    const decodedToken = await this.jwtService.verifyAsync(token);
+@Injectable()
+export class DIMIJwtExpireMiddleware implements NestMiddleware {
+  constructor(private readonly jwtService: JwtService) {}
 
-    if (decodedToken && decodedToken.exp) {
-      if (decodedToken.exp * 1000 <= Date.now())
-        throw new HttpException('JWT 토큰이 만료되었습니다.', 401);
+  async use(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(' ')[1];
 
-      req.user = decodedToken;
+    if (token) {
+      try {
+        const decoded = await this.jwtService.verifyAsync(token);
+        console.log(decoded);
+        req.user = decoded;
+        next();
+      } catch (err) {
+        res
+          .status(401)
+          .json({ message: 'JWT 토큰이 올바르지 않거나 만료되었습니다.' });
+      }
+    } else {
+      res
+        .status(401)
+        .json({ message: 'JWT 토큰을 Baerer에 넣어서 전달해주세요.' });
     }
-  } catch (error) {
-    throw new HttpException('JWT 토큰이 올바르지 않습니다.', 401);
   }
-  next();
 }

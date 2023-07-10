@@ -22,7 +22,7 @@ ConfigModule.forRoot();
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: '10m' },
+      signOptions: { expiresIn: '30m' },
     }),
   ],
   controllers: [],

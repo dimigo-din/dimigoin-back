@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoginDto, refreshTokenDto } from 'src/common/dto';
+import { ResponseDto } from 'src/common/dto/response.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -20,7 +21,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  async logout(@Body() data: refreshTokenDto): Promise<boolean> {
+  async logout(@Body() data: refreshTokenDto): Promise<ResponseDto> {
     const refresh = await this.authService.verifyRefreshToken(data.token);
     return await this.authService.logout(refresh.refreshToken);
   }
