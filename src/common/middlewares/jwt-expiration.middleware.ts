@@ -12,8 +12,8 @@ export class DIMIJwtExpireMiddleware implements NestMiddleware {
     if (token) {
       try {
         const decoded = await this.jwtService.verifyAsync(token);
-        console.log(decoded);
         req.user = decoded;
+
         next();
       } catch (err) {
         res

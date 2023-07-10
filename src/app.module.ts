@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
 import { GroupModule } from './api/group/group.module';
+import { LaundryModule } from './api/laundry/laundry.module';
 import { JwtModule } from '@nestjs/jwt';
 import {
   DIMIJwtExpireMiddleware,
@@ -19,6 +20,7 @@ ConfigModule.forRoot();
     UserModule,
     AuthModule,
     GroupModule,
+    LaundryModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,

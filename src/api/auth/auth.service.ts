@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
-import { LoginDto } from 'src/common/dto';
+import { LoginDto, ResponseDto } from 'src/common/dto';
 
 import {
   Student,
@@ -17,7 +17,6 @@ import { UserService } from '../user/user.service';
 
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Injectable()
 export class AuthService {

@@ -34,7 +34,7 @@ export class Teacher {
 
   @Prop({
     type: Types.ObjectId,
-    ref: 'Group',
+    ref: 'Groups',
   })
   groups: Types.ObjectId[];
 

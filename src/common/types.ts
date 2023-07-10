@@ -9,6 +9,18 @@ export const GenderValues = ['M', 'F'] as const;
 // A = Admin, T = Teacher, D = Domitory
 export const PositionValues = ['A', 'T', 'D'] as const;
 
+export const WasherValues = [
+  'F1',
+  'F2',
+  'F3',
+  'M2L',
+  'M2M',
+  'M2R',
+  'M4L',
+  'M4R',
+  'M5',
+] as const; // Ex: Female-1층 = F1, Male-2층-오른쪽 = M2R
+
 export interface refreshTokenVerified {
   refreshToken: string;
   userId: string;
