@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
@@ -27,7 +22,7 @@ ConfigModule.forRoot();
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: '30m' },
+      signOptions: { expiresIn: '10m' },
     }),
   ],
   controllers: [],
@@ -36,9 +31,9 @@ ConfigModule.forRoot();
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
-    /*consumer
+    consumer
       .apply(DIMIJwtExpireMiddleware)
-      .exclude({ path: 'auth', method: RequestMethod.POST })
-      .forRoutes('*');*/
+      .exclude('/auth/login', '/auth/refresh', '/auth/logout')
+      .forRoutes('*');
   }
 }

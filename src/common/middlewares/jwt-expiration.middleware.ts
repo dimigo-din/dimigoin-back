@@ -6,21 +6,19 @@ export async function DIMIJwtExpireMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  if (!req.path.startsWith('/auth')) {
-    const token = req.headers.authorization;
-    if (!token) throw new HttpException('JWT 토큰이 전달되어야 합니다.', 401);
-    try {
-      const decodedToken = await this.jwtService.verifyAsync(token);
+  const token = req.headers.authorization;
+  if (!token) throw new HttpException('JWT 토큰이 전달되어야 합니다.', 401);
+  try {
+    const decodedToken = await this.jwtService.verifyAsync(token);
 
-      if (decodedToken && decodedToken.exp) {
-        if (decodedToken.exp * 1000 <= Date.now())
-          throw new HttpException('JWT 토큰이 만료되었습니다.', 401);
+    if (decodedToken && decodedToken.exp) {
+      if (decodedToken.exp * 1000 <= Date.now())
+        throw new HttpException('JWT 토큰이 만료되었습니다.', 401);
 
-        req.user = decodedToken;
-      }
-    } catch (error) {
-      throw new HttpException('JWT 토큰이 올바르지 않습니다.', 401);
+      req.user = decodedToken;
     }
+  } catch (error) {
+    throw new HttpException('JWT 토큰이 올바르지 않습니다.', 401);
   }
   next();
 }
