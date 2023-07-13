@@ -1,4 +1,5 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { Event, StudentDocument } from 'src/common/schemas';
 import { EventService } from './event.service';
@@ -13,8 +14,9 @@ export class EventController {
     return this.eventService.getEvent(user.grade);
   }
 
-  @Get('temp')
-  async tempInsert(): Promise<any> {
-    return this.eventService.tempInsert();
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {
+    return this.eventService.uploadEvent(file);
   }
 }

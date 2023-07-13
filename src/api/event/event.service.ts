@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event, EventDocument } from 'src/common/schemas';
-import * as fs from 'fs';
-import moment from 'moment';
+import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-import * as path from 'path';
 
 @Injectable()
 export class EventService {
@@ -26,91 +24,81 @@ export class EventService {
     return events;
   }
 
-  async tempInsert(): Promise<any> {
-    // const fileBinary = fs.readFileSync(
-    //   path.resolve(__dirname, '../../../data.xlsx'),
-    // );
-    // const workbook = XLSX.read(fileBinary, { type: 'buffer' });
-    // const fileData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-    // return fileData;
+  async uploadEvent(file: Express.Multer.File): Promise<any> {
+    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const fileData = XLSX.utils.sheet_to_json(
+      workbook.Sheets[workbook.SheetNames[0]],
+    );
 
-    //return "ok";
-    /*const readExcel = async () => {
-      return new Promise((resolve, reject) => {
-        readXlsxFile('./data/data.xlsx').then((rows) => {
-          resolve(rows);
-        });
-      });
-    };
+    const mapData = [
+      {
+        name: '평일 1학년',
+        grade: 1,
+        type: 0,
+      },
+      {
+        name: '평일 2학년',
+        grade: 2,
+        type: 0,
+      },
+      {
+        name: '평일 3학년',
+        grade: 3,
+        type: 0,
+      },
+      {
+        name: '잔류 1학년',
+        grade: 1,
+        type: 1,
+      },
+      {
+        name: '잔류 2학년',
+        grade: 2,
+        type: 1,
+      },
+      {
+        name: '잔류 3학년',
+        grade: 3,
+        type: 1,
+      },
+    ];
 
-    const app = async () => {
-      const rows = await readExcel();
-      const startPotition = 3;
-      let time = moment("00:00:00", "HH:mm:ss");
-
-      let data = [];
-      let prevTime = null;
+    const data = [];
+    for (const map of mapData) {
+      const time = moment('00:00:00', 'HH:mm:ss');
       let prevName = null;
+      let prevTime = null;
 
-      const mapData = {
-        2: {
-          grade: 1,
-          type: 0,
-        },
-        3: {
-          grade: 2,
-          type: 0,
-        },
-        4: {
-          grade: 3,
-          type: 0,
-        },
-        6: {
-          grade: 1,
-          type: 1,
-        },
-        7: {
-          grade: 2,
-          type: 1,
-        },
-        8: {
-          grade: 3,
-          type: 1,
-        },
-      };
+      for (const rows of fileData) {
+        const row = rows[map.name];
 
-      for (const col of [2, 3, 4, 6, 7, 8]) {
-        for (let i = startPotition; i < rows.length; i++) {
-          const row = rows[i][3];
-          if (row || time.format("HH:mm:ss") == "00:00:00") {
-            if (prevName) {
-              let stack = ["current:"];
-              let splitName = prevName.split(' > ');
-              if (splitName.length >= 2) {
-                let split = splitName[1].split(",").map((item) => item.trim());
-                stack.push(...split);
-              }
-
-              const dataType = mapData[col];
-
-              data.push({
-                name: splitName[0],
-                start: prevTime,
-                end: time.format("HH:mm:ss"),
-                stack: stack,
-                grade: dataType.grade,
-                type: dataType.type,
-              });
+        if (row || time.format('HH:mm:ss') == '00:00:00') {
+          if (prevName) {
+            const stack = ['current:'];
+            const splitName = prevName.split(' > ');
+            if (splitName.length >= 2) {
+              const split = splitName[1].split(',').map((item) => item.trim());
+              stack.push(...split);
             }
-            prevName = row;
-            prevTime = time.format("HH:mm:ss");
-          }
-          time.add(5, 'minutes');
-        }
-      }
 
-      console.log(data);
-    };
-    app();*/
+            data.push({
+              name: splitName[0],
+              startTime: prevTime,
+              endTime: time.format('HH:mm:ss'),
+              stack: stack,
+              grade: map.grade,
+              type: map.type,
+            });
+          }
+          prevName = row;
+          prevTime = time.format('HH:mm:ss');
+        }
+        time.add(5, 'minutes');
+      }
+    }
+
+    await this.eventModel.deleteMany({});
+    await this.eventModel.insertMany(data);
+    return data;
   }
 }

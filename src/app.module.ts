@@ -43,7 +43,7 @@ export class AppModule implements NestModule {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
     consumer
       .apply(DIMIJwtExpireMiddleware)
-      .exclude('/auth/login', '/auth/refresh', '/auth/logout', '/event/temp')
+      .exclude('/auth/login', '/auth/refresh', '/auth/logout', '/event/upload')
       .forRoutes('*');
   }
 }

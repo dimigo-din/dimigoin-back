@@ -28,10 +28,14 @@ export class Event {
 
   @Prop({
     required: true,
-    type: [Number],
-    enum: GradeValues,
   })
-  grade: number[];
+  stack: string[];
+
+  @Prop({
+    required: true,
+    enum: [1, 2, 3],
+  })
+  grade: number;
 
   @Prop({
     required: true,
