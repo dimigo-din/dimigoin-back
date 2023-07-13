@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ClassValues, GenderValues, GradeValues } from '../types';
 
 export type StudentDocument = Student & Document;
 
@@ -33,11 +34,13 @@ export class Student {
 
   @Prop({
     required: true,
+    enum: GradeValues,
   })
   grade: number;
 
   @Prop({
     required: true,
+    enum: ClassValues,
   })
   class: number;
 
@@ -48,7 +51,7 @@ export class Student {
 
   @Prop({
     required: true,
-    enum: ['M', 'F'],
+    enum: GenderValues,
   })
   gender: string;
 

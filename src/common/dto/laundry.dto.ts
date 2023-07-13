@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNumber } from 'class-validator';
-import { IsString } from 'nestjs-swagger-dto';
+import { IsIn, IsNumber, IsString } from 'class-validator';
 import { GenderValues, GradeValues } from '../types';
 
 export class CreateWasherDto {
