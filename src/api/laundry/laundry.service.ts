@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from 'src/common/dto';
 import { StudentDocument, Washer, WasherDocument } from 'src/common/schemas';
@@ -48,6 +49,10 @@ export class LaundryService {
     data: ApplyLaundryDto,
     user: StudentDocument,
   ): Promise<Washer> {
+    const currentHour = new Date().getHours();
+
+    if (currentHour < 8) throw new HttpException('빨래 신청은 아침 8시부터 가능합니다.', 404);
+
     const washer = await this.washerModel.findOne({ name: data.name });
 
     if (!washer) throw new HttpException('해당 세탁기가 존재하지 않습니다.', 404);
@@ -70,5 +75,17 @@ export class LaundryService {
     await washer.save();
 
     return washer;
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async resetLaundry() {
+    const washers = await this.washerModel.find();
+
+    const timetable = Array(7).fill({});
+
+    for (let i = 0; i < washers.length; i++) {
+      washers[i].timetable = timetable;
+      await washers[i].save();
+    }
   }
 }

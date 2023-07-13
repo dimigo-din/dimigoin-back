@@ -6,3 +6,4 @@ export * from './group.dto';
 export * from './response.dto';
 export * from './laundry.dto';
 export * from './frigo.dto';
+export * from './stay.dto';
