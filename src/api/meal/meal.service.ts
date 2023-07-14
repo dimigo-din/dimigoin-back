@@ -82,7 +82,6 @@ export class MealService {
           .replace(/<(?:.|\n)*?>/gm, '');
       }
       trList['주소'] = $col.find('.title a').attr('href');
-      console.log(trList);
       col.push(trList);
     }
 
