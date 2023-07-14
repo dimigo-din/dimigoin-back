@@ -87,9 +87,9 @@ export class AuthService {
 
   async getAccessToken(user: StudentDocument | TeacherDocument): Promise<any> {
     // existing RefreshToken remove
-    await this.tokenModule.findOneAndDelete({
-      userId: user._id,
-    });
+    // await this.tokenModule.findOneAndDelete({
+    //   userId: user._id,
+    // });
 
     const refreshKey = crypto.randomBytes(20).toString('hex');
     const payload = { ...user };

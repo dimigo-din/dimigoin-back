@@ -12,4 +12,4 @@ import { EventController } from './event.controller';
   providers: [EventService],
   exports: [EventService],
 })
-export class StackModule {}
+export class EventModule {}

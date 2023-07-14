@@ -14,7 +14,9 @@ import {
 } from './common/middlewares';
 import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { StackModule } from './api/event/event.module';
+import { EventModule } from './api/event/event.module';
+import { MealModule } from './api/meal/meal.module';
+import * as moment from 'moment-timezone';
 
 ConfigModule.forRoot();
 
@@ -27,8 +29,9 @@ ConfigModule.forRoot();
     GroupModule,
     LaundryModule,
     FrigoModule,
-    StackModule,
+    EventModule,
     StayModule,
+    MealModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
@@ -39,17 +42,15 @@ ConfigModule.forRoot();
   providers: [AppService],
 })
 export class AppModule implements NestModule {
+  constructor() {
+    moment.tz.setDefault('Asia/Seoul');
+  }
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
     consumer
       .apply(DIMIJwtExpireMiddleware)
-      .exclude(
-        '/auth/login',
-        '/auth/refresh',
-        '/auth/logout',
-        '/event/upload',
-        '/user/superuser',
-      )
+      .exclude('/auth/(.*)', '/meal', '/meal/(.*)')
       .forRoutes('*');
   }
 }

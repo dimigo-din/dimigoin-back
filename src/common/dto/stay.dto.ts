@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsMongoId, IsString } from 'class-validator';
+import { IsBoolean, IsMongoId, IsObject, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 class StayDateDTO {
@@ -35,4 +35,60 @@ export class ManageStayDto {
   @ApiProperty()
   @IsBoolean()
   current: boolean;
+}
+
+export class ApplyStayDto {
+  @ApiProperty()
+  @IsString()
+  seat: boolean;
+}
+
+export class RejectStayDto {
+  @ApiProperty()
+  @IsMongoId()
+  user: string;
+}
+
+export class StayOutgoMealDto {
+  @ApiProperty()
+  @IsBoolean()
+  breakfast: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  lunch: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  dinner: boolean;
+}
+
+export class StayOutgoDurationDto {
+  @ApiProperty()
+  @IsString()
+  start: Date;
+
+  @ApiProperty()
+  @IsString()
+  end: Date;
+}
+
+export class ApplyStayOutgoDto {
+  @ApiProperty()
+  @IsString()
+  date: Date;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
+
+  @ApiProperty()
+  @IsObject()
+  @Type(() => StayOutgoMealDto)
+  meal: StayOutgoMealDto;
+
+  @ApiProperty()
+  @IsObject()
+  @Type(() => StayOutgoDurationDto)
+  duration: StayOutgoDurationDto;
 }

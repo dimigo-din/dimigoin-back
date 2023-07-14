@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^9.0.0",
@@ -31,12 +32,15 @@
     "@nestjs/swagger": "^7.1.1",
     "@types/cron": "^2.0.1",
     "@types/multer": "^1.4.7",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
+    "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "helmet": "^7.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "mongoose": "^7.3.1",
     "nestjs-swagger-dto": "^3.5.0",
     "reflect-metadata": "^0.1.13",
