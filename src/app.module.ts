@@ -16,6 +16,7 @@ import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventModule } from './api/event/event.module';
 import { MealModule } from './api/meal/meal.module';
+import { TimetableModule } from './api/timetable/timetable.module'; 
 import * as moment from 'moment-timezone';
 
 ConfigModule.forRoot();
@@ -32,6 +33,7 @@ ConfigModule.forRoot();
     EventModule,
     StayModule,
     MealModule,
+    TimetableModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
@@ -50,7 +52,13 @@ export class AppModule implements NestModule {
     consumer.apply(DIMILoggerMiddleware).forRoutes('*');
     consumer
       .apply(DIMIJwtExpireMiddleware)
-      .exclude('/auth/(.*)', '/meal', '/meal/(.*)')
+      .exclude(
+        '/auth/(.*)',
+        '/meal',
+        '/meal/(.*)',
+        '/timetable/(.*)/(.*)',
+        '/timetable/update',
+      )
       .forRoutes('*');
   }
 }

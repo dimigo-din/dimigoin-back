@@ -9,3 +9,4 @@ export * from './stay.schema';
 export * from './stay-application.schema';
 export * from './stay-outgo.schema';
 export * from './meal.schema';
+export * from './timetable.schema';
