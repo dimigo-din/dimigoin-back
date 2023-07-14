@@ -99,6 +99,6 @@ export class EventService {
 
     await this.eventModel.deleteMany({});
     await this.eventModel.insertMany(data);
-    return data;
+    return { status: 201, message: 'success' };
   }
 }

@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate } from 'class-validator';
+import { IsBoolean, IsMongoId, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 class StayDateDTO {
   @ApiProperty()
-  @IsDate()
+  @IsString()
   date: Date;
 
   @ApiProperty()
@@ -15,11 +15,11 @@ class StayDateDTO {
 
 export class CreateStayDto {
   @ApiProperty()
-  @IsDate()
+  @IsString()
   start: Date;
 
   @ApiProperty()
-  @IsDate()
+  @IsString()
   end: Date;
 
   @ApiProperty()
@@ -27,16 +27,12 @@ export class CreateStayDto {
   dates: StayDateDTO[];
 }
 
-// export class ManageStayDto {
-//   @ApiProperty()
-//   @IsDate()
-//   stay: Types.ObjectId;
+export class ManageStayDto {
+  @ApiProperty()
+  @IsMongoId()
+  stay: Types.ObjectId;
 
-//   @ApiProperty()
-//   @IsDate()
-//   end: Date;
-
-//   @ApiProperty()
-//   @Type(() => StayDateDTO)
-//   dates: StayDateDTO[];
-// }
+  @ApiProperty()
+  @IsBoolean()
+  current: boolean;
+}

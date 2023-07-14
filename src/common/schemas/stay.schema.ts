@@ -23,7 +23,7 @@ export class Stay {
   @Prop({
     required: true,
   })
-  disabled: boolean;
+  current: boolean;
 
   @Prop([
     {

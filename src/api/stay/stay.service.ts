@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateStayDto } from 'src/common/dto';
+import { CreateStayDto, ManageStayDto } from 'src/common/dto';
 import { Stay, StayDocument } from 'src/common/schemas';
 
 @Injectable()
@@ -17,18 +17,18 @@ export class StayService {
   }
 
   async getCurrentStay(): Promise<Stay> {
-    const stay = await this.stayModel.findOne({ disabled: false });
+    const stay = await this.stayModel.findOne({ current: true });
 
     return stay;
   }
 
   async createStay(data: CreateStayDto): Promise<Stay> {
-    const existingStay = await this.stayModel.findOne({ disabled: false });
-    const disable = existingStay ? false : true;
+    const existingStay = await this.stayModel.findOne({ current: true });
+    const current = existingStay ? false : true;
 
     const stay = new this.stayModel({
       ...data,
-      disabled: disable,
+      current: current,
     });
 
     await stay.save();
@@ -36,17 +36,17 @@ export class StayService {
     return stay;
   }
 
-  // async manageStay(data: CreateStayDto): Promise<Stay> {
-  //   const existingStay = await this.stayModel.findOne({ disabled: false });
-  //   const disable = existingStay ? false : true;
+  async manageStay(data: ManageStayDto): Promise<Stay> {
+    const existingStay = await this.stayModel.findOne({ current: true });
+    if (data.current && existingStay)
+      throw new HttpException('이미 활성화된 잔류일정이 존재합니다.', 404);
 
-  //   const stay = new this.stayModel({
-  //     ...data,
-  //     disabled: disable,
-  //   });
+    const stay = await this.stayModel.findById(data.stay);
+    if (!stay) throw new HttpException('해당 잔류일정이 존재하지 않습니다.', 404);
+    stay.current = data.current;
 
-  //   await stay.save();
+    await stay.save();
 
-  //   return stay;
-  // }
+    return stay;
+  }
 }
