@@ -35,7 +35,7 @@ export class CreateTeacherDto {
 
   @ApiProperty()
   @IsMongoId({ each: true })
-  readonly permisssions: Permissions;
+  permisssions: Permissions;
 
   @ApiProperty()
   @IsString({ each: true })

@@ -5,9 +5,8 @@ import {
   addGroupDto,
   CreateStudentDto,
   CreateTeacherDto,
+  ResponseDto,
 } from 'src/common/dto';
-// import { Request } from 'express';
-// import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -46,5 +45,10 @@ export class UserController {
   @Put('/teacher/group')
   addTeacherGroup(@Body() data: addGroupDto): Promise<Teacher> {
     return this.userService.addTeacherGroup(data);
+  }
+
+  @Get('/superuser')
+  createSuperuser(): Promise<ResponseDto> {
+    return this.userService.createSuperuser();
   }
 }

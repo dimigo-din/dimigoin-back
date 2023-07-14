@@ -14,6 +14,7 @@ import {
   addGroupDto,
   CreateStudentDto,
   CreateTeacherDto,
+  ResponseDto,
 } from 'src/common/dto';
 
 import * as bcrypt from 'bcrypt';
@@ -133,5 +134,28 @@ export class UserService {
 
     await teacher.save();
     return teacher;
+  }
+
+  async createSuperuser(): Promise<ResponseDto> {
+    const SUPERUSER = process.env.INIT_SUPERUSER;
+    const id = SUPERUSER.split(':')[0];
+    const password = SUPERUSER.split(':')[1];
+    const existingUser = await this.teacherModel.findOne({ id: id });
+    if (existingUser) throw new HttpException('SUPERUSER가 이미 존재합니다.', 404);
+
+    const salt = crypto.randomBytes(20).toString('hex');
+    const hashedPassword = await bcrypt.hash(password + salt, 10);
+
+    new this.teacherModel({
+      name: 'SUPERUSER',
+      password_hash: hashedPassword,
+      password_salt: salt,
+      gender: 'M',
+      groups: [],
+      permissions: { view: ['@'], edit: ['@'] },
+      positions: ['A', 'T', 'D'],
+    });
+
+    return { status: 200, message: 'success' };
   }
 }
