@@ -146,7 +146,7 @@ export class UserService {
     const salt = crypto.randomBytes(20).toString('hex');
     const hashedPassword = await bcrypt.hash(password + salt, 10);
 
-    new this.teacherModel({
+    const user = new this.teacherModel({
       name: 'SUPERUSER',
       password_hash: hashedPassword,
       password_salt: salt,
@@ -155,6 +155,8 @@ export class UserService {
       permissions: { view: ['@'], edit: ['@'] },
       positions: ['A', 'T', 'D'],
     });
+
+    user.save();
 
     return { status: 200, message: 'success' };
   }
