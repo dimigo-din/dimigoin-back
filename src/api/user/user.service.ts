@@ -148,6 +148,7 @@ export class UserService {
 
     const user = new this.teacherModel({
       name: 'SUPERUSER',
+      id: id,
       password_hash: hashedPassword,
       password_salt: salt,
       gender: 'M',
@@ -156,7 +157,7 @@ export class UserService {
       positions: ['A', 'T', 'D'],
     });
 
-    user.save();
+    await user.save();
 
     return { status: 200, message: 'success' };
   }
