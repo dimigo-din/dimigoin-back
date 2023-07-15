@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClusterDto, Deployment } from './common/dto';
 
-import * as _ from 'lodash';
-import * as os from 'os';
+import _ from 'lodash';
+import os from 'os';
 
 @Injectable()
 export class AppService {

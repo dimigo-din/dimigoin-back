@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event, EventDocument } from 'src/common/schemas';
 import moment from 'moment';
-import * as XLSX from 'xlsx';
+import XLSX from 'xlsx';
 
 @Injectable()
 export class EventService {

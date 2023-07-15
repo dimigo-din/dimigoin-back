@@ -17,8 +17,8 @@ import {
   ResponseDto,
 } from 'src/common/dto';
 
-import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 @Injectable()
 export class UserService {

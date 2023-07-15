@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { Meal, MealDocument } from 'src/common/schemas';
 import { HttpService } from '@nestjs/axios';
 import moment from 'moment';
-import * as cheerio from 'cheerio';
+import cheerio from 'cheerio';
 
 @Injectable()
 export class MealService {
@@ -19,7 +19,13 @@ export class MealService {
     const meal = await this.mealModel.findOne({
       date: moment().format('YYYY-MM-DD'),
     });
-    return meal;
+
+    return {
+      date: moment(meal.date).format('YYYY-MM-DD'),
+      breakfast: meal.breakfast,
+      lunch: meal.lunch,
+      dinner: meal.dinner,
+    };
   }
 
   async getMeal(date: string): Promise<any> {

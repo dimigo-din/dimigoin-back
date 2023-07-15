@@ -27,7 +27,10 @@ export class TimetableService {
         $lte: weekEnd.toDate(),
       },
     });
-    return timetable; //`grade: ${_grade}, class: ${_class}`;
+    return timetable.map((t) => ({
+      date: moment(t.date).format('YYYY-MM-DD'),
+      sequence: t.sequence,
+    }));
   }
 
   @Cron(CronExpression.EVERY_6_HOURS)
