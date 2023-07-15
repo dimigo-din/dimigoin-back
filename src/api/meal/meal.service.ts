@@ -4,7 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { Meal, MealDocument } from 'src/common/schemas';
 import { HttpService } from '@nestjs/axios';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as cheerio from 'cheerio';
 
 @Injectable()

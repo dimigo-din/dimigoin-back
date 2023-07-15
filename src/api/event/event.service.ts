@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event, EventDocument } from 'src/common/schemas';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as XLSX from 'xlsx';
 
 @Injectable()

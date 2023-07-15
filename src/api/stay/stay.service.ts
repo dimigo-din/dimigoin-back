@@ -4,6 +4,7 @@ import { Model, ObjectId } from 'mongoose';
 import {
   ApplyStayDto,
   ApplyStayOutgoDto,
+  ManageStayOutgoDto,
   CreateStayDto,
   ManageStayDto,
   ResponseDto,
@@ -16,7 +17,7 @@ import {
   StayOutgo,
   StayOutgoDocument,
 } from 'src/common/schemas';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class StayService {
@@ -78,7 +79,9 @@ export class StayService {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
 
-    const existingApplication = await this.stayApplicationModel.findOne({ user });
+    const existingApplication = await this.stayApplicationModel.findOne({
+      user,
+    });
     if (existingApplication)
       throw new HttpException('이미 잔류를 신청했습니다.', 404);
 
@@ -101,7 +104,8 @@ export class StayService {
       stay: stay._id,
       user: user,
     });
-    if (!application) throw new HttpException('취소할 잔류신청이 없습니다.', 404);
+    if (!application)
+      throw new HttpException('취소할 잔류신청이 없습니다.', 404);
 
     return { status: 200, message: 'success' };
   }
@@ -137,5 +141,16 @@ export class StayService {
     }
 
     throw new HttpException('올바른 잔류외출 신청이 아닙니다.', 401);
+  }
+
+  async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgo> {
+    const stayOutgo = await this.stayOutgoModel.findById(data.outgo);
+    if (!stayOutgo) throw new HttpException('해당 잔류외출 신청이 존재하지 않습니다.', 404);
+
+    stayOutgo.status = data.status;
+
+    await stayOutgo.save();
+
+    return stayOutgo;
   }
 }

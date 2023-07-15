@@ -1,6 +1,14 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { CreateStayDto, ManageStayDto, ApplyStayDto, ResponseDto, RejectStayDto, ApplyStayOutgoDto } from 'src/common/dto';
+import {
+  CreateStayDto,
+  ManageStayDto,
+  ApplyStayDto,
+  ResponseDto,
+  RejectStayDto,
+  ApplyStayOutgoDto,
+  ManageStayOutgoDto,
+} from 'src/common/dto';
 import { Stay, StayApplication, StayOutgo } from 'src/common/schemas';
 import { StayService } from './stay.service';
 
@@ -49,5 +57,10 @@ export class StayController {
     @Body() data: ApplyStayOutgoDto,
   ): Promise<StayOutgo | ResponseDto> {
     return this.stayService.applyStayOutgo(data, req.user._id);
+  }
+
+  @Post('outgo/manage')
+  async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
+    return this.stayService.manageStayOutgo(data);
   }
 }
