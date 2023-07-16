@@ -44,4 +44,9 @@ export class LaundryController {
   ): Promise<Washer> {
     return this.laundryService.applyLaundry(data, req.user as StudentDocument);
   }
+
+  @Get('available')
+  async getAvailable(@Req() req: Request): Promise<Washer[]> {
+    return this.laundryService.getAvailable(req.user as StudentDocument);
+  }
 }

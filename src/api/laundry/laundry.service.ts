@@ -49,6 +49,15 @@ export class LaundryService {
     return washer;
   }
 
+  async getAvailable(user: StudentDocument): Promise<Washer[]> {
+    const washers = await this.washerModel.find({
+      grade: user.grade,
+      gender: user.gender,
+    });
+
+    return washers;
+  }
+
   async getMyLaundry(user: StudentDocument): Promise<boolean | number> {
     const washer = await this.washerModel.findOne({
       timetable: { $elemMatch: { user: user._id } },
@@ -66,7 +75,8 @@ export class LaundryService {
   ): Promise<Washer> {
     const currentHour = new Date().getHours();
 
-    if (currentHour < 8) throw new HttpException('빨래 신청은 아침 8시부터 가능합니다.', 404);
+    if (currentHour < 8)
+      throw new HttpException('빨래 신청은 아침 8시부터 가능합니다.', 404);
 
     const washer = await this.washerModel.findOne({ name: data.name });
 
