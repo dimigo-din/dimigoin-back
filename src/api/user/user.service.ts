@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 
 import {
   Group,
@@ -22,6 +22,7 @@ import crypto from 'crypto';
 import { LaundryService } from '../laundry/laundry.service';
 import { StayService } from '../stay/stay.service';
 import { FrigoService } from '../frigo/frigo.service';
+import { Permissions } from 'src/common/types';
 
 @Injectable()
 export class UserService {
@@ -97,6 +98,8 @@ export class UserService {
       ...data,
       password_hash: hashedPassword,
       password_salt: salt,
+      permissions: { view: [], edit: [] },
+      groups: [],
     });
 
     await student.save();
@@ -161,7 +164,8 @@ export class UserService {
     const id = SUPERUSER.split(':')[0];
     const password = SUPERUSER.split(':')[1];
     const existingUser = await this.teacherModel.findOne({ id: id });
-    if (existingUser) throw new HttpException('SUPERUSER가 이미 존재합니다.', 404);
+    if (existingUser)
+      throw new HttpException('SUPERUSER가 이미 존재합니다.', 404);
 
     const salt = crypto.randomBytes(20).toString('hex');
     const hashedPassword = await bcrypt.hash(password + salt, 10);
@@ -181,4 +185,22 @@ export class UserService {
 
     return { status: 200, message: 'success' };
   }
+
+  async getPermissionByGroup(groups: Types.ObjectId[]): Promise<Permissions> {
+    const permission = { view: [], edit: [] };
+
+    for (let i = 0; i < groups.length; i++) {
+      const groupPerm = await this.groupModel.findById(groups[i]);
+      permission.view.push(...groupPerm.permissions.view);
+      permission.edit.push(...groupPerm.permissions.edit);
+    }
+
+    return permission;
+  }
+
+  // async getPermission(
+  //   user: StudentDocument | TeacherDocument,
+  // ): Promise<boolean> {
+
+  // }
 }

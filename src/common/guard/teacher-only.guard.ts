@@ -11,8 +11,8 @@ export class TeacherOnlyGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const req = context.switchToHttp().getRequest();
+    const user = req.user;
 
     if (user.hasOwnProperty('grade')) {
       throw new HttpException('선생님만 접근가능한 라우터입니다.', 404);

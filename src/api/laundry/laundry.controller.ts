@@ -1,6 +1,19 @@
-import { Body, Controller, Get, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
-import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from 'src/common/dto';
+import {
+  ApplyLaundryDto,
+  CreateWasherDto,
+  EditWasherDto,
+} from 'src/common/dto';
+import { ViewPermissionGuard } from 'src/common/guard';
 import { StudentDocument, Washer } from 'src/common/schemas';
 import { LaundryService } from './laundry.service';
 
@@ -8,6 +21,7 @@ import { LaundryService } from './laundry.service';
 export class LaundryController {
   constructor(private readonly laundryService: LaundryService) {}
 
+  @UseGuards(ViewPermissionGuard)
   @Get('washer')
   async getAllWashers(): Promise<Washer[]> {
     return this.laundryService.getAllWashers();

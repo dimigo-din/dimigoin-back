@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import {
   CreateStayDto,
@@ -9,6 +9,7 @@ import {
   ApplyStayOutgoDto,
   ManageStayOutgoDto,
 } from 'src/common/dto';
+import { ViewPermissionGuard } from 'src/common/guard';
 import { Stay, StayApplication, StayOutgo } from 'src/common/schemas';
 import { StayService } from './stay.service';
 
@@ -16,6 +17,7 @@ import { StayService } from './stay.service';
 export class StayController {
   constructor(private readonly stayService: StayService) {}
 
+  @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllStay(): Promise<Stay[]> {
     return this.stayService.getAllStay();
