@@ -2,6 +2,7 @@ import { Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { Meal } from 'src/common/schemas';
 import { MealService } from './meal.service';
+import moment from 'moment';
 
 @Controller('meal')
 export class MealController {
@@ -9,12 +10,12 @@ export class MealController {
 
   @Get()
   async getTodayMeal(): Promise<any> {
-    return this.mealService.getTodayMeal();
+    return this.mealService.getMeal(moment().format('YYYY-MM-DD'));
   }
 
   @Get('/week')
-  async getWeekMeal(): Promise<any> {
-    return this.mealService.getWeekMeal();
+  async getWeeklyMeal(): Promise<any> {
+    return this.mealService.getWeeklyMeal();
   }
 
   @Get('/:date')

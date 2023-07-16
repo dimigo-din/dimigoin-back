@@ -15,19 +15,6 @@ export class MealService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getTodayMeal(): Promise<any> {
-    const meal = await this.mealModel.findOne({
-      date: moment().format('YYYY-MM-DD'),
-    });
-
-    return {
-      date: moment(meal.date).format('YYYY-MM-DD'),
-      breakfast: meal.breakfast,
-      lunch: meal.lunch,
-      dinner: meal.dinner,
-    };
-  }
-
   async getMeal(date: string): Promise<any> {
     if (!moment(date, 'YYYY-MM-DD').isValid()) {
       throw new HttpException('날짜 형식은 YYYY-MM-DD 입니다.', 422);
@@ -38,10 +25,15 @@ export class MealService {
     if (!meal) {
       throw new HttpException('해당하는 날짜의 급식을 찾을 수 없습니다.', 404);
     }
-    return meal;
+    return {
+      date: moment(meal.date).format('YYYY-MM-DD'),
+      breakfast: meal.breakfast,
+      lunch: meal.lunch,
+      dinner: meal.dinner,
+    };
   }
 
-  async getWeekMeal(): Promise<any> {
+  async getWeeklyMeal(): Promise<any> {
     const meals = await this.mealModel.find({
       date: {
         $gte: moment().startOf('week').toDate(),

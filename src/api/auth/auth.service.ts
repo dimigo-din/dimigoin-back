@@ -105,7 +105,10 @@ export class AuthService {
 
     const refreshToken = this.jwtService.sign(
       { refreshToken: refreshKey },
-      { secret: process.env.JWT_SECRET_KEY },
+      {
+        secret: process.env.JWT_SECRET_KEY,
+        expiresIn: '1y',
+      },
     );
 
     return {
