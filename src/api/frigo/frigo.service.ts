@@ -16,11 +16,10 @@ export class FrigoService {
     return frigoRequests;
   }
 
-  async getMyFrigo(user: StudentDocument): Promise<FrigoDocument> {
+  async getMyFrigo(user: StudentDocument): Promise<boolean | string> {
     const frigoRequest = await this.frigoModel.findOne({ id: user._id });
-    if (!frigoRequest)
-      throw new HttpException('이번주 금요귀가를 신청하지 않았습니다.', 404);
-    return frigoRequest;
+    if (!frigoRequest) return false;
+    return frigoRequest.status;
   }
 
   async requestFrigo(

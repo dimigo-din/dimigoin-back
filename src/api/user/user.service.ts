@@ -19,6 +19,9 @@ import {
 
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { LaundryService } from '../laundry/laundry.service';
+import { StayService } from '../stay/stay.service';
+import { FrigoService } from '../frigo/frigo.service';
 
 @Injectable()
 export class UserService {
@@ -31,6 +34,10 @@ export class UserService {
 
     @InjectModel(Group.name)
     private groupModel: Model<GroupDocument>,
+
+    private laundryService: LaundryService,
+    private stayService: StayService,
+    private frigoService: FrigoService,
   ) {}
 
   async getUserByObjectId(
@@ -95,6 +102,19 @@ export class UserService {
     await student.save();
 
     return student;
+  }
+
+  async getMyInformation(user: StudentDocument): Promise<any> {
+    let laundry = await this.laundryService.getMyLaundry(user);
+    const stay = await this.stayService.getMyStay(user);
+    const frigo = await this.frigoService.getMyFrigo(user);
+    if (typeof laundry == 'number') laundry++;
+
+    return {
+      laundry: laundry ? laundry : null,
+      stay: stay ? stay : null,
+      frigo: frigo ? frigo : null,
+    };
   }
 
   async createTeacher(data: CreateTeacherDto): Promise<Teacher> {

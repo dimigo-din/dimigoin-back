@@ -99,16 +99,11 @@ export class AuthService {
 
     await this.setRefresh({ refreshToken: refreshKey, userId: user._id });
 
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET_KEY,
-    });
+    const accessToken = this.jwtService.sign(payload);
 
     const refreshToken = this.jwtService.sign(
       { refreshToken: refreshKey },
-      {
-        secret: process.env.JWT_SECRET_KEY,
-        expiresIn: '1y',
-      },
+      { expiresIn: '1y' },
     );
 
     return {

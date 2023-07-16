@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post, Req, UseGuards } from '@nestjs/common';
 import { FrigoDocument, StudentDocument } from 'src/common/schemas';
 import { FrigoService } from './frigo.service';
 import { ManageFrigoDto, RequestFrigoDto } from 'src/common/dto';
@@ -13,12 +13,6 @@ export class FrigoController {
   @Get()
   async getAllFrigoRequests(): Promise<FrigoDocument[]> {
     return this.frigoService.getAllFrigo();
-  }
-
-  @UseGuards(StudentOnlyGuard)
-  @Get('my')
-  async getMyFrigo(@Req() req: Request): Promise<FrigoDocument> {
-    return this.frigoService.getMyFrigo(req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)

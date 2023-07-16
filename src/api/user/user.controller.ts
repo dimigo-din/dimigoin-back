@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { Student, Teacher } from 'src/common/schemas';
+import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { Student, StudentDocument, Teacher } from 'src/common/schemas';
 import { UserService } from './user.service';
+import { myInformation } from 'src/common/types';
 import {
   addGroupDto,
   CreateStudentDto,
   CreateTeacherDto,
   ResponseDto,
 } from 'src/common/dto';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -15,6 +17,11 @@ export class UserController {
   @Get('/student')
   getAllStudent(): Promise<Student[]> {
     return this.userService.getAllStudent();
+  }
+
+  @Get('/student/my')
+  getMyInformation(@Req() req: Request): Promise<myInformation> {
+    return this.userService.getMyInformation(req.user as StudentDocument);
   }
 
   @Get('/student/:id')

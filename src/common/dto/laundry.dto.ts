@@ -8,8 +8,7 @@ export class CreateWasherDto {
   name: string;
 
   @ApiProperty()
-  @IsNumber()
-  @IsIn(GradeValues)
+  @IsIn(GradeValues, { each: true })
   grade: number[];
 
   @ApiProperty()
@@ -24,8 +23,7 @@ export class EditWasherDto {
   name: string;
 
   @ApiProperty()
-  @IsNumber()
-  @IsIn(GradeValues)
+  @IsIn(GradeValues, { each: true })
   grade: number[];
 }
 

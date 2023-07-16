@@ -31,3 +31,9 @@ export interface Permissions {
   view: string[];
   edit: string[];
 }
+
+export interface myInformation {
+  stay: null | string;
+  frigo: null | string;
+  laundry: null | number;
+}

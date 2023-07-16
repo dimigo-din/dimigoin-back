@@ -2,7 +2,11 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
-import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from 'src/common/dto';
+import {
+  ApplyLaundryDto,
+  CreateWasherDto,
+  EditWasherDto,
+} from 'src/common/dto';
 import { StudentDocument, Washer, WasherDocument } from 'src/common/schemas';
 
 @Injectable()
@@ -45,6 +49,17 @@ export class LaundryService {
     return washer;
   }
 
+  async getMyLaundry(user: StudentDocument): Promise<boolean | number> {
+    const washer = await this.washerModel.findOne({
+      timetable: { $elemMatch: { user: user._id } },
+    });
+    if (!washer) return false;
+
+    for (let j = 0; j < 7; j++) {
+      if (washer.timetable[j].user == user._id) return j;
+    }
+  }
+
   async applyLaundry(
     data: ApplyLaundryDto,
     user: StudentDocument,
@@ -65,7 +80,7 @@ export class LaundryService {
     if (data.time < maxApplyTime) {
       if (washer.timetable[data.time].name) throw new HttpException('이미 예약되어 있는 시간대입니다.', 404);
       washer.timetable[data.time] = {
-        userId: user._id,
+        user: user._id,
         name: user.name,
         grade: user.grade,
         class: user.class,

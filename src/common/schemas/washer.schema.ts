@@ -33,7 +33,7 @@ export class Washer {
   @Prop({
     type: [
       {
-        userId: { type: Types.ObjectId, ref: 'Students', required: false },
+        user: { type: Types.ObjectId, ref: 'Students', required: false },
         name: { type: String, required: false },
         grade: { type: Number, required: false },
         class: { type: Number, required: false },
@@ -41,7 +41,7 @@ export class Washer {
     ],
   })
   timetable: {
-    userId?: Types.ObjectId;
+    user?: Types.ObjectId;
     name?: string;
     grade?: number;
     class?: number;

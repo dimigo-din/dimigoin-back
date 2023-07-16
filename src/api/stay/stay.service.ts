@@ -16,6 +16,7 @@ import {
   StayApplicationDocument,
   StayOutgo,
   StayOutgoDocument,
+  Student,
 } from 'src/common/schemas';
 import moment from 'moment';
 
@@ -108,6 +109,19 @@ export class StayService {
       throw new HttpException('취소할 잔류신청이 없습니다.', 404);
 
     return { status: 200, message: 'success' };
+  }
+
+  async getMyStay(user: Student): Promise<string | boolean> {
+    const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) return false;
+
+    const application = await this.stayApplicationModel.findOne({
+      stay: stay._id,
+      user: user,
+    });
+    if (!application) return false;
+    if (!application.seat) return '교실';
+    return application.seat;
   }
 
   async applyStayOutgo(data: ApplyStayOutgoDto, user: ObjectId): Promise<any> {
