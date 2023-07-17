@@ -46,6 +46,11 @@ export class LaundryController {
     return this.laundryService.applyLaundry(data, req.user as StudentDocument);
   }
 
+  @Post('cancel')
+  async cancelLaundry(@Req() req: Request): Promise<Washer> {
+    return this.laundryService.cancelLaundry(req.user as StudentDocument);
+  }
+
   @Get('available')
   async getAvailable(@Req() req: Request): Promise<Washer[]> {
     return this.laundryService.getAvailable(req.user as StudentDocument);

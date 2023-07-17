@@ -108,6 +108,20 @@ export class LaundryService {
     return washer;
   }
 
+  async cancelLaundry(user: StudentDocument): Promise<Washer> {
+    const washer = await this.washerModel.findOne({
+      timetable: { $elemMatch: { user: user._id } },
+    });
+    if (!washer) throw new HttpException('취소할 세탁신청이 없습니다.', 404);
+
+    for (let j = 0; j < 7; j++) {
+      if (washer.timetable[j].user == user._id) washer.timetable[j] = {};
+    }
+    await washer.save();
+
+    return washer;
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async resetLaundry() {
     const washers = await this.washerModel.find();
