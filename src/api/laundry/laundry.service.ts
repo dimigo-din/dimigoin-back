@@ -78,6 +78,11 @@ export class LaundryService {
     if (currentHour < 8)
       throw new HttpException('빨래 신청은 아침 8시부터 가능합니다.', 404);
 
+    const existingLaundry = await this.washerModel.findOne({
+      timetable: { $elemMatch: { user: user._id } },
+    });
+    if (existingLaundry) throw new HttpException('이미 빨래를 신청했습니다.', 404);
+
     const washer = await this.washerModel.findOne({ name: data.name });
 
     if (!washer) throw new HttpException('해당 세탁기가 존재하지 않습니다.', 404);
@@ -94,6 +99,7 @@ export class LaundryService {
         name: user.name,
         grade: user.grade,
         class: user.class,
+        number: user.number,
       };
     } else throw new HttpException('신청 가능한 시간이 아닙니다.', 404);
 

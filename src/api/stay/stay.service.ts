@@ -17,8 +17,9 @@ import {
   StayOutgo,
   StayOutgoDocument,
   Student,
+  StudentDocument,
 } from 'src/common/schemas';
-import moment from 'moment';
+import moment, { duration } from 'moment';
 
 @Injectable()
 export class StayService {
@@ -111,17 +112,35 @@ export class StayService {
     return { status: 200, message: 'success' };
   }
 
-  async getMyStay(user: Student): Promise<string | boolean> {
+  async getMyStay(user: StudentDocument): Promise<string | boolean> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return false;
 
     const application = await this.stayApplicationModel.findOne({
       stay: stay._id,
-      user: user,
+      user: user._id,
     });
     if (!application) return false;
     if (!application.seat) return '교실';
     return application.seat;
+  }
+
+  async getMyStayOutgo(user: StudentDocument): Promise<any> {
+    const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) return false;
+
+    const outgo = await this.stayOutgoModel.find({
+      stay: stay._id,
+      user: user._id,
+    });
+
+    if (outgo.length == 0) return false;
+    const result = [];
+    for (let i = 0; i < outgo.length; i++) {
+      result.push({ duration: outgo[i].duration, status: outgo[i].status });
+    }
+
+    return result;
   }
 
   async applyStayOutgo(data: ApplyStayOutgoDto, user: ObjectId): Promise<any> {

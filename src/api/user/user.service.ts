@@ -113,10 +113,16 @@ export class UserService {
     const frigo = await this.frigoService.getMyFrigo(user);
     if (typeof laundry == 'number') laundry++;
 
+    const isWeekend = new Date().getDay() % 6 === 0;
+    // replace null with Weekday Outgo ( TBA )
+    const stayOutgo = await this.stayService.getMyStayOutgo(user);
+    const outgo = isWeekend ? stayOutgo : null;
+
     return {
       laundry: laundry ? laundry : null,
       stay: stay ? stay : null,
       frigo: frigo ? frigo : null,
+      outgo: outgo ? outgo : null,
     };
   }
 

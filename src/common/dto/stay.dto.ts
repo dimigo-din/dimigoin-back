@@ -40,7 +40,11 @@ export class ManageStayDto {
 export class ApplyStayDto {
   @ApiProperty()
   @IsString()
-  seat: boolean;
+  seat: string;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
 }
 
 export class RejectStayDto {

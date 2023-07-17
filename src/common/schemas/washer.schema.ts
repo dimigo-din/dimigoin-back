@@ -37,6 +37,7 @@ export class Washer {
         name: { type: String, required: false },
         grade: { type: Number, required: false },
         class: { type: Number, required: false },
+        number: { type: Number, required: false },
       },
     ],
   })
@@ -45,6 +46,7 @@ export class Washer {
     name?: string;
     grade?: number;
     class?: number;
+    number?: number;
   }[];
 
   @Prop({ default: Date.now })

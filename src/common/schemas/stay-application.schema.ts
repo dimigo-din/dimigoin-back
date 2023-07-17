@@ -26,6 +26,12 @@ export class StayApplication {
     ref: 'Students',
   })
   user: Types.ObjectId;
+
+  // 좌석 미선택 사유
+  @Prop({
+    required: false,
+  })
+  reason: string;
 }
 
 export const StayApplicationSchema = SchemaFactory.createForClass(StayApplication);

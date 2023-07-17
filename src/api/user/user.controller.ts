@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { Student, StudentDocument, Teacher } from 'src/common/schemas';
 import { UserService } from './user.service';
-import { myInformation } from 'src/common/types';
 import {
   addGroupDto,
   CreateStudentDto,
@@ -20,7 +19,7 @@ export class UserController {
   }
 
   @Get('/student/my')
-  getMyInformation(@Req() req: Request): Promise<myInformation> {
+  getMyInformation(@Req() req: Request): Promise<any> {
     return this.userService.getMyInformation(req.user as StudentDocument);
   }
 
