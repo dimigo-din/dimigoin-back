@@ -9,7 +9,11 @@ import {
   ApplyStayOutgoDto,
   ManageStayOutgoDto,
 } from 'src/common/dto';
-import { ViewPermissionGuard } from 'src/common/guard';
+import {
+  EditPermissionGuard,
+  ViewPermissionGuard,
+  StudentOnlyGuard,
+} from 'src/common/guard';
 import { Stay, StayApplication, StayOutgo } from 'src/common/schemas';
 import { StayService } from './stay.service';
 
@@ -23,16 +27,19 @@ export class StayController {
     return this.stayService.getAllStay();
   }
 
+  @UseGuards(EditPermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
     return this.stayService.createStay(data);
   }
 
+  @UseGuards(EditPermissionGuard)
   @Post('manage')
   async manageStay(@Body() data: ManageStayDto): Promise<Stay> {
     return this.stayService.manageStay(data);
   }
 
+  @UseGuards(StudentOnlyGuard)
   @Post('apply')
   async applyStay(
     @Body() data: ApplyStayDto,
@@ -41,18 +48,19 @@ export class StayController {
     return this.stayService.applyStay(data, req.user._id);
   }
 
-  // student-only
+  @UseGuards(StudentOnlyGuard)
   @Post('cancel')
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
     return this.stayService.cancelStay(req.user._id);
   }
 
-  // teacher-only
+  @UseGuards(EditPermissionGuard)
   @Post('reject')
   async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
     return this.stayService.cancelStay(data.user);
   }
 
+  @UseGuards(StudentOnlyGuard)
   @Post('outgo/apply')
   async applyStayOutgo(
     @Req() req: Request,
@@ -61,6 +69,7 @@ export class StayController {
     return this.stayService.applyStayOutgo(data, req.user._id);
   }
 
+  @UseGuards(EditPermissionGuard)
   @Post('outgo/manage')
   async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
     return this.stayService.manageStayOutgo(data);

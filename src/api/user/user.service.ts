@@ -183,7 +183,7 @@ export class UserService {
       password_salt: salt,
       gender: 'M',
       groups: [],
-      permissions: { view: ['@'], edit: ['@'] },
+      permissions: { view: ['*'], edit: ['*'] },
       positions: ['A', 'T', 'D'],
     });
 
@@ -204,9 +204,16 @@ export class UserService {
     return permission;
   }
 
-  // async getPermission(
-  //   user: StudentDocument | TeacherDocument,
-  // ): Promise<boolean> {
+  async getPermissionByPosition(positions: string[]): Promise<Permissions> {
+    const permission = { view: [], edit: [] };
+    for (let i = 0; i < positions.length; i++) {
+      const positionPerm = await this.groupModel.findOne({
+        name: positions[i],
+      });
+      permission.view.push(...positionPerm.permissions.view);
+      permission.edit.push(...positionPerm.permissions.edit);
+    }
 
-  // }
+    return permission;
+  }
 }

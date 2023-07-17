@@ -3,13 +3,17 @@ import { FrigoDocument, StudentDocument } from 'src/common/schemas';
 import { FrigoService } from './frigo.service';
 import { ManageFrigoDto, RequestFrigoDto } from 'src/common/dto';
 import { Request } from 'express';
-import { StudentOnlyGuard, TeacherOnlyGuard } from 'src/common/guard';
+import {
+  EditPermissionGuard,
+  StudentOnlyGuard,
+  ViewPermissionGuard,
+} from 'src/common/guard';
 
 @Controller('frigo')
 export class FrigoController {
   constructor(private readonly frigoService: FrigoService) {}
 
-  @UseGuards(TeacherOnlyGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllFrigoRequests(): Promise<FrigoDocument[]> {
     return this.frigoService.getAllFrigo();
@@ -24,7 +28,7 @@ export class FrigoController {
     return this.frigoService.requestFrigo(data, req.user as StudentDocument);
   }
 
-  @UseGuards(TeacherOnlyGuard)
+  @UseGuards(EditPermissionGuard)
   @Post('manage')
   async manageFrigo(@Body() data: ManageFrigoDto): Promise<FrigoDocument> {
     return this.frigoService.manageFrigo(data);

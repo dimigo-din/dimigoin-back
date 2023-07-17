@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Group, GroupDocument } from 'src/common/schemas';
-import { CreateGroupDto } from 'src/common/dto';
+import { CreateGroupDto, ResponseDto } from 'src/common/dto';
 
 @Injectable()
 export class GroupService {
@@ -16,15 +16,40 @@ export class GroupService {
     return groups;
   }
 
-  async createGroup(data: CreateGroupDto): Promise<Group> {
+  async createGroup(data: CreateGroupDto): Promise<Group | false> {
     const existingGroup = await this.groupModel.findOne({ name: data.name });
-    if (existingGroup)
-      throw new HttpException('해당 이름의 Group이 이미 존재합니다.', 404);
+    if (existingGroup) return false;
 
     const group = new this.groupModel({ ...data });
 
     await group.save();
 
     return group;
+  }
+
+  async initGroup(): Promise<ResponseDto> {
+    const Admin = await this.createGroup({
+      name: 'A',
+      permissions: {
+        view: ['*'],
+        edit: ['*'],
+      },
+    });
+    const Teacher = await this.createGroup({
+      name: 'T',
+      permissions: {
+        view: ['laundry', 'stay', 'frigo'],
+        edit: ['frigo'],
+      },
+    });
+    const Dormitory = await this.createGroup({
+      name: 'D',
+      permissions: {
+        view: ['laundry', 'stay', 'frigo'],
+        edit: ['laundry', 'stay'],
+      },
+    });
+
+    return { status: 200, message: 'success' };
   }
 }
