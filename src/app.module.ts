@@ -7,6 +7,7 @@ import { GroupModule } from './api/group/group.module';
 import { LaundryModule } from './api/laundry/laundry.module';
 import { FrigoModule } from './api/frigo/frigo.module';
 import { StayModule } from './api/stay/stay.module';
+import { JournalModule } from './api/journal/journal.module';
 import { JwtModule } from '@nestjs/jwt';
 import {
   DIMIJwtExpireMiddleware,
@@ -34,6 +35,7 @@ ConfigModule.forRoot();
     StayModule,
     MealModule,
     TimetableModule,
+    JournalModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,

@@ -4,17 +4,20 @@ import { Model } from 'mongoose';
 import { Event, EventDocument } from 'src/common/schemas';
 import moment from 'moment';
 import XLSX from 'xlsx';
+import { StayService } from '../stay/stay.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(Event.name)
     private eventModel: Model<EventDocument>,
+
+    private stayService: StayService,
   ) {}
 
   async getEvent(grade: number): Promise<Event[]> {
-    const isWeekend = new Date().getDay() % 6 === 0;
-    const type = isWeekend ? 1 : 0;
+    const isStay = await this.stayService.isStay(new Date());
+    const type = isStay ? 1 : 0;
 
     const events = await this.eventModel.find({
       type: type,

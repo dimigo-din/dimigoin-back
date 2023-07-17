@@ -38,15 +38,15 @@ export class GroupService {
     const Teacher = await this.createGroup({
       name: 'T',
       permissions: {
-        view: ['laundry', 'stay', 'frigo'],
+        view: ['laundry', 'stay', 'frigo', 'journal'],
         edit: ['frigo'],
       },
     });
     const Dormitory = await this.createGroup({
       name: 'D',
       permissions: {
-        view: ['laundry', 'stay', 'frigo'],
-        edit: ['laundry', 'stay'],
+        view: ['laundry', 'stay', 'frigo', 'journal'],
+        edit: ['laundry', 'stay', 'journal'],
       },
     });
 

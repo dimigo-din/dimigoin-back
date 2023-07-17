@@ -16,10 +16,9 @@ import {
   StayApplicationDocument,
   StayOutgo,
   StayOutgoDocument,
-  Student,
   StudentDocument,
 } from 'src/common/schemas';
-import moment, { duration } from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class StayService {
@@ -178,12 +177,23 @@ export class StayService {
 
   async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgo> {
     const stayOutgo = await this.stayOutgoModel.findById(data.outgo);
-    if (!stayOutgo) throw new HttpException('해당 잔류외출 신청이 존재하지 않습니다.', 404);
+    if (!stayOutgo)
+      throw new HttpException('해당 잔류외출 신청이 존재하지 않습니다.', 404);
 
     stayOutgo.status = data.status;
 
     await stayOutgo.save();
 
     return stayOutgo;
+  }
+
+  async isStay(date: Date): Promise<number> {
+    const stay = await this.stayModel.findOne({ current: true });
+    const startline = moment(stay.start);
+    const endline = moment(stay.end).endOf('day');
+    const target = moment(date);
+
+    if (target.isBetween(startline, endline)) return 1;
+    return 0;
   }
 }

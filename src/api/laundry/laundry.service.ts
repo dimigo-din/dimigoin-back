@@ -8,12 +8,15 @@ import {
   EditWasherDto,
 } from 'src/common/dto';
 import { StudentDocument, Washer, WasherDocument } from 'src/common/schemas';
+import { StayService } from '../stay/stay.service';
 
 @Injectable()
 export class LaundryService {
   constructor(
     @InjectModel(Washer.name)
     private washerModel: Model<WasherDocument>,
+
+    private stayService: StayService,
   ) {}
 
   async getAllWashers(): Promise<Washer[]> {
@@ -50,10 +53,12 @@ export class LaundryService {
   }
 
   async getAvailable(user: StudentDocument): Promise<Washer[]> {
-    const washers = await this.washerModel.find({
-      grade: user.grade,
-      gender: user.gender,
-    });
+    const isStay = await this.stayService.isStay(new Date());
+    const filter = { gender: user.gender, grade: 0 };
+    if (!isStay) filter.grade = user.grade;
+    else delete filter['grade'];
+
+    const washers = await this.washerModel.find(filter);
 
     return washers;
   }
@@ -89,8 +94,8 @@ export class LaundryService {
     if (washer.gender !== user.gender) throw new HttpException('성별에 맞는 기숙사인지 다시 확인해주세요.', 404);
     if (!washer.grade.includes(user.grade)) throw new HttpException('신청 가능한 학년이 아닙니다.', 404);
 
-    const isWeekend = new Date().getDay() % 6 === 0;
-    const maxApplyTime = isWeekend ? 7 : 5; // 평일에 5타임, 주말에 7타임
+    const isStay = await this.stayService.isStay(new Date());
+    const maxApplyTime = isStay ? 7 : 5; // 평일에 5타임, 주말에 7타임
 
     if (data.time < maxApplyTime) {
       if (washer.timetable[data.time].name) throw new HttpException('이미 예약되어 있는 시간대입니다.', 404);
