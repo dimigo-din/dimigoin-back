@@ -12,6 +12,7 @@ import {
   ApplyLaundryDto,
   CreateWasherDto,
   EditWasherDto,
+  ResponseDto,
 } from 'src/common/dto';
 import { ViewPermissionGuard } from 'src/common/guard';
 import { StudentDocument, Washer } from 'src/common/schemas';
@@ -48,5 +49,11 @@ export class LaundryController {
   @Get('available')
   async getAvailable(@Req() req: Request): Promise<Washer[]> {
     return this.laundryService.getAvailable(req.user as StudentDocument);
+  }
+
+  @Get('washer/reset')
+  async resetWasher(): Promise<ResponseDto> {
+    await this.laundryService.resetLaundry();
+    return { status: 200, message: 'success' };
   }
 }
