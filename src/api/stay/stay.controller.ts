@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import {
   CreateStayDto,
@@ -49,13 +49,13 @@ export class StayController {
   }
 
   @UseGuards(StudentOnlyGuard)
-  @Post('cancel')
+  @Delete('cancel')
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
     return this.stayService.cancelStay(req.user._id);
   }
 
   @UseGuards(EditPermissionGuard)
-  @Post('reject')
+  @Delete('reject')
   async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
     return this.stayService.cancelStay(data.user);
   }

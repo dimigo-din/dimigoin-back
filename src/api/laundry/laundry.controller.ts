@@ -4,6 +4,7 @@ import {
   Get,
   Patch,
   Post,
+  Delete,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -54,7 +55,7 @@ export class LaundryController {
   }
 
   @UseGuards(StudentOnlyGuard)
-  @Post('cancel')
+  @Delete()
   async cancelLaundry(@Req() req: Request): Promise<Washer> {
     return this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
