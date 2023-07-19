@@ -24,7 +24,7 @@ export class GroupController {
     return result;
   }
 
-  @Post('init')
+  @Get('init')
   initGroup(): Promise<ResponseDto> {
     return this.groupService.initGroup();
   }

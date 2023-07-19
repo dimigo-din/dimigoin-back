@@ -60,6 +60,8 @@ export class AppModule implements NestModule {
         '/meal/week',
         '/timetable/(.*)/(.*)',
         '/timetable/update',
+        '/user/superuser',
+        '/group/init',
       )
       .forRoutes('*');
   }
