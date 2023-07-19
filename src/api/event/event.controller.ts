@@ -22,9 +22,15 @@ export class EventController {
   ) {}
 
   @Get()
-  async getEvent(@Req() req: Request): Promise<Event[]> {
+  async getEvent(@Req() req: Request): Promise<{
+    events: Event[];
+    type: number;
+  }> {
     const user = req.user as StudentDocument;
-    return this.eventService.getEvent(user.grade);
+    return {
+      events: await this.eventService.getEvent(user.grade),
+      type: await this.stayService.isStay(new Date()),
+    };
   }
 
   @UseGuards(EditPermissionGuard)
