@@ -189,7 +189,7 @@ export class StayService {
 
   async isStay(date: Date): Promise<number> {
     const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) throw new HttpException('활성화된 잔류가 존재하지 않습니다.', 404);
+    if (!stay) return 0;
     const startline = moment(stay.start);
     const endline = moment(stay.end).endOf('day');
     const target = moment(date);
