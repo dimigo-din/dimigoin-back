@@ -21,7 +21,6 @@ export class EventController {
     private readonly stayService: StayService,
   ) {}
 
-  @UseGuards(ViewPermissionGuard)
   @Get()
   async getEvent(@Req() req: Request): Promise<Event[]> {
     const user = req.user as StudentDocument;
