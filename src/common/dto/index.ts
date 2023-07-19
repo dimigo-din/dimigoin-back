@@ -8,3 +8,4 @@ export * from './laundry.dto';
 export * from './frigo.dto';
 export * from './stay.dto';
 export * from './journal.dto';
+export * from './meal.dto';

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { GradeValues } from '../types';
 
 export type EventDocument = Event & Document;
 

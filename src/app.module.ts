@@ -57,7 +57,7 @@ export class AppModule implements NestModule {
       .exclude(
         '/auth/(.*)',
         '/meal',
-        '/meal/(.*)',
+        '/meal/week',
         '/timetable/(.*)/(.*)',
         '/timetable/update',
       )

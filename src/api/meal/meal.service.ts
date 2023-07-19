@@ -2,16 +2,22 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
-import { Meal, MealDocument } from 'src/common/schemas';
+import { Meal, MealDocument, StudentDocument } from 'src/common/schemas';
 import { HttpService } from '@nestjs/axios';
 import moment from 'moment';
 import cheerio from 'cheerio';
+import { MealTimetable, MealTimetableDocument } from 'src/common/schemas/meal-timetable.schema';
+import { CreateMealTimetableDto } from 'src/common/dto';
 
 @Injectable()
 export class MealService {
   constructor(
     @InjectModel(Meal.name)
     private mealModel: Model<MealDocument>,
+
+    @InjectModel(MealTimetable.name)
+    private mealTimetableModel: Model<MealTimetableDocument>,
+
     private readonly httpService: HttpService,
   ) {}
 
@@ -110,6 +116,37 @@ export class MealService {
     }
 
     return meal;
+  }
+
+  async getAllTimetable(): Promise<MealTimetable[]> {
+    const timetables = await this.mealTimetableModel.find();
+
+    return timetables;
+  }
+
+  async getMealTimetable(user: StudentDocument): Promise<MealTimetable> {
+    const timetable = await this.mealTimetableModel.findOne({
+      grade: user.grade,
+    });
+    if (!timetable) throw new HttpException('급식시간표가 아직 추가되지 않았습니다.', 404);
+
+    return timetable;
+  }
+
+  async createMealTimetable(
+    data: CreateMealTimetableDto,
+  ): Promise<MealTimetable> {
+    const existingTimetable = await this.mealTimetableModel.findOneAndDelete({
+      grade: data.grade,
+    });
+
+    const timetable = new this.mealTimetableModel({
+      ...data,
+    });
+
+    await timetable.save();
+
+    return timetable;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
