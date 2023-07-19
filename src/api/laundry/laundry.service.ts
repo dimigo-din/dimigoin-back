@@ -81,12 +81,12 @@ export class LaundryService {
     const currentHour = new Date().getHours();
 
     if (currentHour < 8)
-      throw new HttpException('빨래 신청은 아침 8시부터 가능합니다.', 404);
+      throw new HttpException('세탁 신청은 아침 8시부터 가능합니다.', 404);
 
     const existingLaundry = await this.washerModel.findOne({
       timetable: { $elemMatch: { user: user._id } },
     });
-    if (existingLaundry) throw new HttpException('이미 빨래를 신청했습니다.', 404);
+    if (existingLaundry) throw new HttpException('이미 세탁을 신청했습니다.', 404);
 
     const washer = await this.washerModel.findOne({ name: data.name });
 
