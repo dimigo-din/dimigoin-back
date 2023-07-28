@@ -18,6 +18,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { EventModule } from './api/event/event.module';
 import { MealModule } from './api/meal/meal.module';
 import { TimetableModule } from './api/timetable/timetable.module';
+import { AfterschoolModule } from './api/afterschool/afterschool.module';
 import * as moment from 'moment-timezone';
 
 ConfigModule.forRoot();
@@ -36,6 +37,7 @@ ConfigModule.forRoot();
     MealModule,
     TimetableModule,
     JournalModule,
+    AfterschoolModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,

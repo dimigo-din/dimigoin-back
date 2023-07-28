@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { EditPermissionGuard, ViewPermissionGuard } from 'src/common/guard';
+import { EditPermissionGuard } from 'src/common/guard';
 import { Event, StudentDocument } from 'src/common/schemas';
 import { StayService } from '../stay/stay.service';
 import { EventService } from './event.service';

@@ -11,3 +11,5 @@ export * from './stay-outgo.schema';
 export * from './meal.schema';
 export * from './timetable.schema';
 export * from './journal.schema';
+export * from './afterschool.schema';
+export * from './afterschool-application.schema';

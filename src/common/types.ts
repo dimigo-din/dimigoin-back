@@ -7,7 +7,17 @@ export const GenderValues = ['M', 'F'] as const;
 // A = Admin, T = Teacher, D = Domitory
 export const PositionValues = ['A', 'T', 'D'] as const;
 
-export const StatusValues = ['A', 'R', 'W']; // Accepted, Rejected, Waiting
+export const StatusValues = ['A', 'R', 'W'] as const; // Accepted, Rejected, Waiting
+
+// Afterschool Time values
+export const AfterschoolTimeValues = [
+  'AS1',
+  'AS2',
+  'WE1',
+  'WE2',
+  'NS1',
+  'NS2',
+] as const; // AfterSchool 1,2 | WeekEnd 1,2 | Night Study 1,2
 
 export const WasherValues = [
   'F1',
