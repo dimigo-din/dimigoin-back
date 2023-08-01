@@ -53,9 +53,8 @@ export class Afterschool {
   @Prop({
     required: true,
     type: [String],
-    enum: AfterschoolTimeValues,
   })
-  times: string[];
+  time: string[];
 
   @Prop({
     required: true,

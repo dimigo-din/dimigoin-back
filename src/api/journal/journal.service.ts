@@ -35,7 +35,7 @@ export class JournalService {
 
   async manageJournal(data: ManageJournal): Promise<Journal> {
     const journal = await this.journalModel.findById(data.journal);
-    if (!journal) throw new HttpException('NotFound', 404);
+    if (!journal) throw new HttpException('해당 생활지도사항이 존재하지 않습니다.', 404);
 
     journal.title = data.title;
     journal.date = data.date;
@@ -51,7 +51,7 @@ export class JournalService {
       .findByIdAndDelete(data.journal)
       .lean();
 
-    if (!journal) throw new HttpException('NotFound', 404);
+    if (!journal) throw new HttpException('해당 생활지도사항이 존재하지 않습니다.', 404);
 
     return journal;
   }

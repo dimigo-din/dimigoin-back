@@ -25,7 +25,7 @@ export class AfterschoolApplication {
 
   @Prop({
     ref: 'Afterschools',
-    required: false,
+    required: true,
   })
   afterschool: Types.ObjectId;
 }
