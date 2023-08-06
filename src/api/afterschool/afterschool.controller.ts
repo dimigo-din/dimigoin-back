@@ -30,6 +30,13 @@ export class AfterschoolController {
     return this.afterschoolService.getAllAfterschool();
   }
 
+  @Get('/user')
+  async getAfterschoolByUser(@Req() req: Request): Promise<Afterschool[]> {
+    return this.afterschoolService.getAfterschoolByUser(
+      req.user as StudentDocument,
+    );
+  }
+
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadEvent(

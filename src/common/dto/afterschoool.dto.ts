@@ -20,10 +20,6 @@ export class ManageAfterschoolDto {
   grade: number[];
 
   @ApiProperty()
-  @IsIn(ClassValues, { each: true })
-  class: number[];
-
-  @ApiProperty()
   @IsString()
   teacher: string;
 

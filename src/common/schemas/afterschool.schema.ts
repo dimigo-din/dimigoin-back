@@ -35,13 +35,6 @@ export class Afterschool {
 
   @Prop({
     required: true,
-    type: [Number],
-    enum: ClassValues,
-  })
-  class: number[];
-
-  @Prop({
-    required: true,
   })
   teacher: string;
 
