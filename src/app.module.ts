@@ -61,7 +61,6 @@ export class AppModule implements NestModule {
         '/meal',
         '/meal/week',
         '/timetable/(.*)/(.*)',
-        '/timetable/update',
         '/user/superuser',
         '/group/init',
       )
