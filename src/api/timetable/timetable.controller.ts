@@ -11,7 +11,7 @@ export class TimetableController {
   @UseGuards(EditPermissionGuard)
   @Get('/update')
   async updateTimetable(): Promise<any> {
-    return this.timetableService.updateTimetable();
+    return await this.timetableService.updateTimetable();
   }
 
   @Get('/:grade/:class')

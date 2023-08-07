@@ -31,7 +31,7 @@ export class MealController {
   @UseGuards(EditPermissionGuard)
   @Get('/update')
   async updateMeal(): Promise<any> {
-    return this.mealService.updateMeal();
+    return await this.mealService.updateMeal();
   }
 
   @Get('/week')
