@@ -8,17 +8,17 @@ import { TimetableService } from './timetable.service';
 export class TimetableController {
   constructor(private readonly timetableService: TimetableService) {}
 
+  @UseGuards(EditPermissionGuard)
+  @Get('/update')
+  async updateTimetable(): Promise<any> {
+    return this.timetableService.updateTimetable();
+  }
+
   @Get('/:grade/:class')
   async getTimetable(
     @Param('grade') _grade: number,
     @Param('class') _class: number,
   ): Promise<any> {
     return this.timetableService.getTimetable(_grade, _class);
-  }
-
-  @UseGuards(EditPermissionGuard)
-  @Get('/update')
-  async updateTimetable(): Promise<any> {
-    return this.timetableService.updateTimetable();
   }
 }

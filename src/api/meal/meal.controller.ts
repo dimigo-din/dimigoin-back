@@ -28,6 +28,12 @@ export class MealController {
     return this.mealService.getMeal(moment().format('YYYY-MM-DD'));
   }
 
+  @UseGuards(EditPermissionGuard)
+  @Get('/update')
+  async updateMeal(): Promise<any> {
+    return this.mealService.updateMeal();
+  }
+
   @Get('/week')
   async getWeeklyMeal(): Promise<any> {
     return this.mealService.getWeeklyMeal();
@@ -56,11 +62,5 @@ export class MealController {
   @Get('/:date')
   async getMeal(@Param('date') date: string): Promise<any> {
     return this.mealService.getMeal(date);
-  }
-
-  @UseGuards(EditPermissionGuard)
-  @Get('/update')
-  async updateMeal(): Promise<any> {
-    return this.mealService.updateMeal();
   }
 }
