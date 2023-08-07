@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
+import { EditPermissionGuard } from 'src/common/guard';
 import { Timetable } from 'src/common/schemas';
 import { TimetableService } from './timetable.service';
 
@@ -13,5 +14,11 @@ export class TimetableController {
     @Param('class') _class: number,
   ): Promise<any> {
     return this.timetableService.getTimetable(_grade, _class);
+  }
+
+  @UseGuards(EditPermissionGuard)
+  @Get('/update')
+  async updateTimetable(): Promise<any> {
+    return this.timetableService.updateTimetable();
   }
 }

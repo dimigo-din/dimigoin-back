@@ -150,7 +150,7 @@ export class MealService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  private async updateMeal() {
+  async updateMeal() {
     const mealList = await this.getMealList();
     const list = [];
     for (const meal of mealList) {

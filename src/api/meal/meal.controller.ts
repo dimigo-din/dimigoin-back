@@ -57,4 +57,10 @@ export class MealController {
   async getMeal(@Param('date') date: string): Promise<any> {
     return this.mealService.getMeal(date);
   }
+
+  @UseGuards(EditPermissionGuard)
+  @Get('/update')
+  async updateMeal(): Promise<any> {
+    return this.mealService.updateMeal();
+  }
 }
