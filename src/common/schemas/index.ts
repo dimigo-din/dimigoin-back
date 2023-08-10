@@ -13,3 +13,6 @@ export * from './timetable.schema';
 export * from './journal.schema';
 export * from './afterschool.schema';
 export * from './afterschool-application.schema';
+export * from './place.schema';
+export * from './place-group.schema';
+export * from './location.schema';

@@ -20,6 +20,8 @@ import { MealModule } from './api/meal/meal.module';
 import { TimetableModule } from './api/timetable/timetable.module';
 import { AfterschoolModule } from './api/afterschool/afterschool.module';
 import * as moment from 'moment-timezone';
+import { PlaceModule } from './api/place/place.module';
+import { LocationModule } from './api/location/location.module';
 
 ConfigModule.forRoot();
 
@@ -38,6 +40,8 @@ ConfigModule.forRoot();
     TimetableModule,
     JournalModule,
     AfterschoolModule,
+    PlaceModule,
+    LocationModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,

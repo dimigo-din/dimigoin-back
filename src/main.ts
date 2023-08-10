@@ -2,9 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DIMINotFoundFilter, DIMIUnauthorizedFilter } from './common/filters';
 import { setupSwagger } from './common/modules';
-
-import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
