@@ -67,6 +67,7 @@ export class AppModule implements NestModule {
         '/timetable/(.*)/(.*)',
         '/user/superuser',
         '/group/init',
+        { path: '/user/student', method: 1 },
       )
       .forRoutes('*');
   }

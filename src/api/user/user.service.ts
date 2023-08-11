@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId, Types } from 'mongoose';
 
@@ -23,6 +23,7 @@ import { LaundryService } from '../laundry/laundry.service';
 import { StayService } from '../stay/stay.service';
 import { FrigoService } from '../frigo/frigo.service';
 import { Permissions } from 'src/common/types';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -36,9 +37,13 @@ export class UserService {
     @InjectModel(Group.name)
     private groupModel: Model<GroupDocument>,
 
+    @Inject(forwardRef(() => AuthService))
+    private authService: AuthService,
+
     private laundryService: LaundryService,
     private stayService: StayService,
     private frigoService: FrigoService,
+
   ) {}
 
   async getUserByObjectId(
@@ -84,26 +89,26 @@ export class UserService {
   }
 
   async createStudent(data: CreateStudentDto): Promise<Student> {
-    const existingUser = await this.studentModel.findOne({
-      id: data.id,
+    const { email, hd } = await this.authService.verifyAccessToken(data.token);
+
+    if (hd !== 'dimigo.hs.kr') throw new HttpException('dimigo.hs.kr 이메일을 사용해주세요.', 404);
+
+    const existingStudent = await this.studentModel.findOne({
+      email: email,
     });
+    if (existingStudent) throw new HttpException('해당 이메일에 해당하는 계정이 이미 존재합니다.', 404)
 
-    if (existingUser) throw new HttpException('아이디가 중복됩니다.', 404);
-
-    const salt = crypto.randomBytes(20).toString('hex');
-    const hashedPassword = await bcrypt.hash(data.password + salt, 10);
-    delete data['password'];
+    delete data['token'];
 
     const student = new this.studentModel({
       ...data,
-      password_hash: hashedPassword,
-      password_salt: salt,
+      email: email,
+      id: email.split('@')[0],
       permissions: { view: [], edit: [] },
       groups: [],
     });
 
     await student.save();
-
     return student;
   }
 
@@ -127,20 +132,19 @@ export class UserService {
   }
 
   async createTeacher(data: CreateTeacherDto): Promise<Teacher> {
-    const existingUser = await this.teacherModel.findOne({
-      id: data.id,
+    const { email } = await this.authService.verifyAccessToken(data.token);
+
+    const existingTeacher = await this.teacherModel.findOne({
+      email
     });
 
-    if (existingUser) throw new HttpException('아이디가 중복됩니다.', 404);
+    if (existingTeacher) throw new HttpException('아이디가 중복됩니다.', 404);
 
-    const salt = crypto.randomBytes(20).toString('hex');
-    const hashedPassword = await bcrypt.hash(data.password + salt, 10);
-    delete data['password'];
+    delete data['token'];
 
     const teacher = new this.teacherModel({
       ...data,
-      password_hash: hashedPassword,
-      password_salt: salt,
+      email: email,
     });
 
     await teacher.save();
@@ -168,19 +172,14 @@ export class UserService {
   async createSuperuser(): Promise<ResponseDto> {
     const SUPERUSER = process.env.INIT_SUPERUSER;
     const id = SUPERUSER.split(':')[0];
-    const password = SUPERUSER.split(':')[1];
     const existingUser = await this.teacherModel.findOne({ id: id });
     if (existingUser)
       throw new HttpException('SUPERUSER가 이미 존재합니다.', 404);
 
-    const salt = crypto.randomBytes(20).toString('hex');
-    const hashedPassword = await bcrypt.hash(password + salt, 10);
-
     const user = new this.teacherModel({
       name: 'SUPERUSER',
       id: id,
-      password_hash: hashedPassword,
-      password_salt: salt,
+      email: 'din@dimigo.hs.kr',
       gender: 'M',
       groups: [],
       permissions: { view: ['*'], edit: ['*'] },

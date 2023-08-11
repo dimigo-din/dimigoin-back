@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
@@ -14,6 +14,7 @@ import {
 } from 'src/common/schemas';
 import { refreshTokenVerified } from 'src/common/types';
 import { UserService } from '../user/user.service';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
@@ -30,25 +31,43 @@ export class AuthService {
     @InjectModel(Token.name)
     private tokenModule: Model<TokenDocument>,
 
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+
     private readonly jwtService: JwtService,
   ) {}
 
-  private async verifyPassword(
-    password: string,
-    user: StudentDocument | TeacherDocument,
-  ): Promise<boolean> {
-    return bcrypt.compare(password + user.password_salt, user.password_hash);
+  async verifyAccessToken(
+    token: string,
+  ): Promise<TokenPayload> {
+    try {
+      const client = new OAuth2Client(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET,
+      );
+
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      return ticket.getPayload();
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('비정상적인 토큰입니다.', 404);
+    }
   }
 
   async login(data: LoginDto): Promise<StudentDocument | TeacherDocument> {
-    const student = await this.studentModel.findOne({ id: data.id }).lean();
-    if (student && (await this.verifyPassword(data.password, student))) {
+    const { email } = await this.verifyAccessToken(data.token);
+
+    const student = await this.studentModel.findOne({ email }).lean();
+    if (student) {
       return student;
     }
 
-    const teacher = await this.teacherModel.findOne({ id: data.id }).lean();
-    if (teacher && (await this.verifyPassword(data.password, teacher))) {
+    const teacher = await this.teacherModel.findOne({ email }).lean();
+    if (teacher) {
       return teacher;
     }
 

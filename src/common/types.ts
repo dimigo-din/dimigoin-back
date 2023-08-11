@@ -36,6 +36,17 @@ export interface refreshTokenVerified {
   userId: string;
 }
 
+export interface tokenInfo {
+  hd: string,
+  email: string,
+  email_verified: boolean,
+  at_hash: string,
+  nonce: string,
+  name: string,
+  given_name: string,
+  locale: string,
+}
+
 // TBD: 다른 권한 필요시 추가
 export interface Permissions {
   view: string[];

@@ -18,19 +18,14 @@ export class Student {
 
   @Prop({
     required: true,
+  })
+  email: string;
+
+  @Prop({
+    required: true,
     unique: true,
   })
   id: string;
-
-  @Prop({
-    required: true,
-  })
-  password_salt: string;
-
-  @Prop({
-    required: true,
-  })
-  password_hash: string;
 
   @Prop({
     required: true,
@@ -54,11 +49,6 @@ export class Student {
     enum: GenderValues,
   })
   gender: string;
-
-  @Prop({
-    required: true,
-  })
-  birthday: Date;
 
   @Prop({
     type: Object,

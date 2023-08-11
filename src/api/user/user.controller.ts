@@ -27,10 +27,16 @@ import {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // Student
   @UseGuards(ViewPermissionGuard)
   @Get('/student')
   getAllStudent(): Promise<Student[]> {
     return this.userService.getAllStudent();
+  }
+
+  @Post('/student')
+  createStudent(@Body() data: CreateStudentDto): Promise<Student> {
+    return this.userService.createStudent(data);
   }
 
   @UseGuards(StudentOnlyGuard)
@@ -45,28 +51,23 @@ export class UserController {
     return this.userService.getStudentById(studentId);
   }
 
+  // Teacher
   @UseGuards(ViewPermissionGuard)
   @Get('/teacher')
   getAllTeacher(): Promise<Teacher[]> {
     return this.userService.getAllTeacher();
   }
 
-  @UseGuards(ViewPermissionGuard)
-  @Get('/teacher/:id')
-  getTeacher(@Param('id') teacherId: string): Promise<Teacher> {
-    return this.userService.getTeacherById(teacherId);
-  }
-
-  @UseGuards(EditPermissionGuard)
-  @Post('/student')
-  createStudent(@Body() data: CreateStudentDto): Promise<Student> {
-    return this.userService.createStudent(data);
-  }
-
   @UseGuards(EditPermissionGuard)
   @Post('/teacher')
   createTeacher(@Body() data: CreateTeacherDto): Promise<Teacher> {
     return this.userService.createTeacher(data);
+  }
+
+  @UseGuards(ViewPermissionGuard)
+  @Get('/teacher/:id')
+  getTeacher(@Param('id') teacherId: string): Promise<Teacher> {
+    return this.userService.getTeacherById(teacherId);
   }
 
   @UseGuards(EditPermissionGuard)
