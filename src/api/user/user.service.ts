@@ -103,7 +103,6 @@ export class UserService {
     const student = new this.studentModel({
       ...data,
       email: email,
-      id: email.split('@')[0],
       permissions: { view: [], edit: [] },
       groups: [],
     });

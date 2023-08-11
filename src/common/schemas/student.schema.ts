@@ -23,12 +23,6 @@ export class Student {
 
   @Prop({
     required: true,
-    unique: true,
-  })
-  id: string;
-
-  @Prop({
-    required: true,
     enum: GradeValues,
   })
   grade: number;
