@@ -46,13 +46,13 @@ export class MealController {
   }
 
   @UseGuards(StudentOnlyGuard)
-  @Get('/timetable/times')
+  @Get('/timetable')
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
     return await this.mealService.getMealTimetable(req.user as StudentDocument);
   }
 
   @UseGuards(EditPermissionGuard)
-  @Post('/timetable/create')
+  @Post('/timetable')
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,
   ): Promise<MealTimetable> {
