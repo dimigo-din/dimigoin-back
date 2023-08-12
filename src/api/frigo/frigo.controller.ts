@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { FrigoDocument, StudentDocument } from 'src/common/schemas';
 import { FrigoService } from './frigo.service';
-import { ManageFrigoDto, RequestFrigoDto } from 'src/common/dto';
+import { ManageFrigoDto, RequestFrigoDto, ResponseDto } from 'src/common/dto';
 import { Request } from 'express';
 import {
   EditPermissionGuard,
@@ -26,6 +26,14 @@ export class FrigoController {
     @Req() req: Request,
   ): Promise<FrigoDocument> {
     return this.frigoService.requestFrigo(data, req.user as StudentDocument);
+  }
+
+  @UseGuards(StudentOnlyGuard)
+  @Delete()
+  async cancelFrigo(
+    @Req() req: Request,
+  ): Promise<ResponseDto> {
+    return this.frigoService.cancelFrigo(req.user as StudentDocument);
   }
 
   @UseGuards(EditPermissionGuard)

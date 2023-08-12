@@ -13,6 +13,11 @@ const options: SchemaOptions = {
 export class StayOutgo {
   @Prop({
     required: true,
+  })
+  free: boolean;
+
+  @Prop({
+    required: true,
     ref: 'Stays',
   })
   stay: Types.ObjectId;
@@ -35,7 +40,7 @@ export class StayOutgo {
   date: Date;
 
   @Prop({
-    required: true,
+    required: false,
     type: {
       start: { type: Date, required: true },
       end: { type: Date, required: true },
@@ -46,15 +51,15 @@ export class StayOutgo {
   @Prop({
     required: true,
     type: {
-      breakfast: { type: Boolean, required: true },
-      lunch: { type: Boolean, required: true },
-      dinner: { type: Boolean, required: true },
+      breakfast: { type: Boolean, required: false },
+      lunch: { type: Boolean, required: false },
+      dinner: { type: Boolean, required: false },
     },
   })
   meal: { breakfast: boolean; lunch: boolean; dinner: boolean };
 
   @Prop({
-    required: true,
+    required: false,
   })
   reason: string;
 }

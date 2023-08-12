@@ -10,6 +10,12 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Stay {
+  // apply startline, endline
+  @Prop({
+    required: true,
+  })
+  duration: [[Date, Date]];
+
   @Prop({
     required: true,
   })
@@ -28,10 +34,10 @@ export class Stay {
   @Prop([
     {
       date: { type: Date, required: true },
-      outgo: { type: Boolean, required: true },
+      free: { type: Boolean, required: true },
     },
   ])
-  dates: { date: Date; outgo: boolean }[];
+  dates: { date: Date; free: boolean }[];
 }
 
 export const StaySchema = SchemaFactory.createForClass(Stay);

@@ -22,7 +22,7 @@ import {
   ViewPermissionGuard,
   StudentOnlyGuard,
 } from 'src/common/guard';
-import { Stay, StayApplication, StayOutgo } from 'src/common/schemas';
+import { Stay, StayApplication, StayOutgo, StudentDocument } from 'src/common/schemas';
 import { StayService } from './stay.service';
 
 @Controller('stay')
@@ -53,12 +53,13 @@ export class StayController {
     @Body() data: ApplyStayDto,
     @Req() req: Request,
   ): Promise<StayApplication> {
-    return this.stayService.applyStay(data, req.user._id);
+    return this.stayService.applyStay(data, req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
-  @Delete('cancel')
+  @Delete()
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
+    // TODO: Before Tue filter
     return this.stayService.cancelStay(req.user._id);
   }
 

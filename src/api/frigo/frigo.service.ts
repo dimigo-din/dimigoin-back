@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Frigo, FrigoDocument, StudentDocument } from 'src/common/schemas';
-import { ManageFrigoDto, RequestFrigoDto } from 'src/common/dto';
+import { ManageFrigoDto, RequestFrigoDto, ResponseDto } from 'src/common/dto';
 
 @Injectable()
 export class FrigoService {
@@ -44,6 +44,15 @@ export class FrigoService {
     await frigoRequest.save();
 
     return frigoRequest;
+  }
+
+  async cancelFrigo(user: StudentDocument): Promise<ResponseDto> {
+
+    const frigo = await this.frigoModel.findOneAndDelete({ id: user._id }).lean();
+    if (!frigo)
+      throw new HttpException('금요귀가를 신청하지 않았습니다.', 404);
+
+    return { status: 200, message: 'success' };
   }
 
   async manageFrigo(data: ManageFrigoDto): Promise<FrigoDocument> {

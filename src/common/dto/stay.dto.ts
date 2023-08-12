@@ -1,19 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsMongoId, IsObject, IsString, IsIn } from 'class-validator';
+import { IsBoolean, IsMongoId, IsObject, IsString, IsIn, IsArray } from 'class-validator';
 import { Types } from 'mongoose';
 import { StatusValues } from '../types';
-class StayDateDTO {
+
+export class StayDateDTO {
   @ApiProperty()
   @IsString()
   date: Date;
 
   @ApiProperty()
   @IsBoolean()
-  outgo: boolean;
+  free: boolean;
 }
 
 export class CreateStayDto {
+  @ApiProperty()
+  @IsArray()
+  duration: [[Date, Date]];
+
+  @ApiProperty()
+  @IsBoolean()
+  current: boolean;
+
   @ApiProperty()
   @IsString()
   start: Date;
@@ -79,6 +88,10 @@ export class StayOutgoDurationDto {
 
 export class ApplyStayOutgoDto {
   @ApiProperty()
+  @IsBoolean()
+  free: boolean;
+
+  @ApiProperty()
   @IsString()
   date: Date;
 
@@ -96,6 +109,7 @@ export class ApplyStayOutgoDto {
   @Type(() => StayOutgoDurationDto)
   duration: StayOutgoDurationDto;
 }
+
 export class ManageStayOutgoDto {
   @ApiProperty()
   @IsMongoId()
