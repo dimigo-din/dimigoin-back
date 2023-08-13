@@ -89,12 +89,12 @@ export class LaundryService {
     if (existingLaundry) throw new HttpException('이미 세탁을 신청했습니다.', 404);
 
     const washer = await this.washerModel.findOne({ name: data.name });
+    const isStay = await this.stayService.isStay(new Date());
 
     if (!washer) throw new HttpException('해당 세탁기가 존재하지 않습니다.', 404);
     if (washer.gender !== user.gender) throw new HttpException('성별에 맞는 기숙사인지 다시 확인해주세요.', 404);
-    if (!washer.grade.includes(user.grade)) throw new HttpException('신청 가능한 학년이 아닙니다.', 404);
+    if (!washer.grade.includes(user.grade) && !isStay) throw new HttpException('신청 가능한 학년이 아닙니다.', 404);
 
-    const isStay = await this.stayService.isStay(new Date());
     const maxApplyTime = isStay ? 7 : 5; // 평일에 5타임, 주말에 7타임
 
     if (data.time < maxApplyTime) {
