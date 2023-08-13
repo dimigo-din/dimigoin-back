@@ -33,15 +33,25 @@ export class StayService {
     private stayOutgoModel: Model<StayOutgoDocument>,
   ) {}
 
+  // Stay
   async getAllStay(): Promise<Stay[]> {
     const stays = await this.stayModel.find();
     return stays;
   }
 
-  async getCurrentStay(): Promise<Stay> {
+  async getCurrentStay(): Promise<StayDocument> {
     const stay = await this.stayModel.findOne({ current: true });
 
     return stay;
+  }
+
+  async getStayApplication(id: string): Promise<StayApplication[]> {
+    const stay = await this.stayModel.findById(id);
+    if (!stay) throw new HttpException('해당 잔류일정이 존재하지 않습니다.', 404);
+
+    const appliers = await this.stayApplicationModel.find({ stay: stay._id });
+
+    return appliers;
   }
 
   async createStay(data: CreateStayDto): Promise<Stay> {
@@ -101,9 +111,11 @@ export class StayService {
     return application;
   }
 
-  async cancelStay(user: string): Promise<ResponseDto> {
+  async cancelStay(user: string, force: boolean): Promise<ResponseDto> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('취소가능한 잔류일정이 없습니다.', 404);
+    const now = moment(new Date());
+    if (!force && !now.isBetween(stay.start, stay.end)) throw new HttpException('', 404);
 
     const application = await this.stayApplicationModel.findOneAndDelete({
       stay: stay._id,
@@ -128,6 +140,7 @@ export class StayService {
     return application.seat;
   }
 
+  // Stay Outgo
   async getMyStayOutgo(user: StudentDocument): Promise<any> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return false;
@@ -206,6 +219,7 @@ export class StayService {
     return stayOutgo;
   }
 
+  // util
   async isStay(date: Date): Promise<number> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return 0;

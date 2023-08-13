@@ -1,8 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { ResponseDto } from 'src/common/dto';
 import { Location, LocationDocument, Place, PlaceDocument, StudentDocument } from 'src/common/schemas';
+import { StayService } from '../stay/stay.service';
 
 @Injectable()
 export class LocationService {
@@ -12,6 +14,8 @@ export class LocationService {
 
     @InjectModel(Location.name)
     private locationModel: Model<LocationDocument>,
+
+    private stayService: StayService,
   ) {}
 
   async getAllLocation(): Promise<Location[]> {
@@ -29,6 +33,16 @@ export class LocationService {
   async changeLocation(user: StudentDocument, placeId: string): Promise<Location> {
     const place = await this.placeModel.findById(placeId);
     if (!place) throw new HttpException('해당 장소가 존재하지 않습니다.', 404);
+
+    const isStay = await this.stayService.isStay(new Date());
+    if (isStay) {
+      const stay = await this.stayService.getCurrentStay();
+      const appliers = await this.stayService.getStayApplication(stay._id);
+
+      const isStayApplier = appliers.some(v => v.user === user._id)
+
+      if (!isStayApplier) throw new HttpException('잔류 신청자가 아닙니다.', 404);
+    }
 
     await this.locationModel.findOneAndDelete({ user: user._id });
 
@@ -52,4 +66,8 @@ export class LocationService {
     return { status: 200, message: 'success' };
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async resetAllLocation() {
+    await this.locationModel.deleteMany();
+  }
 }

@@ -59,16 +59,16 @@ export class StayController {
   @UseGuards(StudentOnlyGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
-    // TODO: Before Tue filter
-    return this.stayService.cancelStay(req.user._id);
+    return this.stayService.cancelStay(req.user._id, false);
   }
 
   @UseGuards(EditPermissionGuard)
   @Delete('reject')
   async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
-    return this.stayService.cancelStay(data.user);
+    return this.stayService.cancelStay(data.user, true);
   }
 
+  // Stay Outgo
   @UseGuards(StudentOnlyGuard)
   @Post('outgo/apply')
   async applyStayOutgo(
