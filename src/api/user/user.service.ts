@@ -1,6 +1,6 @@
 import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import {
   Group,
@@ -11,19 +11,19 @@ import {
   TeacherDocument,
 } from 'src/common/schemas';
 import {
-  addGroupDto,
   CreateStudentDto,
   CreateTeacherDto,
+  ManageTeacherGroupDto,
   ResponseDto,
 } from 'src/common/dto';
 
-import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import { LaundryService } from '../laundry/laundry.service';
 import { StayService } from '../stay/stay.service';
 import { FrigoService } from '../frigo/frigo.service';
 import { Permissions } from 'src/common/types';
 import { AuthService } from '../auth/auth.service';
+
+import XLSX from 'xlsx';
 
 @Injectable()
 export class UserService {
@@ -137,7 +137,7 @@ export class UserService {
       email
     });
 
-    if (existingTeacher) throw new HttpException('아이디가 중복됩니다.', 404);
+    if (existingTeacher) throw new HttpException('이메일이 중복됩니다.', 404);
 
     delete data['token'];
 
@@ -151,34 +151,61 @@ export class UserService {
     return teacher;
   }
 
-  async addTeacherGroup(data: addGroupDto): Promise<Teacher> {
-    if (!Types.ObjectId.isValid(data.groupId))
-      throw new HttpException('ObjectId 형식이 아닙니다.', 404);
+  async createTeacherByFile(file: Express.Multer.File): Promise<Teacher[]> {
+    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-    const group = await this.groupModel.findById(data.groupId);
-    if (!group) throw new HttpException('해당 Group이 존재하지 않습니다.', 404);
+    const result = [];
+    for (const data of sheetData) {
+      const existingTeacher = await this.teacherModel.findOne({ email: data['email'] });
+      if (existingTeacher) continue;
 
-    const teacher = await this.teacherModel.findById(data.teacherId);
+      const positions = data['position'].split(',');
+
+      const teacher = new this.teacherModel({
+        name: data['name'],
+        email: data['email'],
+        gender: data['gender'],
+        description: data['description'],
+        positions: positions,
+        groups: [],
+        permissions: { view: [], edit: [] }
+      })
+
+      result.push(teacher);
+    }
+
+    await this.teacherModel.insertMany(result);
+    return result;
+  }
+
+  async manageTeacherGroup(data: ManageTeacherGroupDto): Promise<Teacher> {
+    const teacher = await this.teacherModel.findById(data.teacher);
     if (!teacher)
       throw new HttpException('해당 선생님이 존재하지 않습니다.', 404);
 
-    teacher.groups.push(data.groupId);
+    for (const groupId of data.groups) {
+      const group = await this.groupModel.findById(groupId);
+      if (!group) throw new HttpException('올바르지 않은 그룹이 포함되어있습니다.', 404);
+    }
+
+    teacher.groups = data.groups;
 
     await teacher.save();
     return teacher;
   }
 
   async createSuperuser(): Promise<ResponseDto> {
-    const SUPERUSER = process.env.INIT_SUPERUSER;
-    const id = SUPERUSER.split(':')[0];
-    const existingUser = await this.teacherModel.findOne({ id: id });
+    const email = process.env.INIT_SUPERUSER;
+    const existingUser = await this.teacherModel.findOne({ email: email });
     if (existingUser)
       throw new HttpException('SUPERUSER가 이미 존재합니다.', 404);
 
     const user = new this.teacherModel({
       name: 'SUPERUSER',
-      id: id,
-      email: 'din@dimigo.hs.kr',
+      email: email,
+      description: 'super user',
       gender: 'M',
       groups: [],
       permissions: { view: ['*'], edit: ['*'] },

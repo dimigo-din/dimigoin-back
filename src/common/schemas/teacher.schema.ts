@@ -18,19 +18,13 @@ export class Teacher {
 
   @Prop({
     required: true,
-    unique: true,
   })
-  id: string;
+  description: string;
 
   @Prop({
     required: true,
   })
-  password_salt: string;
-
-  @Prop({
-    required: true,
-  })
-  password_hash: string;
+  email: string;
 
   @Prop({
     type: Types.ObjectId,
@@ -44,7 +38,6 @@ export class Teacher {
   })
   permissions: Permissions;
 
-  // TBD: class-validation 고치면 테스트하기
   @Prop({
     required: true,
     type: [String],

@@ -35,12 +35,12 @@ export class CreateTeacherDto {
   readonly positions: string[];
 }
 
-export class addGroupDto {
+export class ManageTeacherGroupDto {
   @ApiProperty()
   @IsMongoId()
-  readonly teacherId: Types.ObjectId;
+  readonly teacher: Types.ObjectId;
 
   @ApiProperty()
-  @IsMongoId()
-  readonly groupId: Types.ObjectId;
+  @IsMongoId({ each: true })
+  readonly groups: Types.ObjectId[];
 }

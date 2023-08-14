@@ -6,14 +6,16 @@ import {
   Post,
   Put,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Student, StudentDocument, Teacher } from 'src/common/schemas';
 import { UserService } from './user.service';
 import {
-  addGroupDto,
   CreateStudentDto,
   CreateTeacherDto,
+  ManageTeacherGroupDto,
   ResponseDto,
 } from 'src/common/dto';
 import { Request } from 'express';
@@ -22,6 +24,7 @@ import {
   EditPermissionGuard,
   StudentOnlyGuard,
 } from 'src/common/guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -64,6 +67,13 @@ export class UserController {
     return this.userService.createTeacher(data);
   }
 
+  @UseGuards(EditPermissionGuard)
+  @Post('/teacher/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  createTeacherByFile(@UploadedFile() file: Express.Multer.File): Promise<Teacher[]> {
+    return this.userService.createTeacherByFile(file);
+  }
+
   @UseGuards(ViewPermissionGuard)
   @Get('/teacher/:id')
   getTeacher(@Param('id') teacherId: string): Promise<Teacher> {
@@ -71,9 +81,9 @@ export class UserController {
   }
 
   @UseGuards(EditPermissionGuard)
-  @Put('/teacher/group')
-  addTeacherGroup(@Body() data: addGroupDto): Promise<Teacher> {
-    return this.userService.addTeacherGroup(data);
+  @Post('/teacher/group')
+  manageTeacherGroup(@Body() data: ManageTeacherGroupDto): Promise<Teacher> {
+    return this.userService.manageTeacherGroup(data);
   }
 
   @Get('/superuser')
