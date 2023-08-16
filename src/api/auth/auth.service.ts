@@ -97,7 +97,7 @@ export class AuthService {
         404,
       );
 
-    return this.userService.getUserByObjectId(existingToken.userId);
+    return await this.userService.getUserByObjectId(existingToken.userId);
   }
 
   async verifyRefreshToken(token: string): Promise<refreshTokenVerified> {

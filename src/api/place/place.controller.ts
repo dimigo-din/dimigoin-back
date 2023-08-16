@@ -19,27 +19,27 @@ export class PlaceController {
   // Place
   @Get()
   async getAllPlace(): Promise<any> {
-    return this.placeService.getAllPlace();
+    return await this.placeService.getAllPlace();
   }
 
   @Post()
   async createPlace(@Body() data: CreatePlaceDto): Promise<Place> {
-    return this.placeService.createPlace(data);
+    return await this.placeService.createPlace(data);
   }
 
   // PlaceGroup
   @Get('/group/:id')
   async getPlacesByGroup(@Param('id') groupId: string): Promise<Place[]> {
-    return this.placeService.getPlacesByGroup(groupId);
+    return await this.placeService.getPlacesByGroup(groupId);
   }
 
   @Patch('/group/:id')
   async managePlaceGroup(@Param('id') groupId: string, @Body() data: CreatePlaceGroupDto): Promise<PlaceGroup> {
-    return this.placeService.managePlaceGroup(groupId, data);
+    return await this.placeService.managePlaceGroup(groupId, data);
   }
 
   @Post('/group')
   async createPlaceGroup(@Body() data: CreatePlaceGroupDto): Promise<PlaceGroup> {
-    return this.placeService.createPlaceGroup(data);
+    return await this.placeService.createPlaceGroup(data);
   }
 }

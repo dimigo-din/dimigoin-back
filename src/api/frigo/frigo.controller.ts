@@ -16,7 +16,7 @@ export class FrigoController {
   @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllFrigoRequests(): Promise<FrigoDocument[]> {
-    return this.frigoService.getAllFrigo();
+    return await this.frigoService.getAllFrigo();
   }
 
   @UseGuards(StudentOnlyGuard)
@@ -25,7 +25,7 @@ export class FrigoController {
     @Body() data: RequestFrigoDto,
     @Req() req: Request,
   ): Promise<FrigoDocument> {
-    return this.frigoService.requestFrigo(data, req.user as StudentDocument);
+    return await this.frigoService.requestFrigo(data, req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
@@ -33,12 +33,12 @@ export class FrigoController {
   async cancelFrigo(
     @Req() req: Request,
   ): Promise<ResponseDto> {
-    return this.frigoService.cancelFrigo(req.user as StudentDocument);
+    return await this.frigoService.cancelFrigo(req.user as StudentDocument);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('manage')
   async manageFrigo(@Body() data: ManageFrigoDto): Promise<FrigoDocument> {
-    return this.frigoService.manageFrigo(data);
+    return await this.frigoService.manageFrigo(data);
   }
 }

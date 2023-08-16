@@ -32,19 +32,19 @@ export class StayController {
   @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllStay(): Promise<Stay[]> {
-    return this.stayService.getAllStay();
+    return await this.stayService.getAllStay();
   }
 
   @UseGuards(EditPermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
-    return this.stayService.createStay(data);
+    return await this.stayService.createStay(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('manage')
   async manageStay(@Body() data: ManageStayDto): Promise<Stay> {
-    return this.stayService.manageStay(data);
+    return await this.stayService.manageStay(data);
   }
 
   @UseGuards(StudentOnlyGuard)
@@ -53,19 +53,19 @@ export class StayController {
     @Body() data: ApplyStayDto,
     @Req() req: Request,
   ): Promise<StayApplication> {
-    return this.stayService.applyStay(data, req.user as StudentDocument);
+    return await this.stayService.applyStay(data, req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
-    return this.stayService.cancelStay(req.user._id, false);
+    return await this.stayService.cancelStay(req.user._id, false);
   }
 
   @UseGuards(EditPermissionGuard)
   @Delete('reject')
   async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
-    return this.stayService.cancelStay(data.user, true);
+    return await this.stayService.cancelStay(data.user, true);
   }
 
   // Stay Outgo
@@ -75,12 +75,12 @@ export class StayController {
     @Req() req: Request,
     @Body() data: ApplyStayOutgoDto,
   ): Promise<StayOutgo | ResponseDto> {
-    return this.stayService.applyStayOutgo(data, req.user._id);
+    return await this.stayService.applyStayOutgo(data, req.user._id);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('outgo/manage')
   async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
-    return this.stayService.manageStayOutgo(data);
+    return await this.stayService.manageStayOutgo(data);
   }
 }

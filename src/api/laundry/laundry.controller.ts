@@ -30,19 +30,19 @@ export class LaundryController {
   @UseGuards(ViewPermissionGuard)
   @Get('washer')
   async getAllWashers(): Promise<Washer[]> {
-    return this.laundryService.getAllWashers();
+    return await this.laundryService.getAllWashers();
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('washer/create')
   async createWasher(@Body() data: CreateWasherDto): Promise<Washer> {
-    return this.laundryService.createWasher(data);
+    return await this.laundryService.createWasher(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Patch('washer/edit')
   async editWasher(@Body() data: EditWasherDto): Promise<Washer> {
-    return this.laundryService.editWasher(data);
+    return await this.laundryService.editWasher(data);
   }
 
   @UseGuards(StudentOnlyGuard)
@@ -51,19 +51,19 @@ export class LaundryController {
     @Body() data: ApplyLaundryDto,
     @Req() req: Request,
   ): Promise<Washer> {
-    return this.laundryService.applyLaundry(data, req.user as StudentDocument);
+    return await this.laundryService.applyLaundry(data, req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Delete()
   async cancelLaundry(@Req() req: Request): Promise<Washer> {
-    return this.laundryService.cancelLaundry(req.user as StudentDocument);
+    return await this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Get('available')
   async getAvailable(@Req() req: Request): Promise<Washer[]> {
-    return this.laundryService.getAvailable(req.user as StudentDocument);
+    return await this.laundryService.getAvailable(req.user as StudentDocument);
   }
 
   @UseGuards(EditPermissionGuard)

@@ -11,8 +11,8 @@ export class GroupController {
 
   @UseGuards(ViewPermissionGuard)
   @Get()
-  getAllgroup(): Promise<Group[]> {
-    return this.groupService.getAllGroup();
+  async getAllgroup(): Promise<Group[]> {
+    return await this.groupService.getAllGroup();
   }
 
   @UseGuards(EditPermissionGuard)
@@ -25,7 +25,7 @@ export class GroupController {
   }
 
   @Get('init')
-  initGroup(): Promise<ResponseDto> {
-    return this.groupService.initGroup();
+  async initGroup(): Promise<ResponseDto> {
+    return await this.groupService.initGroup();
   }
 }

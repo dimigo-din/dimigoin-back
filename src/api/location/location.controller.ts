@@ -19,7 +19,7 @@ export class LocationController {
 
   @Get()
   async getAllLocation(): Promise<Location[]> {
-    return this.locationService.getAllLocation();
+    return await this.locationService.getAllLocation();
   }
 
   @Get('/:grade/:class')
@@ -27,7 +27,7 @@ export class LocationController {
     @Param('grade') _grade: number,
     @Param('class') _class: number,
   ): Promise<Location[]> {
-    return this.locationService.getLocationByGC(_grade, _class);
+    return await this.locationService.getLocationByGC(_grade, _class);
   }
 
   @Get('/:id')
@@ -35,13 +35,13 @@ export class LocationController {
     @Req() req: Request,
     @Param('id') placeId: string,
   ): Promise<Location> {
-    return this.locationService.changeLocation(req.user as StudentDocument, placeId);
+    return await this.locationService.changeLocation(req.user as StudentDocument, placeId);
   }
 
   @Delete()
   async resetLocation(
     @Req() req: Request,
   ): Promise<ResponseDto> {
-    return this.locationService.resetLocation(req.user as StudentDocument);
+    return await this.locationService.resetLocation(req.user as StudentDocument);
   }
 }

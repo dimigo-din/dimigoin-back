@@ -21,37 +21,37 @@ export class JournalController {
 
   @UseGuards(ViewPermissionGuard)
   @Get()
-  getAllJournal(): Promise<Journal[]> {
-    return this.journalService.getAllJournal();
+  async getAllJournal(): Promise<Journal[]> {
+    return await this.journalService.getAllJournal();
   }
 
   @UseGuards(ViewPermissionGuard)
   @Get('student')
-  getAllJournalByStudent(@Body() data: GetJournalDto): Promise<Journal[]> {
-    return this.journalService.getAllJournalByStudent(data.user);
+  async getAllJournalByStudent(@Body() data: GetJournalDto): Promise<Journal[]> {
+    return await this.journalService.getAllJournalByStudent(data.user);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Get('my')
-  getMyJournal(@Req() req: Request): Promise<Journal[]> {
-    return this.journalService.getAllJournalByStudent(req.user._id);
+  async getMyJournal(@Req() req: Request): Promise<Journal[]> {
+    return await this.journalService.getAllJournalByStudent(req.user._id);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post()
-  createJournal(@Body() data: CreateJournalDto): Promise<Journal> {
-    return this.journalService.createJournal(data);
+  async createJournal(@Body() data: CreateJournalDto): Promise<Journal> {
+    return await this.journalService.createJournal(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('manage')
-  manageJournal(@Body() data: ManageJournal): Promise<Journal> {
-    return this.journalService.manageJournal(data);
+  async manageJournal(@Body() data: ManageJournal): Promise<Journal> {
+    return await this.journalService.manageJournal(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Delete()
-  deleteJournal(@Body() data: DeleteJournalDto): Promise<Journal> {
-    return this.journalService.deleteJournal(data);
+  async deleteJournal(@Body() data: DeleteJournalDto): Promise<Journal> {
+    return await this.journalService.deleteJournal(data);
   }
 }

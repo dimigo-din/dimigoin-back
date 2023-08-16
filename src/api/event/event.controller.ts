@@ -37,7 +37,7 @@ export class EventController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {
-    return this.eventService.uploadEvent(file);
+    return await this.eventService.uploadEvent(file);
   }
 
   @Get('type')
