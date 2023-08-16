@@ -111,6 +111,34 @@ export class UserService {
     return student;
   }
 
+  async uploadStudent(file: Express.Multer.File): Promise<ResponseDto> {
+    const utf8Data = file.buffer.toString('utf-8');
+    const workbook = XLSX.read(utf8Data, { type: 'string' });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    const students = [];
+    for (const student of sheetData) {
+
+      students.push({
+        name: student['이름'],
+        email: student['사용자 이름'],
+        grade: parseInt(student['학년'].replace(/\D/g, "")),
+        class: parseInt(student['반'].replace(/\D/g, "")),
+        number: student['번호'],
+        gender: student['성별'] === '남자' ? 'M' : 'F',
+        permissions: { view: [], edit: [] },
+        groups: [],
+      })
+    }
+
+    console.log(students);
+    await this.studentModel.insertMany(students);
+    return { status: 200, message: 'success' };
+  }
+
+
+
   async getMyInformation(user: StudentDocument): Promise<any> {
     let laundry = await this.laundryService.getMyLaundry(user);
     const stay = await this.stayService.getMyStay(user);

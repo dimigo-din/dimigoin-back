@@ -42,6 +42,12 @@ export class UserController {
     return this.userService.createStudent(data);
   }
 
+  @Post('/student/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadStudent(@UploadedFile() file: Express.Multer.File): Promise<ResponseDto> {
+    return this.userService.uploadStudent(file);
+  }
+
   @UseGuards(StudentOnlyGuard)
   @Get('/student/my')
   getMyInformation(@Req() req: Request): Promise<any> {
