@@ -39,7 +39,8 @@ export class StayController {
   @Get('/current')
   async getCurrentStayInfo(): Promise<any> {
     const stay = await this.stayService.getCurrentStay();
-    return await this.stayService.getStayInfo(stay._id);
+    const application = await this.stayService.getStayInfo(stay._id);
+    return { stay: stay, application: application };
   }
 
   @UseGuards(ViewPermissionGuard)
