@@ -112,7 +112,7 @@ export class StayService {
   }
 
   async applyStay(
-    data: ApplyStayDto | ApplyStayForceDto,
+    data: ApplyStayDto,
     user: StudentDocument,
   ): Promise<StayApplication> {
     const stay = await this.stayModel.findOne({ current: true });
@@ -133,7 +133,34 @@ export class StayService {
 
     const application = new this.stayApplicationModel({
       ...data,
-      user: user._id.toString(),
+      user: user._id,
+      stay: stay._id,
+    });
+
+    await application.save();
+
+    return application;
+  }
+
+  async applyStayForce(
+    data: ApplyStayForceDto,
+  ): Promise<StayApplication> {
+    const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
+
+    const user = await this.userService.getStudentById(data.user.toString());
+    if (!user) throw new HttpException('해당 학생을 찾을 수 없습니다.', 404);
+
+    if (!stay.seat[user.gender + user.grade].includes(data.seat)) throw new HttpException('해당 학년이 신청 가능한 좌석이 아닙니다.', 403);
+
+    const existingApplication = await this.stayApplicationModel.findOne({
+      user: user._id,
+    });
+    if (existingApplication)
+      throw new HttpException('이미 잔류를 신청했습니다.', 403);
+
+    const application = new this.stayApplicationModel({
+      ...data,
       stay: stay._id,
     });
 

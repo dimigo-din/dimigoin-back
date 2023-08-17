@@ -33,7 +33,6 @@ import { StayService } from './stay.service';
 export class StayController {
   constructor(
     private readonly stayService: StayService,
-    private readonly userService: UserService
   ) {}
 
   @UseGuards(ViewPermissionGuard)
@@ -80,11 +79,8 @@ export class StayController {
   @Post('apply/force')
   async applyStayForce(
     @Body() data: ApplyStayForceDto,
-    @Req() req: Request,
   ): Promise<StayApplication> {
-    const student = await this.userService.getStudentById(data.user.toString());
-    if (!student) throw new HttpException('해당 학생을 찾을 수 없습니다.', 404);
-    return await this.stayService.applyStay(data, student);
+    return await this.stayService.applyStayForce(data);
   }
 
   @UseGuards(StudentOnlyGuard)
