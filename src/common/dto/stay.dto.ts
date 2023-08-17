@@ -61,6 +61,21 @@ export class ApplyStayDto {
   reason: string;
 }
 
+export class ApplyStayForceDto {
+  @ApiProperty()
+  @IsMongoId()
+  user: Types.ObjectId;
+
+  @ApiProperty()
+  @IsString()
+  @IsIn(SeatValues)
+  seat: string;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
+}
+
 export class RejectStayDto {
   @ApiProperty()
   @IsMongoId()

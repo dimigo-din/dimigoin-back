@@ -8,6 +8,7 @@ import {
   CreateStayDto,
   ManageStayDto,
   ResponseDto,
+  ApplyStayForceDto,
 } from 'src/common/dto';
 import {
   Stay,
@@ -111,7 +112,7 @@ export class StayService {
   }
 
   async applyStay(
-    data: ApplyStayDto,
+    data: ApplyStayDto | ApplyStayForceDto,
     user: StudentDocument,
   ): Promise<StayApplication> {
     const stay = await this.stayModel.findOne({ current: true });
@@ -132,7 +133,7 @@ export class StayService {
 
     const application = new this.stayApplicationModel({
       ...data,
-      user: user._id,
+      user: user._id.toString(),
       stay: stay._id,
     });
 

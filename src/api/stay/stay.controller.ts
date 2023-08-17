@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   Post,
   Req,
@@ -17,6 +18,7 @@ import {
   RejectStayDto,
   ApplyStayOutgoDto,
   ManageStayOutgoDto,
+  ApplyStayForceDto,
 } from 'src/common/dto';
 import {
   EditPermissionGuard,
@@ -24,11 +26,15 @@ import {
   StudentOnlyGuard,
 } from 'src/common/guard';
 import { Stay, StayApplication, StayOutgo, StudentDocument } from 'src/common/schemas';
+import { UserService } from '../user/user.service';
 import { StayService } from './stay.service';
 
 @Controller('stay')
 export class StayController {
-  constructor(private readonly stayService: StayService) {}
+  constructor(
+    private readonly stayService: StayService,
+    private readonly userService: UserService
+  ) {}
 
   @UseGuards(ViewPermissionGuard)
   @Get()
@@ -68,6 +74,17 @@ export class StayController {
     @Req() req: Request,
   ): Promise<StayApplication> {
     return await this.stayService.applyStay(data, req.user as StudentDocument);
+  }
+
+  @UseGuards(EditPermissionGuard)
+  @Post('apply/force')
+  async applyStayForce(
+    @Body() data: ApplyStayForceDto,
+    @Req() req: Request,
+  ): Promise<StayApplication> {
+    const student = await this.userService.getStudentById(data.user.toString());
+    if (!student) throw new HttpException('해당 학생을 찾을 수 없습니다.', 404);
+    return await this.stayService.applyStay(data, student);
   }
 
   @UseGuards(StudentOnlyGuard)
