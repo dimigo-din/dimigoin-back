@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import {
@@ -19,6 +19,7 @@ import {
   StudentDocument,
 } from 'src/common/schemas';
 import moment from 'moment';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class StayService {
@@ -31,12 +32,39 @@ export class StayService {
 
     @InjectModel(StayOutgo.name)
     private stayOutgoModel: Model<StayOutgoDocument>,
+
+    @Inject(forwardRef(() => UserService))
+    private userService: UserService,
   ) {}
 
   // Stay
   async getAllStay(): Promise<Stay[]> {
     const stays = await this.stayModel.find();
     return stays;
+  }
+
+  async getStayInfo(stayId: string): Promise<any> {
+    const stay = await this.stayModel.findById(stayId);
+    if (!stay) throw new HttpException('해당 잔류일정이 존재하지 않습니다.', 404);
+
+    const applications = await this.stayApplicationModel.find({ stay: stay._id });
+
+    const result = [];
+    for (const application of applications) {
+      const student = await this.userService.getStudentById(application.user.toString());
+      result.push({
+        _id: student._id,
+        grade: student.grade,
+        class: student.class,
+        number: student.number,
+        name: student.name,
+        gender: student.gender,
+        seat: application.seat,
+        reason: application.reason,
+      });
+    }
+
+    return result;
   }
 
   async getCurrentStay(): Promise<StayDocument> {
@@ -93,6 +121,8 @@ export class StayService {
 
     if (!now.isBetween(stay.duration[user.grade - 1][0], stay.duration[user.grade - 1][1]))
       throw new HttpException('해당 학년의 신청기간이 아닙니다.', 403)
+
+    if (!stay.seat[user.gender + user.grade].includes(data.seat)) throw new HttpException('해당 학년이 신청 가능한 좌석이 아닙니다.', 403)
 
     const existingApplication = await this.stayApplicationModel.findOne({
       user: user._id,

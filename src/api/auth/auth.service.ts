@@ -113,9 +113,6 @@ export class AuthService {
     const refreshKey = crypto.randomBytes(20).toString('hex');
     const payload = { ...user };
 
-    delete payload['password_salt'];
-    delete payload['password_hash'];
-
     await this.setRefresh({ refreshToken: refreshKey, userId: user._id });
 
     const accessToken = this.jwtService.sign(payload);

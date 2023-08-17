@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsMongoId, IsObject, IsString, IsIn, IsArray } from 'class-validator';
 import { Types } from 'mongoose';
-import { StatusValues } from '../types';
+import { Seats, SeatValues, StatusValues } from '../types';
 
 export class StayDateDTO {
   @ApiProperty()
@@ -34,6 +34,10 @@ export class CreateStayDto {
   @ApiProperty()
   @Type(() => StayDateDTO)
   dates: StayDateDTO[];
+
+  @ApiProperty()
+  @IsObject()
+  seat: Seats;
 }
 
 export class ManageStayDto {
@@ -49,6 +53,7 @@ export class ManageStayDto {
 export class ApplyStayDto {
   @ApiProperty()
   @IsString()
+  @IsIn(SeatValues)
   seat: string;
 
   @ApiProperty()

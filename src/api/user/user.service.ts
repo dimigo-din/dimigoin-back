@@ -40,8 +40,10 @@ export class UserService {
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
 
-    private laundryService: LaundryService,
+    @Inject(forwardRef(() => StayService))
     private stayService: StayService,
+
+    private laundryService: LaundryService,
     private frigoService: FrigoService,
 
   ) {}
@@ -63,7 +65,7 @@ export class UserService {
     return students;
   }
 
-  async getStudentById(_id: string): Promise<Student> {
+  async getStudentById(_id: string): Promise<StudentDocument> {
     if (!Types.ObjectId.isValid(_id))
       throw new HttpException('ObjectId 형식이 아닙니다.', 404);
 

@@ -1,5 +1,6 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
+import { Prop, raw, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Seats } from '../types';
 
 export type StayDocument = Stay & Document;
 
@@ -38,6 +39,12 @@ export class Stay {
     },
   ])
   dates: { date: Date; free: boolean }[];
+
+  @Prop({
+    type: Object,
+    required: true,
+  })
+  seat: Seats;
 }
 
 export const StaySchema = SchemaFactory.createForClass(Stay);

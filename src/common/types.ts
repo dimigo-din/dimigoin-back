@@ -4,6 +4,16 @@ export const ClassValues = [1, 2, 3, 4, 5, 6] as const;
 
 export const GenderValues = ['M', 'F'] as const;
 
+// A1, A2 ... N18
+const SeatNameValues = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+
+export const SeatValues = [];
+for (let i = 0; i < SeatNameValues.length; i++) {
+  for (let j = 0; j < 18; j++) {
+    SeatValues.push(SeatNameValues[i] + (j + 1));
+  }
+}
+
 // A = Admin, T = Teacher, D = Domitory
 export const PositionValues = ['A', 'T', 'D'] as const;
 
@@ -39,4 +49,13 @@ export interface refreshTokenVerified {
 export interface Permissions {
   view: string[];
   edit: string[];
+}
+
+export interface Seats {
+  M1: string[];
+  M2: string[];
+  M3: string[];
+  F1: string[];
+  F2: string[];
+  F3: string[];
 }

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -33,6 +34,11 @@ export class StayController {
   @Get()
   async getAllStay(): Promise<Stay[]> {
     return await this.stayService.getAllStay();
+  }
+
+  @Get('/:id')
+  async getStayInfo(@Param('id') stayId: string): Promise<any> {
+    return await this.stayService.getStayInfo(stayId);
   }
 
   @UseGuards(EditPermissionGuard)
