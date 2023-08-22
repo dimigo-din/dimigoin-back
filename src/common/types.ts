@@ -7,7 +7,7 @@ export const GenderValues = ['M', 'F'] as const;
 // A1, A2 ... N18
 const SeatNameValues = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
-export const SeatValues = [''];
+export const SeatValues = ['NONE'];
 for (let i = 0; i < SeatNameValues.length; i++) {
   for (let j = 0; j < 18; j++) {
     SeatValues.push(SeatNameValues[i] + (j + 1));
