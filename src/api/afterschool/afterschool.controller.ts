@@ -9,11 +9,13 @@ import {
   UploadedFile,
   UseInterceptors,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { ResponseDto } from 'src/common/dto';
 import { ManageAfterschoolDto } from 'src/common/dto/afterschoool.dto';
+import { EditPermissionGuard, ViewPermissionGuard } from 'src/common/guard';
 import {
   Afterschool,
   AfterschoolApplication,
@@ -39,6 +41,7 @@ export class AfterschoolController {
     );
   }
 
+  @UseGuards(EditPermissionGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadEvent(
@@ -52,6 +55,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
+  @UseGuards(EditPermissionGuard)
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
@@ -59,6 +63,7 @@ export class AfterschoolController {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
+  @UseGuards(EditPermissionGuard)
   @Patch(':id')
   async manageAfterschoolById(
     @Param('id') id: string,
@@ -67,16 +72,23 @@ export class AfterschoolController {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
+  @UseGuards(EditPermissionGuard)
   @Delete(':id')
   async deleteAfterschoolById(@Param('id') id: string): Promise<AfterschoolDocument> {
     return await this.afterschoolService.deleteAfterschoolById(id);
   }
 
   // Afterschool Application
-
   @Get('application')
   async getAllApplication(): Promise<AfterschoolApplicationDocument[]> {
     return await this.afterschoolService.getAllApplication();
+  }
+
+  @Get('application/my')
+  async getMyApplication(
+    @Req() req: Request,
+  ): Promise<AfterschoolApplicationDocument[]> {
+    return await this.afterschoolService.getMyApplication(req.user as StudentDocument);
   }
 
   @Get('application/:id')

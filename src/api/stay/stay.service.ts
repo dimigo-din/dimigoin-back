@@ -185,7 +185,7 @@ export class StayService {
     return { status: 200, message: 'success' };
   }
 
-  async getMyStay(user: StudentDocument): Promise<string | boolean> {
+  async getMyStay(user: StudentDocument): Promise<object | boolean> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return false;
 
@@ -194,8 +194,8 @@ export class StayService {
       user: user._id,
     });
     if (!application) return false;
-    if (!application.seat) return '교실';
-    return application.seat;
+    if (!application.seat) application.seat = '미선택';
+    return { seat: application.seat, reason: application.reason };
   }
 
   // Stay Outgo

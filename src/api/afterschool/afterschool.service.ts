@@ -1,8 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ResponseDto } from 'src/common/dto';
 import { ManageAfterschoolDto } from 'src/common/dto/afterschoool.dto';
+import { ObjectId } from 'mongoose';
 import {
   Afterschool,
   AfterschoolApplication,
@@ -169,6 +170,12 @@ export class AfterschoolService {
     const application = await this.afterschoolApplicationModel.findById(id);
 
     return application;
+  }
+
+  async getMyApplication(user: StudentDocument): Promise<AfterschoolApplicationDocument[]> {
+    const applications = await this.afterschoolApplicationModel.find({ user: new Types.ObjectId(user._id) });
+
+    return applications;
   }
 
   async createApplication(
