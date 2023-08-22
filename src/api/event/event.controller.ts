@@ -10,7 +10,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { EditPermissionGuard } from 'src/common/guard';
-import { Event, StudentDocument } from 'src/common/schemas';
+import { Event, EventDocument, StudentDocument } from 'src/common/schemas';
 import { StayService } from '../stay/stay.service';
 import { EventService } from './event.service';
 
@@ -23,7 +23,7 @@ export class EventController {
 
   @Get()
   async getEvent(@Req() req: Request): Promise<{
-    events: Event[];
+    events: EventDocument[];
     type: number;
   }> {
     const user = req.user as StudentDocument;

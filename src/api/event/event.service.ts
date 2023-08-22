@@ -15,7 +15,7 @@ export class EventService {
     private stayService: StayService,
   ) {}
 
-  async getEvent(grade: number): Promise<Event[]> {
+  async getEvent(grade: number): Promise<EventDocument[]> {
     const isStay = await this.stayService.isStay(new Date());
     const type = isStay ? 1 : 0;
 

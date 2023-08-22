@@ -74,7 +74,7 @@ export class StayService {
     return stay;
   }
 
-  async getStayApplication(id: string): Promise<StayApplication[]> {
+  async getStayApplication(id: string): Promise<StayApplicationDocument[]> {
     const stay = await this.stayModel.findById(id);
     if (!stay) throw new HttpException('해당 잔류일정이 존재하지 않습니다.', 404);
 
@@ -83,7 +83,7 @@ export class StayService {
     return appliers;
   }
 
-  async createStay(data: CreateStayDto): Promise<Stay> {
+  async createStay(data: CreateStayDto): Promise<StayDocument> {
     const existingStay = await this.stayModel.findOne({ current: true });
     if (data.current && existingStay) throw new HttpException('이미 활성화된 잔류일정이 존재합니다.', 403);
 
@@ -96,7 +96,7 @@ export class StayService {
     return stay;
   }
 
-  async manageStay(data: ManageStayDto): Promise<Stay> {
+  async manageStay(data: ManageStayDto): Promise<StayDocument> {
     const existingStay = await this.stayModel.findOne({ current: true });
     if (data.current && existingStay)
       throw new HttpException('이미 활성화된 잔류일정이 존재합니다.', 403);
@@ -114,7 +114,7 @@ export class StayService {
   async applyStay(
     data: ApplyStayDto,
     user: StudentDocument,
-  ): Promise<StayApplication> {
+  ): Promise<StayApplicationDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
 
@@ -144,7 +144,7 @@ export class StayService {
 
   async applyStayForce(
     data: ApplyStayForceDto,
-  ): Promise<StayApplication> {
+  ): Promise<StayApplicationDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
 
@@ -217,7 +217,7 @@ export class StayService {
     return result;
   }
 
-  async applyStayOutgo(data: ApplyStayOutgoDto, user: ObjectId): Promise<StayOutgo> {
+  async applyStayOutgo(data: ApplyStayOutgoDto, user: ObjectId): Promise<StayOutgoDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
 
@@ -263,7 +263,7 @@ export class StayService {
     throw new HttpException('올바른 잔류외출 신청이 아닙니다.', 401);
   }
 
-  async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgo> {
+  async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgoDocument> {
     const stayOutgo = await this.stayOutgoModel.findById(data.outgo);
     if (!stayOutgo)
       throw new HttpException('해당 잔류외출 신청이 존재하지 않습니다.', 404);

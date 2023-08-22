@@ -78,7 +78,7 @@ export class UserService {
     return teachers;
   }
 
-  async getTeacherById(_id: string): Promise<Teacher> {
+  async getTeacherById(_id: string): Promise<TeacherDocument> {
     if (!Types.ObjectId.isValid(_id))
       throw new HttpException('ObjectId 형식이 아닙니다.', 404);
 
@@ -88,7 +88,7 @@ export class UserService {
     return teacher;
   }
 
-  async createStudent(data: CreateStudentDto): Promise<Student> {
+  async createStudent(data: CreateStudentDto): Promise<StudentDocument> {
     const { email, hd } = await this.authService.verifyAccessToken(data.token);
 
     if (hd !== 'dimigo.hs.kr') throw new HttpException('dimigo.hs.kr 이메일을 사용해주세요.', 404);
@@ -165,7 +165,7 @@ export class UserService {
     };
   }
 
-  async createTeacher(data: CreateTeacherDto): Promise<Teacher> {
+  async createTeacher(data: CreateTeacherDto): Promise<TeacherDocument> {
     const { email } = await this.authService.verifyAccessToken(data.token);
 
     const existingTeacher = await this.teacherModel.findOne({
@@ -186,7 +186,7 @@ export class UserService {
     return teacher;
   }
 
-  async createTeacherByFile(file: Express.Multer.File): Promise<Teacher[]> {
+  async createTeacherByFile(file: Express.Multer.File): Promise<TeacherDocument[]> {
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
@@ -215,7 +215,7 @@ export class UserService {
     return result;
   }
 
-  async manageTeacherGroup(data: ManageTeacherGroupDto): Promise<Teacher> {
+  async manageTeacherGroup(data: ManageTeacherGroupDto): Promise<TeacherDocument> {
     const teacher = await this.teacherModel.findById(data.teacher);
     if (!teacher)
       throw new HttpException('해당 선생님이 존재하지 않습니다.', 404);

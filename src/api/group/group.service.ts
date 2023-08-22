@@ -11,12 +11,12 @@ export class GroupService {
     private groupModel: Model<GroupDocument>,
   ) {}
 
-  async getAllGroup(): Promise<Group[]> {
+  async getAllGroup(): Promise<GroupDocument[]> {
     const groups = await this.groupModel.find();
     return groups;
   }
 
-  async createGroup(data: CreateGroupDto): Promise<Group | false> {
+  async createGroup(data: CreateGroupDto): Promise<GroupDocument | false> {
     const existingGroup = await this.groupModel.findOne({ name: data.name });
     if (existingGroup) return false;
 

@@ -1,7 +1,7 @@
 import { Get, Post, Body, UseGuards, Req, Delete } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { JournalService } from './journal.service';
-import { Journal } from 'src/common/schemas';
+import { Journal, JournalDocument } from 'src/common/schemas';
 import {
   EditPermissionGuard,
   StudentOnlyGuard,
@@ -21,37 +21,37 @@ export class JournalController {
 
   @UseGuards(ViewPermissionGuard)
   @Get()
-  async getAllJournal(): Promise<Journal[]> {
+  async getAllJournal(): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournal();
   }
 
   @UseGuards(ViewPermissionGuard)
   @Get('student')
-  async getAllJournalByStudent(@Body() data: GetJournalDto): Promise<Journal[]> {
+  async getAllJournalByStudent(@Body() data: GetJournalDto): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournalByStudent(data.user);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Get('my')
-  async getMyJournal(@Req() req: Request): Promise<Journal[]> {
+  async getMyJournal(@Req() req: Request): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournalByStudent(req.user._id);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post()
-  async createJournal(@Body() data: CreateJournalDto): Promise<Journal> {
+  async createJournal(@Body() data: CreateJournalDto): Promise<JournalDocument> {
     return await this.journalService.createJournal(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('manage')
-  async manageJournal(@Body() data: ManageJournal): Promise<Journal> {
+  async manageJournal(@Body() data: ManageJournal): Promise<JournalDocument> {
     return await this.journalService.manageJournal(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Delete()
-  async deleteJournal(@Body() data: DeleteJournalDto): Promise<Journal> {
+  async deleteJournal(@Body() data: DeleteJournalDto): Promise<JournalDocument> {
     return await this.journalService.deleteJournal(data);
   }
 }

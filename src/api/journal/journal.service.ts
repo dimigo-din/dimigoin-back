@@ -15,17 +15,17 @@ export class JournalService {
     private journalModel: Model<JournalDocument>,
   ) {}
 
-  async getAllJournal(): Promise<Journal[]> {
+  async getAllJournal(): Promise<JournalDocument[]> {
     const journals = await this.journalModel.find();
     return journals;
   }
 
-  async getAllJournalByStudent(user: string): Promise<Journal[]> {
+  async getAllJournalByStudent(user: string): Promise<JournalDocument[]> {
     const journals = await this.journalModel.find({ user: user });
     return journals;
   }
 
-  async createJournal(data: CreateJournalDto): Promise<Journal> {
+  async createJournal(data: CreateJournalDto): Promise<JournalDocument> {
     const journal = new this.journalModel({ ...data });
 
     await journal.save();
@@ -33,7 +33,7 @@ export class JournalService {
     return journal;
   }
 
-  async manageJournal(data: ManageJournal): Promise<Journal> {
+  async manageJournal(data: ManageJournal): Promise<JournalDocument> {
     const journal = await this.journalModel.findById(data.journal);
     if (!journal) throw new HttpException('해당 생활지도사항이 존재하지 않습니다.', 404);
 
@@ -46,7 +46,7 @@ export class JournalService {
     return journal;
   }
 
-  async deleteJournal(data: DeleteJournalDto): Promise<Journal> {
+  async deleteJournal(data: DeleteJournalDto): Promise<JournalDocument> {
     const journal = await this.journalModel
       .findByIdAndDelete(data.journal)
       .lean();

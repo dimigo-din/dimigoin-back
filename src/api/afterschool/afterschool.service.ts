@@ -40,7 +40,7 @@ export class AfterschoolService {
     return grades;
   }
 
-  async getAllAfterschool(): Promise<Afterschool[]> {
+  async getAllAfterschool(): Promise<AfterschoolDocument[]> {
     const afterschools = await this.afterschoolModel.find();
 
     return afterschools;
@@ -108,7 +108,7 @@ export class AfterschoolService {
     return { status: 201, message: 'success' };
   }
 
-  async getAfterschoolByUser(user: StudentDocument): Promise<Afterschool[]> {
+  async getAfterschoolByUser(user: StudentDocument): Promise<AfterschoolDocument[]> {
     const afterschools = await this.afterschoolModel.find({
       grade: user.grade,
     });
@@ -116,7 +116,7 @@ export class AfterschoolService {
     return afterschools;
   }
 
-  async getAfterschoolById(id: string): Promise<Afterschool> {
+  async getAfterschoolById(id: string): Promise<AfterschoolDocument> {
     const afterschool = await this.afterschoolModel.findById(id);
 
     return afterschool;
@@ -124,7 +124,7 @@ export class AfterschoolService {
 
   async createAfterschoolById(
     data: ManageAfterschoolDto,
-  ): Promise<Afterschool> {
+  ): Promise<AfterschoolDocument> {
     const afterschool = new this.afterschoolModel({ ...data });
 
     await afterschool.save();
@@ -135,7 +135,7 @@ export class AfterschoolService {
   async manageAfterschoolById(
     id: string,
     data: ManageAfterschoolDto,
-  ): Promise<Afterschool> {
+  ): Promise<AfterschoolDocument> {
     const afterschool = await this.afterschoolModel.findById(id);
     if (!afterschool)
       throw new HttpException('해당 방과후가 존재하지 않습니다.', 404);
@@ -146,7 +146,7 @@ export class AfterschoolService {
     return afterschool;
   }
 
-  async deleteAfterschoolById(id: string): Promise<Afterschool> {
+  async deleteAfterschoolById(id: string): Promise<AfterschoolDocument> {
     const afterschool = await this.afterschoolModel
       .findByIdAndDelete(id)
       .lean();
@@ -159,13 +159,13 @@ export class AfterschoolService {
 
   // Afterschool Application
 
-  async getAllApplication(): Promise<AfterschoolApplication[]> {
+  async getAllApplication(): Promise<AfterschoolApplicationDocument[]> {
     const applications = await this.afterschoolApplicationModel.find();
 
     return applications;
   }
 
-  async getApplicationById(id: string): Promise<AfterschoolApplication> {
+  async getApplicationById(id: string): Promise<AfterschoolApplicationDocument> {
     const application = await this.afterschoolApplicationModel.findById(id);
 
     return application;
@@ -174,7 +174,7 @@ export class AfterschoolService {
   async createApplication(
     id: string,
     user: StudentDocument,
-  ): Promise<AfterschoolApplication> {
+  ): Promise<AfterschoolApplicationDocument> {
     const afterschool = await this.afterschoolModel.findById(id);
     if (!afterschool)
       throw new HttpException('해당 방과후가 존재하지 않습니다.', 404);

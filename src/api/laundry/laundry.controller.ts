@@ -20,7 +20,7 @@ import {
   EditPermissionGuard,
   StudentOnlyGuard,
 } from 'src/common/guard';
-import { StudentDocument, Washer } from 'src/common/schemas';
+import { StudentDocument, Washer, WasherDocument } from 'src/common/schemas';
 import { LaundryService } from './laundry.service';
 
 @Controller('laundry')
@@ -29,19 +29,19 @@ export class LaundryController {
 
   @UseGuards(ViewPermissionGuard)
   @Get('washer')
-  async getAllWashers(): Promise<Washer[]> {
+  async getAllWashers(): Promise<WasherDocument[]> {
     return await this.laundryService.getAllWashers();
   }
 
   @UseGuards(EditPermissionGuard)
   @Post('washer/create')
-  async createWasher(@Body() data: CreateWasherDto): Promise<Washer> {
+  async createWasher(@Body() data: CreateWasherDto): Promise<WasherDocument> {
     return await this.laundryService.createWasher(data);
   }
 
   @UseGuards(EditPermissionGuard)
   @Patch('washer/edit')
-  async editWasher(@Body() data: EditWasherDto): Promise<Washer> {
+  async editWasher(@Body() data: EditWasherDto): Promise<WasherDocument> {
     return await this.laundryService.editWasher(data);
   }
 
@@ -50,19 +50,19 @@ export class LaundryController {
   async applyLaundry(
     @Body() data: ApplyLaundryDto,
     @Req() req: Request,
-  ): Promise<Washer> {
+  ): Promise<WasherDocument> {
     return await this.laundryService.applyLaundry(data, req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Delete()
-  async cancelLaundry(@Req() req: Request): Promise<Washer> {
+  async cancelLaundry(@Req() req: Request): Promise<WasherDocument> {
     return await this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
 
   @UseGuards(StudentOnlyGuard)
   @Get('available')
-  async getAvailable(@Req() req: Request): Promise<Washer[]> {
+  async getAvailable(@Req() req: Request): Promise<WasherDocument[]> {
     return await this.laundryService.getAvailable(req.user as StudentDocument);
   }
 

@@ -8,7 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Place, PlaceGroup } from 'src/common/schemas';
+import { Place, PlaceDocument, PlaceGroup, PlaceGroupDocument } from 'src/common/schemas';
 import { PlaceService } from './place.service';
 import { CreatePlaceDto, CreatePlaceGroupDto } from 'src/common/dto';
 
@@ -23,23 +23,23 @@ export class PlaceController {
   }
 
   @Post()
-  async createPlace(@Body() data: CreatePlaceDto): Promise<Place> {
+  async createPlace(@Body() data: CreatePlaceDto): Promise<PlaceDocument> {
     return await this.placeService.createPlace(data);
   }
 
   // PlaceGroup
   @Get('/group/:id')
-  async getPlacesByGroup(@Param('id') groupId: string): Promise<Place[]> {
+  async getPlacesByGroup(@Param('id') groupId: string): Promise<PlaceDocument[]> {
     return await this.placeService.getPlacesByGroup(groupId);
   }
 
   @Patch('/group/:id')
-  async managePlaceGroup(@Param('id') groupId: string, @Body() data: CreatePlaceGroupDto): Promise<PlaceGroup> {
+  async managePlaceGroup(@Param('id') groupId: string, @Body() data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
     return await this.placeService.managePlaceGroup(groupId, data);
   }
 
   @Post('/group')
-  async createPlaceGroup(@Body() data: CreatePlaceGroupDto): Promise<PlaceGroup> {
+  async createPlaceGroup(@Body() data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
     return await this.placeService.createPlaceGroup(data);
   }
 }

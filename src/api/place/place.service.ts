@@ -27,7 +27,7 @@ export class PlaceService {
     return result;
   }
 
-  async createPlace(data: CreatePlaceDto): Promise<Place> {
+  async createPlace(data: CreatePlaceDto): Promise<PlaceDocument> {
     const placeGroup = await this.placeGroupModel.findById(data.group);
     if (!placeGroup) throw new HttpException('해당 위치가 존재하지 않습니다.', 404);
 
@@ -45,7 +45,7 @@ export class PlaceService {
   }
 
   // PlaceGroup
-  async getPlacesByGroup(groupId: string): Promise<Place[]> {
+  async getPlacesByGroup(groupId: string): Promise<PlaceDocument[]> {
     const placeGroup = await this.placeGroupModel.findById(groupId);
 
     const places = await this.placeModel.find({ group: placeGroup._id });
@@ -53,7 +53,7 @@ export class PlaceService {
     return places;
   }
 
-  async managePlaceGroup(groupId: string, data: CreatePlaceGroupDto): Promise<PlaceGroup> {
+  async managePlaceGroup(groupId: string, data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
     const placeGroup = await this.placeGroupModel.findById(groupId);
 
     placeGroup.name = data.name;
@@ -63,7 +63,7 @@ export class PlaceService {
     return placeGroup;
   }
 
-  async createPlaceGroup(data: CreatePlaceGroupDto): Promise<PlaceGroup> {
+  async createPlaceGroup(data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
     const existingGroup = await this.placeGroupModel.findOne({ name: data.name });
     if (existingGroup) throw new HttpException('추가하려는 위치가 이미 존재합니다.', 404);
 

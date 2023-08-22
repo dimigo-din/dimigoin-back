@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ResponseDto } from 'src/common/dto';
-import { Location, StudentDocument } from 'src/common/schemas';
+import { Location, LocationDocument, StudentDocument } from 'src/common/schemas';
 import { LocationService } from './location.service';
 
 @Controller('location')
@@ -26,7 +26,7 @@ export class LocationController {
   async getLocationByGC(
     @Param('grade') _grade: number,
     @Param('class') _class: number,
-  ): Promise<Location[]> {
+  ): Promise<LocationDocument[]> {
     return await this.locationService.getLocationByGC(_grade, _class);
   }
 
@@ -34,7 +34,7 @@ export class LocationController {
   async changeLocation(
     @Req() req: Request,
     @Param('id') placeId: string,
-  ): Promise<Location> {
+  ): Promise<LocationDocument> {
     return await this.locationService.changeLocation(req.user as StudentDocument, placeId);
   }
 

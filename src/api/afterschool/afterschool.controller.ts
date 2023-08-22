@@ -17,6 +17,8 @@ import { ManageAfterschoolDto } from 'src/common/dto/afterschoool.dto';
 import {
   Afterschool,
   AfterschoolApplication,
+  AfterschoolApplicationDocument,
+  AfterschoolDocument,
   StudentDocument,
 } from 'src/common/schemas';
 import { AfterschoolService } from './afterschool.service';
@@ -26,12 +28,12 @@ export class AfterschoolController {
   constructor(private readonly afterschoolService: AfterschoolService) {}
 
   @Get()
-  async getAllAfterschool(): Promise<Afterschool[]> {
+  async getAllAfterschool(): Promise<AfterschoolDocument[]> {
     return await this.afterschoolService.getAllAfterschool();
   }
 
   @Get('/user')
-  async getAfterschoolByUser(@Req() req: Request): Promise<Afterschool[]> {
+  async getAfterschoolByUser(@Req() req: Request): Promise<AfterschoolDocument[]> {
     return await this.afterschoolService.getAfterschoolByUser(
       req.user as StudentDocument,
     );
@@ -46,14 +48,14 @@ export class AfterschoolController {
   }
 
   @Get(':id')
-  async getAfterschoolById(@Param('id') id: string): Promise<Afterschool> {
+  async getAfterschoolById(@Param('id') id: string): Promise<AfterschoolDocument> {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
-  ): Promise<Afterschool> {
+  ): Promise<AfterschoolDocument> {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
@@ -61,26 +63,26 @@ export class AfterschoolController {
   async manageAfterschoolById(
     @Param('id') id: string,
     @Body() data: ManageAfterschoolDto,
-  ): Promise<Afterschool> {
+  ): Promise<AfterschoolDocument> {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
   @Delete(':id')
-  async deleteAfterschoolById(@Param('id') id: string): Promise<Afterschool> {
+  async deleteAfterschoolById(@Param('id') id: string): Promise<AfterschoolDocument> {
     return await this.afterschoolService.deleteAfterschoolById(id);
   }
 
   // Afterschool Application
 
   @Get('application')
-  async getAllApplication(): Promise<AfterschoolApplication[]> {
+  async getAllApplication(): Promise<AfterschoolApplicationDocument[]> {
     return await this.afterschoolService.getAllApplication();
   }
 
   @Get('application/:id')
   async getApplicationById(
     @Param('id') id: string,
-  ): Promise<AfterschoolApplication> {
+  ): Promise<AfterschoolApplicationDocument> {
     return await this.afterschoolService.getApplicationById(id);
   }
 
@@ -88,7 +90,7 @@ export class AfterschoolController {
   async createApplication(
     @Param('id') id: string,
     @Req() req: Request,
-  ): Promise<AfterschoolApplication> {
+  ): Promise<AfterschoolApplicationDocument> {
     return await this.afterschoolService.createApplication(
       id,
       req.user as StudentDocument,

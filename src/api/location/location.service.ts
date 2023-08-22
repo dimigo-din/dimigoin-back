@@ -18,19 +18,19 @@ export class LocationService {
     private stayService: StayService,
   ) {}
 
-  async getAllLocation(): Promise<Location[]> {
+  async getAllLocation(): Promise<LocationDocument[]> {
     const locations = await this.locationModel.find();
 
     return locations;
   }
 
-  async getLocationByGC(_grade: number, _class: number): Promise<Location[]> {
+  async getLocationByGC(_grade: number, _class: number): Promise<LocationDocument[]> {
     const locations = await this.locationModel.find({ grade: _grade, class: _class });
 
     return locations;
   }
 
-  async changeLocation(user: StudentDocument, placeId: string): Promise<Location> {
+  async changeLocation(user: StudentDocument, placeId: string): Promise<LocationDocument> {
     const place = await this.placeModel.findById(placeId);
     if (!place) throw new HttpException('해당 장소가 존재하지 않습니다.', 404);
 

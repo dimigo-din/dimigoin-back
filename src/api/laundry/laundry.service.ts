@@ -19,12 +19,12 @@ export class LaundryService {
     private stayService: StayService,
   ) {}
 
-  async getAllWashers(): Promise<Washer[]> {
+  async getAllWashers(): Promise<WasherDocument[]> {
     const washers = await this.washerModel.find();
     return washers;
   }
 
-  async createWasher(data: CreateWasherDto): Promise<Washer> {
+  async createWasher(data: CreateWasherDto): Promise<WasherDocument> {
     const existingWasher = await this.washerModel.findOne({ name: data.name });
     if (existingWasher)
       throw new HttpException('해당 세탁기가 이미 존재합니다.', 404);
@@ -40,7 +40,7 @@ export class LaundryService {
     return washer;
   }
 
-  async editWasher(data: EditWasherDto): Promise<Washer> {
+  async editWasher(data: EditWasherDto): Promise<WasherDocument> {
     const washer = await this.washerModel.findOne({ name: data.name });
     if (!washer)
       throw new HttpException('해당 세탁기가 존재하지않습니다.', 404);
@@ -52,7 +52,7 @@ export class LaundryService {
     return washer;
   }
 
-  async getAvailable(user: StudentDocument): Promise<Washer[]> {
+  async getAvailable(user: StudentDocument): Promise<WasherDocument[]> {
     const isStay = await this.stayService.isStay(new Date());
     const filter = { gender: user.gender, grade: 0 };
     if (!isStay) filter.grade = user.grade;
@@ -77,7 +77,7 @@ export class LaundryService {
   async applyLaundry(
     data: ApplyLaundryDto,
     user: StudentDocument,
-  ): Promise<Washer> {
+  ): Promise<WasherDocument> {
     const currentHour = new Date().getHours();
 
     if (currentHour < 8)
@@ -113,7 +113,7 @@ export class LaundryService {
     return washer;
   }
 
-  async cancelLaundry(user: StudentDocument): Promise<Washer> {
+  async cancelLaundry(user: StudentDocument): Promise<WasherDocument> {
     const washer = await this.washerModel.findOne({
       timetable: { $elemMatch: { user: user._id } },
     });
