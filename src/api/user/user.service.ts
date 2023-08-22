@@ -40,10 +40,8 @@ export class UserService {
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
 
-    @Inject(forwardRef(() => StayService))
-    private stayService: StayService,
-
     private laundryService: LaundryService,
+    private stayService: StayService,
     private frigoService: FrigoService,
 
   ) {}
@@ -65,7 +63,7 @@ export class UserService {
     return students;
   }
 
-  async getStudentById(_id: string): Promise<StudentDocument> {
+  async getStudentById(_id: string): Promise<Student> {
     if (!Types.ObjectId.isValid(_id))
       throw new HttpException('ObjectId 형식이 아닙니다.', 404);
 
@@ -121,6 +119,11 @@ export class UserService {
 
     const students = [];
     for (const student of sheetData) {
+
+      const existingStudent = await this.studentModel.findOne({
+        email: student['사용자 이름'],
+      });
+      if (existingStudent) continue;
 
       students.push({
         name: student['이름'],
