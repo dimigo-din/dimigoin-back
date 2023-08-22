@@ -39,7 +39,7 @@ export class StayService {
   ) {}
 
   // Stay
-  async getAllStay(): Promise<Stay[]> {
+  async getAllStay(): Promise<StayDocument[]> {
     const stays = await this.stayModel.find();
     return stays;
   }

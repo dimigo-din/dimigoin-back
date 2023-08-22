@@ -63,7 +63,7 @@ export class UserService {
     return students;
   }
 
-  async getStudentById(_id: string): Promise<Student> {
+  async getStudentById(_id: string): Promise<StudentDocument> {
     if (!Types.ObjectId.isValid(_id))
       throw new HttpException('ObjectId 형식이 아닙니다.', 404);
 
