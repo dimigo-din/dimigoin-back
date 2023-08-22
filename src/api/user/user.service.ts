@@ -121,13 +121,13 @@ export class UserService {
     for (const student of sheetData) {
 
       const existingStudent = await this.studentModel.findOne({
-        email: student['사용자 이름'],
+        email: student['이메일 주소'],
       });
       if (existingStudent) continue;
 
       students.push({
         name: student['이름'],
-        email: student['사용자 이름'],
+        email: student['이메일 주소'],
         grade: parseInt(student['학년'].replace(/\D/g, "")),
         class: parseInt(student['반'].replace(/\D/g, "")),
         number: student['번호'],
