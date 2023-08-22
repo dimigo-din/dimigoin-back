@@ -112,13 +112,15 @@ export class UserService {
   }
 
   async uploadStudent(file: Express.Multer.File): Promise<ResponseDto> {
-    const utf8Data = file.buffer.toString('utf-8');
-    const workbook = XLSX.read(utf8Data, { type: 'string' });
-    const sheetName = workbook.SheetNames[0];
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const sheetData = XLSX.utils.sheet_to_json(
+      workbook.Sheets[workbook.SheetNames[0]],
+    );
 
     const students = [];
     for (const student of sheetData) {
+
+      console.log(student);
 
       const existingStudent = await this.studentModel.findOne({
         email: student['이메일 주소'],
