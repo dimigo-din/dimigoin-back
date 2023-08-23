@@ -172,8 +172,11 @@ export class StayService {
   async cancelStay(user: string, force: boolean): Promise<ResponseDto> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('취소가능한 잔류일정이 없습니다.', 404);
+
+    const student = await this.userService.getStudentById(user);
     const now = moment(new Date());
-    if (!force && !now.isBetween(stay.start, stay.end)) throw new HttpException('', 404);
+    if (!force && !now.isBetween(stay.duration[student.grade - 1][0], stay.duration[student.grade - 1][1]))
+      throw new HttpException('해당 학년의 취소기간이 아닙니다.', 403)
 
     const application = await this.stayApplicationModel.findOneAndDelete({
       stay: stay._id,
