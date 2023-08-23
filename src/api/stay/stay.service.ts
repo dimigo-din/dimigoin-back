@@ -185,6 +185,8 @@ export class StayService {
     if (!application)
       throw new HttpException('취소할 잔류신청이 없습니다.', 404);
 
+    await this.stayOutgoModel.deleteMany({ user: user });
+
     return { status: 200, message: 'success' };
   }
 
