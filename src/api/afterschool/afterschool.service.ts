@@ -10,6 +10,7 @@ import {
   AfterschoolDocument,
   AfterschoolApplicationDocument,
   StudentDocument,
+  AfterschoolApplicationResponse,
 } from 'src/common/schemas';
 import XLSX from 'xlsx';
 
@@ -166,16 +167,27 @@ export class AfterschoolService {
     return applications;
   }
 
-  async getApplicationById(id: string): Promise<AfterschoolApplicationDocument> {
+  async getApplicationById(id: string): Promise<any> {
     const application = await this.afterschoolApplicationModel.findById(id);
+    if (!application) throw new HttpException('해당 방과후 신청이 없습니다.', 404);
+    const afterschool = await this.afterschoolModel.findById(application.afterschool);
 
-    return application;
+    return { ...application, afterschoolInfo: afterschool };
   }
 
   async getMyApplication(user: StudentDocument): Promise<AfterschoolApplicationDocument[]> {
-    const applications = await this.afterschoolApplicationModel.find({ user: new Types.ObjectId(user._id) });
+    const applications = await this.afterschoolApplicationModel.find({ user: new Types.ObjectId(user._id) }).lean();
 
-    return applications;
+    const result = [];
+    for (const application of applications) {
+      const afterschool = await this.afterschoolModel.findById(application.afterschool).lean();
+      result.push({
+        ...application,
+        afterschoolInfo: afterschool,
+      })
+    }
+
+    return result;
   }
 
   async createApplication(

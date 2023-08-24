@@ -1,8 +1,14 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { GradeValues } from '../types';
+import { AfterschoolDocument } from './afterschool.schema';
 
 export type AfterschoolApplicationDocument = AfterschoolApplication & Document;
+
+export type AfterschoolApplicationResponse = AfterschoolApplication & Document & {
+  afterschoolInfo: AfterschoolDocument;
+}
+
 
 const options: SchemaOptions = {
   timestamps: false,

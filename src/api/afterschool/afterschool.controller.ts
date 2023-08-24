@@ -20,6 +20,7 @@ import {
   Afterschool,
   AfterschoolApplication,
   AfterschoolApplicationDocument,
+  AfterschoolApplicationResponse,
   AfterschoolDocument,
   StudentDocument,
 } from 'src/common/schemas';
@@ -94,7 +95,7 @@ export class AfterschoolController {
   @Get('application/:id')
   async getApplicationById(
     @Param('id') id: string,
-  ): Promise<AfterschoolApplicationDocument> {
+  ): Promise<AfterschoolApplicationResponse> {
     return await this.afterschoolService.getApplicationById(id);
   }
 
