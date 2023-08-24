@@ -216,7 +216,7 @@ export class StayService {
     if (outgo.length == 0) return false;
     const result = [];
     for (let i = 0; i < outgo.length; i++) {
-      result.push({ duration: outgo[i].duration, status: outgo[i].status });
+      result.push({ outgo: outgo[i]._id, duration: outgo[i].duration, status: outgo[i].status });
     }
 
     return result;
@@ -266,6 +266,18 @@ export class StayService {
     }
 
     throw new HttpException('올바른 잔류외출 신청이 아닙니다.', 404);
+  }
+
+  async cancelStayOutgo(outgoId: string, user: StudentDocument): Promise<ResponseDto> {
+    const stayOutgo = await this.stayOutgoModel.findById(outgoId);
+    if (!stayOutgo)
+      throw new HttpException('해당 잔류외출 신청이 존재하지 않습니다.', 404);
+    if (stayOutgo.user != user._id)
+      throw new HttpException('자신의 잔류외출 신청만 취소할수 있습니다.', 403);
+
+    await this.stayOutgoModel.findByIdAndDelete(outgoId);
+
+    return { status: 200, message: 'success' };
   }
 
   async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgoDocument> {

@@ -105,6 +105,15 @@ export class StayController {
     return await this.stayService.applyStayOutgo(data, req.user._id);
   }
 
+  @UseGuards(StudentOnlyGuard)
+  @Delete('outgo')
+  async cancelStayOutgo(
+    @Req() req: Request,
+    @Param('id') outgoId: string
+  ): Promise<StayOutgo | ResponseDto> {
+    return await this.stayService.cancelStayOutgo(outgoId, req.user as StudentDocument);
+  }
+
   @UseGuards(EditPermissionGuard)
   @Post('outgo/manage')
   async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
