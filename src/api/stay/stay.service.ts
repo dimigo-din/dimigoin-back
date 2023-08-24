@@ -265,7 +265,7 @@ export class StayService {
       }
     }
 
-    throw new HttpException('올바른 잔류외출 신청이 아닙니다.', 401);
+    throw new HttpException('올바른 잔류외출 신청이 아닙니다.', 404);
   }
 
   async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgoDocument> {
