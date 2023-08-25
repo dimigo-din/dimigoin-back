@@ -216,7 +216,7 @@ export class StayService {
     if (outgo.length == 0) return false;
     const result = [];
     for (let i = 0; i < outgo.length; i++) {
-      result.push({ outgo: outgo[i]._id, duration: outgo[i].duration, status: outgo[i].status, free: outgo[i].free });
+      result.push(outgo);
     }
 
     return result;
