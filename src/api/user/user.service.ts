@@ -150,18 +150,15 @@ export class UserService {
     let laundry = await this.laundryService.getMyLaundry(user);
     const stay = await this.stayService.getMyStay(user);
     const frigo = await this.frigoService.getMyFrigo(user);
-    if (typeof laundry == 'number') laundry++;
-
-    const isStay = await this.stayService.isStay(new Date());
-    // replace null with Weekday Outgo ( TBA )
     const stayOutgo = await this.stayService.getMyStayOutgo(user);
-    const outgo = isStay ? stayOutgo : null;
+    if (typeof laundry == 'number') laundry++;
 
     return {
       laundry: laundry ? laundry : null,
       stay: stay ? stay : null,
       frigo: frigo ? frigo : null,
-      outgo: outgo ? outgo : null,
+      outgo: null, // TBA
+      stayOutgo: stayOutgo ? stayOutgo : null,
     };
   }
 
