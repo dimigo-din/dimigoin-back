@@ -106,7 +106,7 @@ export class StayController {
   }
 
   @UseGuards(StudentOnlyGuard)
-  @Delete('outgo')
+  @Delete('outgo/:id')
   async cancelStayOutgo(
     @Req() req: Request,
     @Param('id') outgoId: string
