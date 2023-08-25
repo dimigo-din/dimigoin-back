@@ -233,34 +233,51 @@ export class StayService {
       const startline = moment(date.date).startOf('day');
       const endline = startline.clone().endOf('day');
 
-      if (
+      if(data.free) {
+        if(moment(data.date).isSame(date.date)) {
+          const existingOutgoFree = await this.stayOutgoModel.findOne({
+            stay: stay._id,
+            user: user,
+            date: date.date,
+            free: true,
+          });
+
+          if (existingOutgoFree)
+            throw new HttpException('이미 자기개발 외출을 신청했습니다.', 403);
+
+          const mealLunch = data.meal.lunch;
+          delete data['duration'];
+          delete data['reason'];
+          delete data['meal'];
+
+          const stayOutgo = new this.stayOutgoModel({
+            ...data,
+            meal: {
+              breakfast: false,
+              lunch: mealLunch,
+              dinner: false,
+            },
+            user: user,
+            stay: stay._id,
+            status: 'A',
+          })
+
+          await stayOutgo.save();
+          return stayOutgo;
+        }
+      } else if (
         start.isBetween(startline, endline) &&
         end.isBetween(startline, endline) &&
         end.isAfter(start)
       ) {
-        let stayOutgo;
-        if (data.free) {
-          delete data['duration'];
-          delete data['reason'];
-
-          stayOutgo = new this.stayOutgoModel({
-
-            ...data,
-            user: user,
-            stay: stay._id,
-            status: 'A',
-          });
-        } else {
-          stayOutgo = new this.stayOutgoModel({
-            ...data,
-            user: user,
-            stay: stay._id,
-            status: 'W',
-          });
-        }
+        const stayOutgo = new this.stayOutgoModel({
+          ...data,
+          user: user,
+          stay: stay._id,
+          status: 'W',
+        });
 
         await stayOutgo.save();
-
         return stayOutgo;
       }
     }
