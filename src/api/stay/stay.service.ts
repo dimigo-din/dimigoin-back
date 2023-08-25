@@ -214,12 +214,8 @@ export class StayService {
     });
 
     if (outgo.length == 0) return false;
-    const result = [];
-    for (let i = 0; i < outgo.length; i++) {
-      result.push(outgo);
-    }
 
-    return result;
+    return outgo;
   }
 
   async applyStayOutgo(data: ApplyStayOutgoDto, user: ObjectId): Promise<StayOutgoDocument> {
