@@ -3,14 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ResponseDto } from 'src/common/dto';
 import { ManageAfterschoolDto } from 'src/common/dto/afterschoool.dto';
-import { ObjectId } from 'mongoose';
 import {
   Afterschool,
   AfterschoolApplication,
   AfterschoolDocument,
   AfterschoolApplicationDocument,
   StudentDocument,
-  AfterschoolApplicationResponse,
 } from 'src/common/schemas';
 import XLSX from 'xlsx';
 

@@ -21,9 +21,9 @@ export class DIMIJwtExpireMiddleware implements NestMiddleware {
           .json({ message: 'JWT 토큰이 올바르지 않거나 만료되었습니다.' });
       }
     } else {
-      res
-        .status(401)
-        .json({ message: 'JWT 토큰을 Baerer에 넣어서 전달해주세요.' });
+      res.status(401).json({
+        message: 'JWT 토큰을 Bearer Token 형식으로 넣어서 전달해주세요.',
+      });
     }
   }
 }

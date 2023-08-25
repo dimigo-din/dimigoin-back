@@ -15,10 +15,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { ResponseDto } from 'src/common/dto';
 import { ManageAfterschoolDto } from 'src/common/dto/afterschoool.dto';
-import { EditPermissionGuard, ViewPermissionGuard } from 'src/common/guard';
+import { EditPermissionGuard } from 'src/common/guard';
 import {
-  Afterschool,
-  AfterschoolApplication,
   AfterschoolApplicationDocument,
   AfterschoolApplicationResponse,
   AfterschoolDocument,

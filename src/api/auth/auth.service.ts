@@ -16,7 +16,6 @@ import { refreshTokenVerified } from 'src/common/types';
 import { UserService } from '../user/user.service';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 @Injectable()
