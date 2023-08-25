@@ -37,9 +37,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verifyAccessToken(
-    token: string,
-  ): Promise<TokenPayload> {
+  async verifyAccessToken(token: string): Promise<TokenPayload> {
     try {
       const client = new OAuth2Client(
         process.env.GOOGLE_CLIENT_ID,

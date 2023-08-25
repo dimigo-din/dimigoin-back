@@ -34,4 +34,5 @@ export class StayApplication {
   reason: string;
 }
 
-export const StayApplicationSchema = SchemaFactory.createForClass(StayApplication);
+export const StayApplicationSchema =
+  SchemaFactory.createForClass(StayApplication);

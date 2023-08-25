@@ -6,7 +6,10 @@ import { Meal, MealDocument, StudentDocument } from 'src/common/schemas';
 import { HttpService } from '@nestjs/axios';
 import moment from 'moment';
 import cheerio from 'cheerio';
-import { MealTimetable, MealTimetableDocument } from 'src/common/schemas/meal-timetable.schema';
+import {
+  MealTimetable,
+  MealTimetableDocument,
+} from 'src/common/schemas/meal-timetable.schema';
 import { CreateMealTimetableDto } from 'src/common/dto';
 
 @Injectable()
@@ -128,7 +131,8 @@ export class MealService {
     const timetable = await this.mealTimetableModel.findOne({
       grade: user.grade,
     });
-    if (!timetable) throw new HttpException('급식시간표가 아직 추가되지 않았습니다.', 404);
+    if (!timetable)
+      throw new HttpException('급식시간표가 아직 추가되지 않았습니다.', 404);
 
     return timetable;
   }

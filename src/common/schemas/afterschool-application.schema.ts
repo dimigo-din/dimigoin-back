@@ -5,10 +5,10 @@ import { AfterschoolDocument } from './afterschool.schema';
 
 export type AfterschoolApplicationDocument = AfterschoolApplication & Document;
 
-export type AfterschoolApplicationResponse = AfterschoolApplication & Document & {
-  afterschoolInfo: AfterschoolDocument;
-}
-
+export type AfterschoolApplicationResponse = AfterschoolApplication &
+  Document & {
+    afterschoolInfo: AfterschoolDocument;
+  };
 
 const options: SchemaOptions = {
   timestamps: false,

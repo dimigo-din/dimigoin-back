@@ -3,7 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { ResponseDto } from 'src/common/dto';
-import { Location, LocationDocument, Place, PlaceDocument, StudentDocument } from 'src/common/schemas';
+import {
+  Location,
+  LocationDocument,
+  Place,
+  PlaceDocument,
+  StudentDocument,
+} from 'src/common/schemas';
 import { StayService } from '../stay/stay.service';
 
 @Injectable()
@@ -24,13 +30,22 @@ export class LocationService {
     return locations;
   }
 
-  async getLocationByGC(_grade: number, _class: number): Promise<LocationDocument[]> {
-    const locations = await this.locationModel.find({ grade: _grade, class: _class });
+  async getLocationByGC(
+    _grade: number,
+    _class: number,
+  ): Promise<LocationDocument[]> {
+    const locations = await this.locationModel.find({
+      grade: _grade,
+      class: _class,
+    });
 
     return locations;
   }
 
-  async changeLocation(user: StudentDocument, placeId: string): Promise<LocationDocument> {
+  async changeLocation(
+    user: StudentDocument,
+    placeId: string,
+  ): Promise<LocationDocument> {
     const place = await this.placeModel.findById(placeId);
     if (!place) throw new HttpException('해당 장소가 존재하지 않습니다.', 404);
 
@@ -39,9 +54,10 @@ export class LocationService {
       const stay = await this.stayService.getCurrentStay();
       const appliers = await this.stayService.getStayApplication(stay._id);
 
-      const isStayApplier = appliers.some(v => v.user === user._id)
+      const isStayApplier = appliers.some((v) => v.user === user._id);
 
-      if (!isStayApplier) throw new HttpException('잔류 신청자가 아닙니다.', 404);
+      if (!isStayApplier)
+        throw new HttpException('잔류 신청자가 아닙니다.', 404);
     }
 
     await this.locationModel.findOneAndDelete({ user: user._id });

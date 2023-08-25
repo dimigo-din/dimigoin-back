@@ -44,7 +44,9 @@ export class UserController {
 
   @Post('/student/upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadStudent(@UploadedFile() file: Express.Multer.File): Promise<ResponseDto> {
+  async uploadStudent(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseDto> {
     return await this.userService.uploadStudent(file);
   }
 
@@ -76,7 +78,9 @@ export class UserController {
   @UseGuards(EditPermissionGuard)
   @Post('/teacher/upload')
   @UseInterceptors(FileInterceptor('file'))
-  async createTeacherByFile(@UploadedFile() file: Express.Multer.File): Promise<Teacher[]> {
+  async createTeacherByFile(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Teacher[]> {
     return await this.userService.createTeacherByFile(file);
   }
 
@@ -88,7 +92,9 @@ export class UserController {
 
   @UseGuards(EditPermissionGuard)
   @Post('/teacher/group')
-  async manageTeacherGroup(@Body() data: ManageTeacherGroupDto): Promise<Teacher> {
+  async manageTeacherGroup(
+    @Body() data: ManageTeacherGroupDto,
+  ): Promise<Teacher> {
     return await this.userService.manageTeacherGroup(data);
   }
 

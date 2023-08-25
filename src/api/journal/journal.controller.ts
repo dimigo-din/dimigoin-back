@@ -27,7 +27,9 @@ export class JournalController {
 
   @UseGuards(ViewPermissionGuard)
   @Get('student')
-  async getAllJournalByStudent(@Body() data: GetJournalDto): Promise<JournalDocument[]> {
+  async getAllJournalByStudent(
+    @Body() data: GetJournalDto,
+  ): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournalByStudent(data.user);
   }
 
@@ -39,7 +41,9 @@ export class JournalController {
 
   @UseGuards(EditPermissionGuard)
   @Post()
-  async createJournal(@Body() data: CreateJournalDto): Promise<JournalDocument> {
+  async createJournal(
+    @Body() data: CreateJournalDto,
+  ): Promise<JournalDocument> {
     return await this.journalService.createJournal(data);
   }
 
@@ -51,7 +55,9 @@ export class JournalController {
 
   @UseGuards(EditPermissionGuard)
   @Delete()
-  async deleteJournal(@Body() data: DeleteJournalDto): Promise<JournalDocument> {
+  async deleteJournal(
+    @Body() data: DeleteJournalDto,
+  ): Promise<JournalDocument> {
     return await this.journalService.deleteJournal(data);
   }
 }

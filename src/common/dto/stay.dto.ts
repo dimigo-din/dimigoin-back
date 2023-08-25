@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsMongoId, IsObject, IsString, IsIn, IsArray } from 'class-validator';
+import {
+  IsBoolean,
+  IsMongoId,
+  IsObject,
+  IsString,
+  IsIn,
+  IsArray,
+} from 'class-validator';
 import { Types } from 'mongoose';
 import { Seats, SeatValues, StatusValues } from '../types';
 

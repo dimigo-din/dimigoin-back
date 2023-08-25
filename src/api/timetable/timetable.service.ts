@@ -48,16 +48,16 @@ export class TimetableService {
         for (let _class = 1; _class <= 6; _class += 1) {
           const response = await this.httpService.axiosRef.get(
             'https://open.neis.go.kr/hub/hisTimetable?' +
-            `KEY=${process.env.NEIS_KEY}&` +
-            'Type=json&' +
-            'pSize=1000&' +
-            'pIndex=1&' +
-            'ATPT_OFCDC_SC_CODE=J10&' +
-            'SD_SCHUL_CODE=7530560&' +
-            `GRADE=${_grade}&` +
-            `CLASS_NM=${_class}&` +
-            `TI_FROM_YMD=${date.split('-').join('')}&` +
-            `TI_TO_YMD=${date.split('-').join('')}`,
+              `KEY=${process.env.NEIS_KEY}&` +
+              'Type=json&' +
+              'pSize=1000&' +
+              'pIndex=1&' +
+              'ATPT_OFCDC_SC_CODE=J10&' +
+              'SD_SCHUL_CODE=7530560&' +
+              `GRADE=${_grade}&` +
+              `CLASS_NM=${_class}&` +
+              `TI_FROM_YMD=${date.split('-').join('')}&` +
+              `TI_TO_YMD=${date.split('-').join('')}`,
           );
 
           const { data } = response;

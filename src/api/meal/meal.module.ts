@@ -12,7 +12,9 @@ import { MealController } from './meal.controller';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Meal.name, schema: MealSchema }]),
-    MongooseModule.forFeature([{ name: MealTimetable.name, schema: MealTimetableSchema }]),
+    MongooseModule.forFeature([
+      { name: MealTimetable.name, schema: MealTimetableSchema },
+    ]),
     HttpModule,
   ],
   controllers: [MealController],

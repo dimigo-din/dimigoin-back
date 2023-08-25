@@ -5,7 +5,22 @@ export const ClassValues = [1, 2, 3, 4, 5, 6] as const;
 export const GenderValues = ['M', 'F'] as const;
 
 // A1, A2 ... N18
-const SeatNameValues = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+const SeatNameValues = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+];
 
 export const SeatValues = ['NONE'];
 for (let i = 0; i < SeatNameValues.length; i++) {

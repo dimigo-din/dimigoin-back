@@ -36,7 +36,9 @@ export class AfterschoolController {
   }
 
   @Get('/user')
-  async getAfterschoolByUser(@Req() req: Request): Promise<AfterschoolDocument[]> {
+  async getAfterschoolByUser(
+    @Req() req: Request,
+  ): Promise<AfterschoolDocument[]> {
     return await this.afterschoolService.getAfterschoolByUser(
       req.user as StudentDocument,
     );
@@ -52,7 +54,9 @@ export class AfterschoolController {
   }
 
   @Get(':id')
-  async getAfterschoolById(@Param('id') id: string): Promise<AfterschoolDocument> {
+  async getAfterschoolById(
+    @Param('id') id: string,
+  ): Promise<AfterschoolDocument> {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
@@ -75,7 +79,9 @@ export class AfterschoolController {
 
   @UseGuards(EditPermissionGuard)
   @Delete(':id')
-  async deleteAfterschoolById(@Param('id') id: string): Promise<AfterschoolDocument> {
+  async deleteAfterschoolById(
+    @Param('id') id: string,
+  ): Promise<AfterschoolDocument> {
     return await this.afterschoolService.deleteAfterschoolById(id);
   }
 
@@ -89,7 +95,9 @@ export class AfterschoolController {
   async getMyApplication(
     @Req() req: Request,
   ): Promise<AfterschoolApplicationDocument[]> {
-    return await this.afterschoolService.getMyApplication(req.user as StudentDocument);
+    return await this.afterschoolService.getMyApplication(
+      req.user as StudentDocument,
+    );
   }
 
   @Get('application/:id')

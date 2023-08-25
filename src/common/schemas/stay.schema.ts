@@ -1,4 +1,10 @@
-import { Prop, raw, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
+import {
+  Prop,
+  raw,
+  Schema,
+  SchemaFactory,
+  SchemaOptions,
+} from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Seats } from '../types';
 

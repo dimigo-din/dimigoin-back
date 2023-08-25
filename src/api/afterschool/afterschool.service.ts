@@ -76,9 +76,9 @@ export class AfterschoolService {
       const time =
         timeMatch && timeMatch[1]
           ? timeMatch[1]
-            .replace(/\s/g, '')
-            .split(',')
-            .map((t: string) => parseInt(t))
+              .replace(/\s/g, '')
+              .split(',')
+              .map((t: string) => parseInt(t))
           : [];
 
       if (typeof data['희망인원'] === 'string') {
@@ -110,7 +110,9 @@ export class AfterschoolService {
     return { status: 201, message: 'success' };
   }
 
-  async getAfterschoolByUser(user: StudentDocument): Promise<AfterschoolDocument[]> {
+  async getAfterschoolByUser(
+    user: StudentDocument,
+  ): Promise<AfterschoolDocument[]> {
     const afterschools = await this.afterschoolModel.find({
       grade: user.grade,
     });
@@ -169,22 +171,31 @@ export class AfterschoolService {
 
   async getApplicationById(id: string): Promise<any> {
     const application = await this.afterschoolApplicationModel.findById(id);
-    if (!application) throw new HttpException('해당 방과후 신청이 없습니다.', 404);
-    const afterschool = await this.afterschoolModel.findById(application.afterschool);
+    if (!application)
+      throw new HttpException('해당 방과후 신청이 없습니다.', 404);
+    const afterschool = await this.afterschoolModel.findById(
+      application.afterschool,
+    );
 
     return { ...application, afterschoolInfo: afterschool };
   }
 
-  async getMyApplication(user: StudentDocument): Promise<AfterschoolApplicationDocument[]> {
-    const applications = await this.afterschoolApplicationModel.find({ user: new Types.ObjectId(user._id) }).lean();
+  async getMyApplication(
+    user: StudentDocument,
+  ): Promise<AfterschoolApplicationDocument[]> {
+    const applications = await this.afterschoolApplicationModel
+      .find({ user: new Types.ObjectId(user._id) })
+      .lean();
 
     const result = [];
     for (const application of applications) {
-      const afterschool = await this.afterschoolModel.findById(application.afterschool).lean();
+      const afterschool = await this.afterschoolModel
+        .findById(application.afterschool)
+        .lean();
       result.push({
         ...application,
         afterschoolInfo: afterschool,
-      })
+      });
     }
 
     return result;

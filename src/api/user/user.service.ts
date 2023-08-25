@@ -43,7 +43,6 @@ export class UserService {
     private laundryService: LaundryService,
     private stayService: StayService,
     private frigoService: FrigoService,
-
   ) {}
 
   async getUserByObjectId(
@@ -91,12 +90,17 @@ export class UserService {
   async createStudent(data: CreateStudentDto): Promise<StudentDocument> {
     const { email, hd } = await this.authService.verifyAccessToken(data.token);
 
-    if (hd !== 'dimigo.hs.kr') throw new HttpException('dimigo.hs.kr 이메일을 사용해주세요.', 404);
+    if (hd !== 'dimigo.hs.kr')
+      throw new HttpException('dimigo.hs.kr 이메일을 사용해주세요.', 404);
 
     const existingStudent = await this.studentModel.findOne({
       email: email,
     });
-    if (existingStudent) throw new HttpException('해당 이메일에 해당하는 계정이 이미 존재합니다.', 404)
+    if (existingStudent)
+      throw new HttpException(
+        '해당 이메일에 해당하는 계정이 이미 존재합니다.',
+        404,
+      );
 
     delete data['token'];
 
@@ -119,7 +123,6 @@ export class UserService {
 
     const students = [];
     for (const student of sheetData) {
-
       console.log(student);
 
       const existingStudent = await this.studentModel.findOne({
@@ -130,21 +133,19 @@ export class UserService {
       students.push({
         name: student['이름'],
         email: student['이메일 주소'],
-        grade: parseInt(student['학년'].replace(/\D/g, "")),
-        class: parseInt(student['반'].replace(/\D/g, "")),
+        grade: parseInt(student['학년'].replace(/\D/g, '')),
+        class: parseInt(student['반'].replace(/\D/g, '')),
         number: student['번호'],
         gender: student['성별'] === '남자' ? 'M' : 'F',
         permissions: { view: [], edit: [] },
         groups: [],
-      })
+      });
     }
 
     console.log(students);
     await this.studentModel.insertMany(students);
     return { status: 200, message: 'success' };
   }
-
-
 
   async getMyInformation(user: StudentDocument): Promise<any> {
     let laundry = await this.laundryService.getMyLaundry(user);
@@ -166,7 +167,7 @@ export class UserService {
     const { email } = await this.authService.verifyAccessToken(data.token);
 
     const existingTeacher = await this.teacherModel.findOne({
-      email
+      email,
     });
 
     if (existingTeacher) throw new HttpException('이메일이 중복됩니다.', 404);
@@ -183,14 +184,18 @@ export class UserService {
     return teacher;
   }
 
-  async createTeacherByFile(file: Express.Multer.File): Promise<TeacherDocument[]> {
+  async createTeacherByFile(
+    file: Express.Multer.File,
+  ): Promise<TeacherDocument[]> {
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     const result = [];
     for (const data of sheetData) {
-      const existingTeacher = await this.teacherModel.findOne({ email: data['email'] });
+      const existingTeacher = await this.teacherModel.findOne({
+        email: data['email'],
+      });
       if (existingTeacher) continue;
 
       const positions = data['position'].split(',');
@@ -202,8 +207,8 @@ export class UserService {
         description: data['description'],
         positions: positions,
         groups: [],
-        permissions: { view: [], edit: [] }
-      })
+        permissions: { view: [], edit: [] },
+      });
 
       result.push(teacher);
     }
@@ -212,14 +217,17 @@ export class UserService {
     return result;
   }
 
-  async manageTeacherGroup(data: ManageTeacherGroupDto): Promise<TeacherDocument> {
+  async manageTeacherGroup(
+    data: ManageTeacherGroupDto,
+  ): Promise<TeacherDocument> {
     const teacher = await this.teacherModel.findById(data.teacher);
     if (!teacher)
       throw new HttpException('해당 선생님이 존재하지 않습니다.', 404);
 
     for (const groupId of data.groups) {
       const group = await this.groupModel.findById(groupId);
-      if (!group) throw new HttpException('올바르지 않은 그룹이 포함되어있습니다.', 404);
+      if (!group)
+        throw new HttpException('올바르지 않은 그룹이 포함되어있습니다.', 404);
     }
 
     teacher.groups = data.groups;

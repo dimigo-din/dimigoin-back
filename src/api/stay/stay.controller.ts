@@ -25,15 +25,18 @@ import {
   ViewPermissionGuard,
   StudentOnlyGuard,
 } from 'src/common/guard';
-import { Stay, StayApplication, StayOutgo, StudentDocument } from 'src/common/schemas';
+import {
+  Stay,
+  StayApplication,
+  StayOutgo,
+  StudentDocument,
+} from 'src/common/schemas';
 import { UserService } from '../user/user.service';
 import { StayService } from './stay.service';
 
 @Controller('stay')
 export class StayController {
-  constructor(
-    private readonly stayService: StayService,
-  ) {}
+  constructor(private readonly stayService: StayService) {}
 
   @UseGuards(ViewPermissionGuard)
   @Get()
@@ -109,9 +112,12 @@ export class StayController {
   @Delete('outgo/:id')
   async cancelStayOutgo(
     @Req() req: Request,
-    @Param('id') outgoId: string
+    @Param('id') outgoId: string,
   ): Promise<StayOutgo | ResponseDto> {
-    return await this.stayService.cancelStayOutgo(outgoId, req.user as StudentDocument);
+    return await this.stayService.cancelStayOutgo(
+      outgoId,
+      req.user as StudentDocument,
+    );
   }
 
   @UseGuards(EditPermissionGuard)

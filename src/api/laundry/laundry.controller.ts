@@ -51,7 +51,10 @@ export class LaundryController {
     @Body() data: ApplyLaundryDto,
     @Req() req: Request,
   ): Promise<WasherDocument> {
-    return await this.laundryService.applyLaundry(data, req.user as StudentDocument);
+    return await this.laundryService.applyLaundry(
+      data,
+      req.user as StudentDocument,
+    );
   }
 
   @UseGuards(StudentOnlyGuard)

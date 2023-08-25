@@ -47,10 +47,10 @@ export class FrigoService {
   }
 
   async cancelFrigo(user: StudentDocument): Promise<ResponseDto> {
-
-    const frigo = await this.frigoModel.findOneAndDelete({ id: user._id }).lean();
-    if (!frigo)
-      throw new HttpException('금요귀가를 신청하지 않았습니다.', 404);
+    const frigo = await this.frigoModel
+      .findOneAndDelete({ id: user._id })
+      .lean();
+    if (!frigo) throw new HttpException('금요귀가를 신청하지 않았습니다.', 404);
 
     return { status: 200, message: 'success' };
   }

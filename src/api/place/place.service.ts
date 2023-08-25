@@ -2,7 +2,12 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreatePlaceDto, CreatePlaceGroupDto } from 'src/common/dto';
-import { Place, PlaceDocument, PlaceGroup, PlaceGroupDocument } from 'src/common/schemas';
+import {
+  Place,
+  PlaceDocument,
+  PlaceGroup,
+  PlaceGroupDocument,
+} from 'src/common/schemas';
 
 @Injectable()
 export class PlaceService {
@@ -29,10 +34,12 @@ export class PlaceService {
 
   async createPlace(data: CreatePlaceDto): Promise<PlaceDocument> {
     const placeGroup = await this.placeGroupModel.findById(data.group);
-    if (!placeGroup) throw new HttpException('해당 위치가 존재하지 않습니다.', 404);
+    if (!placeGroup)
+      throw new HttpException('해당 위치가 존재하지 않습니다.', 404);
 
     const existingPlace = await this.placeModel.findOne({ name: data.name });
-    if (existingPlace) throw new HttpException('해당 위치가 이미 존재합니다.', 404);
+    if (existingPlace)
+      throw new HttpException('해당 위치가 이미 존재합니다.', 404);
 
     const place = new this.placeModel({
       name: data.name,
@@ -53,7 +60,10 @@ export class PlaceService {
     return places;
   }
 
-  async managePlaceGroup(groupId: string, data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
+  async managePlaceGroup(
+    groupId: string,
+    data: CreatePlaceGroupDto,
+  ): Promise<PlaceGroupDocument> {
     const placeGroup = await this.placeGroupModel.findById(groupId);
 
     placeGroup.name = data.name;
@@ -63,9 +73,14 @@ export class PlaceService {
     return placeGroup;
   }
 
-  async createPlaceGroup(data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
-    const existingGroup = await this.placeGroupModel.findOne({ name: data.name });
-    if (existingGroup) throw new HttpException('추가하려는 위치가 이미 존재합니다.', 404);
+  async createPlaceGroup(
+    data: CreatePlaceGroupDto,
+  ): Promise<PlaceGroupDocument> {
+    const existingGroup = await this.placeGroupModel.findOne({
+      name: data.name,
+    });
+    if (existingGroup)
+      throw new HttpException('추가하려는 위치가 이미 존재합니다.', 404);
 
     const group = new this.placeGroupModel({
       name: data.name,
@@ -75,5 +90,4 @@ export class PlaceService {
 
     return group;
   }
-
 }

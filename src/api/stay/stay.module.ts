@@ -16,7 +16,7 @@ import { StayController } from './stay.controller';
     MongooseModule.forFeature([
       { name: Stay.name, schema: StaySchema },
       { name: StayApplication.name, schema: StayApplicationSchema },
-      { name: StayOutgo.name, schema: StayOutgoSchema }
+      { name: StayOutgo.name, schema: StayOutgoSchema },
     ]),
     forwardRef(() => StayModule),
   ],

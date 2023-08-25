@@ -8,7 +8,12 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Place, PlaceDocument, PlaceGroup, PlaceGroupDocument } from 'src/common/schemas';
+import {
+  Place,
+  PlaceDocument,
+  PlaceGroup,
+  PlaceGroupDocument,
+} from 'src/common/schemas';
 import { PlaceService } from './place.service';
 import { CreatePlaceDto, CreatePlaceGroupDto } from 'src/common/dto';
 
@@ -29,17 +34,24 @@ export class PlaceController {
 
   // PlaceGroup
   @Get('/group/:id')
-  async getPlacesByGroup(@Param('id') groupId: string): Promise<PlaceDocument[]> {
+  async getPlacesByGroup(
+    @Param('id') groupId: string,
+  ): Promise<PlaceDocument[]> {
     return await this.placeService.getPlacesByGroup(groupId);
   }
 
   @Patch('/group/:id')
-  async managePlaceGroup(@Param('id') groupId: string, @Body() data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
+  async managePlaceGroup(
+    @Param('id') groupId: string,
+    @Body() data: CreatePlaceGroupDto,
+  ): Promise<PlaceGroupDocument> {
     return await this.placeService.managePlaceGroup(groupId, data);
   }
 
   @Post('/group')
-  async createPlaceGroup(@Body() data: CreatePlaceGroupDto): Promise<PlaceGroupDocument> {
+  async createPlaceGroup(
+    @Body() data: CreatePlaceGroupDto,
+  ): Promise<PlaceGroupDocument> {
     return await this.placeService.createPlaceGroup(data);
   }
 }
