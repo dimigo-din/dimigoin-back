@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Frigo, FrigoDocument, StudentDocument } from 'src/common/schemas';
 import { ManageFrigoDto, RequestFrigoDto, ResponseDto } from 'src/common/dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class FrigoService {
@@ -64,5 +65,11 @@ export class FrigoService {
     await frigo.save();
 
     return frigo;
+  }
+
+  @Cron(CronExpression.EVERY_WEEK)
+  async resetFrigo() {
+    // every week, frigo reset
+    await this.frigoModel.deleteMany({});
   }
 }
