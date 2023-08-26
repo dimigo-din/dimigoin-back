@@ -113,7 +113,7 @@ export class StayController {
   async cancelStayOutgo(
     @Req() req: Request,
     @Param('id') outgoId: string,
-  ): Promise<StayOutgo | ResponseDto> {
+  ): Promise<ResponseDto> {
     return await this.stayService.cancelStayOutgo(
       outgoId,
       req.user as StudentDocument,

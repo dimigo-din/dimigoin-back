@@ -20,8 +20,9 @@ export class Stay {
   // apply startline, endline
   @Prop({
     required: true,
+    type: [[Date]]
   })
-  duration: [[Date, Date]];
+  duration: Date[][];
 
   @Prop({
     required: true,

@@ -24,7 +24,7 @@ export class StayDateDTO {
 export class CreateStayDto {
   @ApiProperty()
   @IsArray()
-  duration: [[Date, Date]];
+  duration: Date[][];
 
   @ApiProperty()
   @IsBoolean()
