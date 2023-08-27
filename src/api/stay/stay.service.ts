@@ -239,38 +239,38 @@ export class StayService {
   }
 
   async applyStayOutgo(
-    data: ApplyStayOutgoDto,
+    application: ApplyStayOutgoDto,
     user: ObjectId,
   ): Promise<StayOutgoDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException('신청가능한 잔류일정이 없습니다.', 404);
 
-    const start = moment(data.duration.start);
-    const end = moment(data.duration.end);
+    const start = moment(application.duration.start);
+    const end = moment(application.duration.end);
 
-    for (const date of stay.dates) {
-      const startline = moment(date.date).startOf('day');
+    for (const StayDate of stay.dates) {
+      const startline = moment(StayDate.date).startOf('day');
       const endline = startline.clone().endOf('day');
 
-      if (data.free) {
-        if (moment(data.date).isSame(date.date)) {
+      if (application.free) {
+        if (moment(application.date).isSame(StayDate.date)) {
           const existingOutgoFree = await this.stayOutgoModel.findOne({
             stay: stay._id,
             user: user,
-            date: date.date,
+            date: StayDate.date,
             free: true,
           });
 
           if (existingOutgoFree)
             throw new HttpException('이미 자기개발 외출을 신청했습니다.', 403);
 
-          const mealLunch = data.meal.lunch;
-          delete data['duration'];
-          delete data['reason'];
-          delete data['meal'];
+          const mealLunch = application.meal.lunch;
+          delete application['duration'];
+          delete application['reason'];
+          delete application['meal'];
 
           const stayOutgo = new this.stayOutgoModel({
-            ...data,
+            ...application,
             meal: {
               breakfast: false,
               lunch: mealLunch,
@@ -290,7 +290,7 @@ export class StayService {
         end.isAfter(start)
       ) {
         const stayOutgo = new this.stayOutgoModel({
-          ...data,
+          ...application,
           user: user,
           stay: stay._id,
           status: 'W',
