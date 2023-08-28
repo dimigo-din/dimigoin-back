@@ -1,5 +1,5 @@
-import { ValidationPipe } from '@nestjs/common';
-import { globalOpcode } from '../opcode';
+import { ValidationPipe } from "@nestjs/common";
+import { globalOpcode } from "../opcode";
 
 export const DIMIValidationPipe = () => {
   return new ValidationPipe({
@@ -9,7 +9,7 @@ export const DIMIValidationPipe = () => {
     transformOptions: {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
-      groups: ['flag:request'],
+      groups: ["flag:request"],
     },
   });
 };

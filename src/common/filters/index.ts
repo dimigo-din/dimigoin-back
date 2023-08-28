@@ -1,2 +1,1 @@
-export * from './notfound.filter';
-export * from './unauthorized.filter';
+export * from "./notfound.filter";

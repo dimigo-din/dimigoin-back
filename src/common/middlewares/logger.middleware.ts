@@ -1,5 +1,5 @@
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Injectable, NestMiddleware, Logger } from "@nestjs/common";
+import { Request, Response, NextFunction } from "express";
 
 @Injectable()
 export class DIMILoggerMiddleware implements NestMiddleware {
@@ -10,13 +10,13 @@ export class DIMILoggerMiddleware implements NestMiddleware {
     const requestMethod = req.method;
     const originURL = req.url || req.originalUrl;
     const httpVersion = `HTTP/${req.httpVersion}`;
-    const userAgent = req.headers['user-agent'];
+    const userAgent = req.headers["user-agent"];
     const ipAddress =
-      req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     if (!ipAddress) return next();
 
-    res.on('finish', () => {
+    res.on("finish", () => {
       const statusCode = res.statusCode;
       const endTimestamp = Date.now() - startTimestamp;
 
