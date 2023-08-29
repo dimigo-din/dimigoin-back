@@ -44,7 +44,7 @@ export class AfterschoolController {
     );
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(
@@ -60,7 +60,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
@@ -68,7 +68,7 @@ export class AfterschoolController {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Patch(":id")
   async manageAfterschoolById(
     @Param("id") id: string,
@@ -77,7 +77,7 @@ export class AfterschoolController {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Delete(":id")
   async deleteAfterschoolById(
     @Param("id") id: string,

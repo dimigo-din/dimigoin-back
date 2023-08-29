@@ -27,7 +27,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Student
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("/student")
   async getAllStudent(): Promise<StudentDocument[]> {
     return await this.userService.getAllStudent();
@@ -41,26 +41,26 @@ export class UserController {
     return await this.userService.uploadStudent(file);
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Get("/student/my")
   async getMyInformation(@Req() req: Request): Promise<any> {
     return await this.userService.getMyInformation(req.user as StudentDocument);
   }
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("/student/:id")
   async getStudent(@Param("id") studentId: string): Promise<StudentDocument> {
     return await this.userService.getStudentById(studentId);
   }
 
   // Teacher
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("/teacher")
   async getAllTeacher(): Promise<Teacher[]> {
     return await this.userService.getAllTeacher();
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("/teacher/upload")
   @UseInterceptors(FileInterceptor("file"))
   async createTeacherByFile(
@@ -69,13 +69,13 @@ export class UserController {
     return await this.userService.createTeacherByFile(file);
   }
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("/teacher/:id")
   async getTeacher(@Param("id") teacherId: string): Promise<Teacher> {
     return await this.userService.getTeacherById(teacherId);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("/teacher/group")
   async manageTeacherGroup(
     @Body() data: ManageTeacherGroupDto,

@@ -20,13 +20,13 @@ import { AuthGuard } from "@nestjs/passport";
 export class JournalController {
   constructor(private readonly journalService: JournalService) {}
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllJournal(): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournal();
   }
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("student")
   async getAllJournalByStudent(
     @Body() data: GetJournalDto,
@@ -34,13 +34,13 @@ export class JournalController {
     return await this.journalService.getAllJournalByStudent(data.user);
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Get("my")
   async getMyJournal(@Req() req: Request): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournalByStudent(req.user._id);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post()
   async createJournal(
     @Body() data: CreateJournalDto,
@@ -48,13 +48,13 @@ export class JournalController {
     return await this.journalService.createJournal(data);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("manage")
   async manageJournal(@Body() data: ManageJournal): Promise<JournalDocument> {
     return await this.journalService.manageJournal(data);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Delete()
   async deleteJournal(
     @Body() data: DeleteJournalDto,

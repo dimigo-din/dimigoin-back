@@ -11,13 +11,13 @@ import { AuthGuard } from "@nestjs/passport";
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get()
   async getAllgroup(): Promise<GroupDocument[]> {
     return await this.groupService.getAllGroup();
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post()
   async createGroup(@Body() data: CreateGroupDto): Promise<GroupDocument> {
     const result = await this.groupService.createGroup(data);

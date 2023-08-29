@@ -7,7 +7,7 @@ import { AuthGuard } from "@nestjs/passport";
 export class TimetableController {
   constructor(private readonly timetableService: TimetableService) {}
 
-  @UseGuards(AuthGuard, EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Get("/update")
   async updateTimetable(): Promise<any> {
     return await this.timetableService.updateTimetable();

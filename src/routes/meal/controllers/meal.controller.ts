@@ -30,7 +30,7 @@ export class MealController {
     return await this.mealService.getMeal(moment().format("YYYY-MM-DD"));
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Get("/update")
   async updateMeal(): Promise<any> {
     return await this.mealService.updateMeal();
@@ -41,19 +41,19 @@ export class MealController {
     return await this.mealService.getWeeklyMeal();
   }
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("/timetable/all")
   async getAllTimetable(): Promise<MealTimetable[]> {
     return await this.mealService.getAllTimetable();
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
     return await this.mealService.getMealTimetable(req.user as StudentDocument);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("/timetable")
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,

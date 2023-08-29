@@ -60,6 +60,7 @@
     "@types/jest": "29.5.0",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20.4.0",
+    "@types/passport": "^1.0.12",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

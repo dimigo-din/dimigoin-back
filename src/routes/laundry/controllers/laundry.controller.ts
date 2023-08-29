@@ -28,25 +28,25 @@ import { AuthGuard } from "@nestjs/passport";
 export class LaundryController {
   constructor(private readonly laundryService: LaundryService) {}
 
-  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
+  @UseGuards(ViewPermissionGuard)
   @Get("washer")
   async getAllWashers(): Promise<WasherDocument[]> {
     return await this.laundryService.getAllWashers();
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("washer/create")
   async createWasher(@Body() data: CreateWasherDto): Promise<WasherDocument> {
     return await this.laundryService.createWasher(data);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Patch("washer/edit")
   async editWasher(@Body() data: EditWasherDto): Promise<WasherDocument> {
     return await this.laundryService.editWasher(data);
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Post("apply")
   async applyLaundry(
     @Body() data: ApplyLaundryDto,
@@ -58,19 +58,19 @@ export class LaundryController {
     );
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Delete()
   async cancelLaundry(@Req() req: Request): Promise<WasherDocument> {
     return await this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
 
-  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
+  @UseGuards(StudentOnlyGuard)
   @Get("available")
   async getAvailable(@Req() req: Request): Promise<WasherDocument[]> {
     return await this.laundryService.getAvailable(req.user as StudentDocument);
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Get("washer/reset")
   async resetWasher(): Promise<ResponseDto> {
     await this.laundryService.resetLaundry();

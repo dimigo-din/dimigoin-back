@@ -34,7 +34,7 @@ export class EventController {
     };
   }
 
-  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
+  @UseGuards(EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {

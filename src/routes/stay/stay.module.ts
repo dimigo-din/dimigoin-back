@@ -10,6 +10,7 @@ import {
 } from "src/schemas";
 import { StayService } from "./providers/stay.service";
 import { StayController } from "./controllers/stay.controller";
+import { UserModule } from "../user";
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { StayController } from "./controllers/stay.controller";
       { name: StayApplication.name, schema: StayApplicationSchema },
       { name: StayOutgo.name, schema: StayOutgoSchema },
     ]),
-    forwardRef(() => StayModule),
+    forwardRef(() => UserModule),
   ],
   controllers: [StayController],
   providers: [StayService],
