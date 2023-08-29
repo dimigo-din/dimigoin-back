@@ -17,13 +17,13 @@ export const StaticModules = [
   LaundryModule,
   FrigoModule,
   EventModule,
-  StayModule,
+  /*StayModule,
   MealModule,
   TimetableModule,
   JournalModule,
   AfterschoolModule,
   PlaceModule,
-  LocationModule,
+  LocationModule,*/
 ];
 
 export * from "./afterschool";

@@ -1,6 +1,6 @@
 import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, Types, ObjectId } from "mongoose";
 
 import {
   Group,
@@ -43,7 +43,7 @@ export class UserService {
   ) {}
 
   async getUserByObjectId(
-    id: string,
+    id: ObjectId,
   ): Promise<StudentDocument | TeacherDocument> {
     const student = await this.studentModel.findOne({ _id: id }).lean();
     if (student) return student;
@@ -51,10 +51,22 @@ export class UserService {
     const teacher = await this.teacherModel.findOne({ _id: id }).lean();
     if (teacher) return teacher;
 
+    throw new HttpException("계정 또는 비밀번호가 잘못되었습니다.", 404);
+  }
+
+  async getUserByEmail(
+    email: string,
+  ): Promise<StudentDocument | TeacherDocument> {
+    const student = await this.studentModel.findOne({ email: email }).lean();
+    if (student) return student;
+
+    const teacher = await this.teacherModel.findOne({ email: email }).lean();
+    if (teacher) return teacher;
+
     throw new HttpException("해당 계정이 없습니다.", 404);
   }
 
-  async getAllStudent(): Promise<Student[]> {
+  async getAllStudent(): Promise<StudentDocument[]> {
     const students = await this.studentModel.find();
     return students;
   }
@@ -84,34 +96,6 @@ export class UserService {
     return teacher;
   }
 
-  async createStudent(data: CreateStudentDto): Promise<StudentDocument> {
-    const { email, hd } = await this.authService.verifyAccessToken(data.token);
-
-    if (hd !== "dimigo.hs.kr")
-      throw new HttpException("dimigo.hs.kr 이메일을 사용해주세요.", 404);
-
-    const existingStudent = await this.studentModel.findOne({
-      email: email,
-    });
-    if (existingStudent)
-      throw new HttpException(
-        "해당 이메일에 해당하는 계정이 이미 존재합니다.",
-        404,
-      );
-
-    delete data["token"];
-
-    const student = new this.studentModel({
-      ...data,
-      email: email,
-      permissions: { view: [], edit: [] },
-      groups: [],
-    });
-
-    await student.save();
-    return student;
-  }
-
   async uploadStudent(file: Express.Multer.File): Promise<ResponseDto> {
     const workbook = XLSX.read(file.buffer, { type: "buffer" });
     const sheetData = XLSX.utils.sheet_to_json(
@@ -120,8 +104,6 @@ export class UserService {
 
     const students = [];
     for (const student of sheetData) {
-      console.log(student);
-
       const existingStudent = await this.studentModel.findOne({
         email: student["이메일 주소"],
       });
@@ -139,7 +121,6 @@ export class UserService {
       });
     }
 
-    console.log(students);
     await this.studentModel.insertMany(students);
     return { statusCode: 200, message: "success" };
   }
@@ -158,27 +139,6 @@ export class UserService {
       outgo: null, // TBA
       stayOutgo: stayOutgo ? stayOutgo : null,
     };
-  }
-
-  async createTeacher(data: CreateTeacherDto): Promise<TeacherDocument> {
-    const { email } = await this.authService.verifyAccessToken(data.token);
-
-    const existingTeacher = await this.teacherModel.findOne({
-      email,
-    });
-
-    if (existingTeacher) throw new HttpException("이메일이 중복됩니다.", 404);
-
-    delete data["token"];
-
-    const teacher = new this.teacherModel({
-      ...data,
-      email: email,
-    });
-
-    await teacher.save();
-
-    return teacher;
   }
 
   async createTeacherByFile(

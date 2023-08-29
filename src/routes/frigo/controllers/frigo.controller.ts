@@ -17,6 +17,7 @@ import {
   StudentOnlyGuard,
   ViewPermissionGuard,
 } from "src/auth/guards";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("frigo")
 export class FrigoController {

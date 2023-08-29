@@ -103,7 +103,6 @@ export class AfterschoolService {
       });
     }
 
-    console.log(afterschools);
     await this.afterschoolModel.insertMany(afterschools);
     return { statusCode: 201, message: "success" };
   }

@@ -19,11 +19,6 @@ export class Teacher {
   @Prop({
     required: true,
   })
-  description: string;
-
-  @Prop({
-    required: true,
-  })
   email: string;
 
   @Prop({

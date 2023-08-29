@@ -13,6 +13,7 @@ import { EditPermissionGuard } from "src/auth/guards";
 import { EventDocument, StudentDocument } from "src/schemas";
 import { StayService } from "../../stay/providers/stay.service";
 import { EventService } from "../providers/event.service";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("event")
 export class EventController {
@@ -33,7 +34,7 @@ export class EventController {
     };
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {

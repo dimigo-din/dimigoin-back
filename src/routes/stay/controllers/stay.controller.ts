@@ -27,6 +27,8 @@ import {
 import { Stay, StayApplication, StayOutgo, StudentDocument } from "src/schemas";
 import { StayService } from "../providers/stay.service";
 
+import { AuthGuard } from "@nestjs/passport";
+
 @Controller("stay")
 export class StayController {
   constructor(private readonly stayService: StayService) {}
@@ -44,25 +46,25 @@ export class StayController {
     return { stay: stay, application: application };
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
   @Get("/:id")
   async getStayInfo(@Param("id") stayId: string): Promise<any> {
     return await this.stayService.getStayInfo(stayId);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
     return await this.stayService.createStay(data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("manage")
   async manageStay(@Body() data: ManageStayDto): Promise<Stay> {
     return await this.stayService.manageStay(data);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
   @Post("apply")
   async applyStay(
     @Body() data: ApplyStayDto,
@@ -71,7 +73,7 @@ export class StayController {
     return await this.stayService.applyStay(data, req.user as StudentDocument);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("apply/force")
   async applyStayForce(
     @Body() data: ApplyStayForceDto,
@@ -79,20 +81,20 @@ export class StayController {
     return await this.stayService.applyStayForce(data);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<ResponseDto> {
     return await this.stayService.cancelStay(req.user._id, false);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Delete("reject")
   async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
     return await this.stayService.cancelStay(data.user, true);
   }
 
   // Stay Outgo
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
   @Post("outgo/apply")
   async applyStayOutgo(
     @Req() req: Request,
@@ -101,7 +103,7 @@ export class StayController {
     return await this.stayService.applyStayOutgo(data, req.user._id);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
   @Delete("outgo/:id")
   async cancelStayOutgo(
     @Req() req: Request,
@@ -113,7 +115,7 @@ export class StayController {
     );
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("outgo/manage")
   async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
     return await this.stayService.manageStayOutgo(data);

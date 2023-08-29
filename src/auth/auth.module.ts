@@ -13,6 +13,11 @@ import { UserModule } from "src/routes/user/user.module";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./providers/auth.service";
 
+import { DIMIConfigModule } from "../common";
+
+import { JwtStrategy } from "./strategies";
+import { JwtModule } from "@nestjs/jwt";
+
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -21,9 +26,11 @@ import { AuthService } from "./providers/auth.service";
       { name: Token.name, schema: TokenSchema },
     ]),
     forwardRef(() => UserModule),
+    DIMIConfigModule,
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

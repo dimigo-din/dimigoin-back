@@ -5,18 +5,19 @@ import { GroupDocument } from "src/schemas";
 import { CreateGroupDto } from "../dto/group.dto";
 import { ResponseDto } from "src/common/dto";
 import { EditPermissionGuard, ViewPermissionGuard } from "src/auth/guards";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("group")
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
   @Get()
   async getAllgroup(): Promise<GroupDocument[]> {
     return await this.groupService.getAllGroup();
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post()
   async createGroup(@Body() data: CreateGroupDto): Promise<GroupDocument> {
     const result = await this.groupService.createGroup(data);

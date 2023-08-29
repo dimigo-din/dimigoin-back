@@ -22,6 +22,8 @@ import {
   AfterschoolDocument,
   StudentDocument,
 } from "src/schemas";
+import { AuthGuard } from "@nestjs/passport";
+
 import { EditPermissionGuard } from "src/auth/guards";
 
 @Controller("afterschool")
@@ -42,7 +44,7 @@ export class AfterschoolController {
     );
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(
@@ -58,7 +60,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
@@ -66,7 +68,7 @@ export class AfterschoolController {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Patch(":id")
   async manageAfterschoolById(
     @Param("id") id: string,
@@ -75,7 +77,7 @@ export class AfterschoolController {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Delete(":id")
   async deleteAfterschoolById(
     @Param("id") id: string,

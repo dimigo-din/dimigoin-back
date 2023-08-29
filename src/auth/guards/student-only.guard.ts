@@ -13,6 +13,7 @@ export class StudentOnlyGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
     const user = req.user;
+    console.log(user);
 
     if (!user.hasOwnProperty("grade")) {
       throw new HttpException("학생만 접근가능한 라우터입니다.", 404);

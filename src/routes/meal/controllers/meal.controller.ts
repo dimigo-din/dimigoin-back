@@ -19,6 +19,8 @@ import {
 import { MealTimetable } from "src/schemas";
 import { CreateMealTimetableDto } from "../dto/meal.dto";
 
+import { AuthGuard } from "@nestjs/passport";
+
 @Controller("meal")
 export class MealController {
   constructor(private readonly mealService: MealService) {}
@@ -28,7 +30,7 @@ export class MealController {
     return await this.mealService.getMeal(moment().format("YYYY-MM-DD"));
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Get("/update")
   async updateMeal(): Promise<any> {
     return await this.mealService.updateMeal();
@@ -39,19 +41,19 @@ export class MealController {
     return await this.mealService.getWeeklyMeal();
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), ViewPermissionGuard)
   @Get("/timetable/all")
   async getAllTimetable(): Promise<MealTimetable[]> {
     return await this.mealService.getAllTimetable();
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(AuthGuard("jwt"), StudentOnlyGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
     return await this.mealService.getMealTimetable(req.user as StudentDocument);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(AuthGuard("jwt"), EditPermissionGuard)
   @Post("/timetable")
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,
