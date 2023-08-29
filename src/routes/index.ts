@@ -25,3 +25,16 @@ export const StaticModules = [
   PlaceModule,
   LocationModule,
 ];
+
+export * from "./afterschool";
+export * from "./event";
+export * from "./frigo";
+export * from "./group";
+export * from "./journal";
+export * from "./laundry";
+export * from "./location";
+export * from "./meal";
+export * from "./place";
+export * from "./stay";
+export * from "./timetable";
+export * from "./user";

@@ -38,6 +38,7 @@ export class AuthService {
   ) {}
 
   async verifyAccessToken(token: string): Promise<TokenPayload> {
+    // TODO: outdated, fixing later
     try {
       const client = new OAuth2Client(
         process.env.GOOGLE_CLIENT_ID,
