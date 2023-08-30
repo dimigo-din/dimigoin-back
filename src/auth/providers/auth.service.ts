@@ -61,7 +61,7 @@ export class AuthService {
     if (!existingToken)
       throw new HttpException(
         "Refresh 토큰이 올바르지 않습니다. 다시 로그인해주세요.",
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
       );
   }
 
@@ -94,23 +94,30 @@ export class AuthService {
       | DIMIRefreshPayload,
   ): Promise<object> {
     const user = await this.userService.getUserByObjectId(payload._id);
+
+    const accessToken = await this.jwtService.signAsync(
+      { ...user, refresh: false },
+      {
+        algorithm: "HS512",
+        secret: this.configService.get<string>("JWT_SECRET_KEY"),
+        expiresIn: "1w",
+      },
+    );
+
+    const refreshToken = await this.jwtService.signAsync(
+      { _id: user._id, refresh: true },
+      {
+        algorithm: "HS512",
+        secret: this.configService.get<string>("JWT_SECRET_KEY"),
+        expiresIn: "1y",
+      },
+    );
+
+    await new this.tokenModule({ refreshToken, userId: user._id }).save();
+
     return {
-      accessToken: await this.jwtService.signAsync(
-        { ...user, refresh: false },
-        {
-          algorithm: "HS512",
-          secret: this.configService.get<string>("JWT_SECRET_KEY"),
-          expiresIn: "1w",
-        },
-      ),
-      refreshToken: await this.jwtService.signAsync(
-        { id: user._id, refresh: true },
-        {
-          algorithm: "HS512",
-          secret: this.configService.get<string>("JWT_SECRET_KEY"),
-          expiresIn: "1y",
-        },
-      ),
+      accessToken,
+      refreshToken,
     };
   }
 }

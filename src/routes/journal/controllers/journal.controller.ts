@@ -1,4 +1,4 @@
-import { Get, Post, Body, UseGuards, Req, Delete, Put } from "@nestjs/common";
+import { Get, Post, Body, UseGuards, Req, Delete, Patch } from "@nestjs/common";
 import { Controller } from "@nestjs/common";
 import { JournalService } from "../providers/journal.service";
 import { JournalDocument } from "src/schemas";
@@ -49,7 +49,7 @@ export class JournalController {
   }
 
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Put()
+  @Patch()
   async manageJournal(@Body() data: ManageJournal): Promise<JournalDocument> {
     return await this.journalService.manageJournal(data);
   }

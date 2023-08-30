@@ -28,7 +28,7 @@ export class AuthController {
     if (!payload.refresh)
       throw new HttpException(
         "Refresh 토큰이 아닙니다.",
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
       );
     await this.authService.removeExistingToken(data.token);
     return await this.authService.createToken(payload);
