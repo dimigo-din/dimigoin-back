@@ -8,7 +8,6 @@ import {
   Teacher,
   TeacherSchema,
 } from "src/schemas";
-import { AuthModule } from "../../auth/auth.module";
 import { FrigoModule } from "../frigo/frigo.module";
 import { LaundryModule } from "../laundry/laundry.module";
 import { StayModule } from "../stay/stay.module";
@@ -23,7 +22,6 @@ import { UserService } from "./providers/user.service";
       { name: Teacher.name, schema: TeacherSchema },
       { name: Group.name, schema: GroupSchema },
     ]),
-    forwardRef(() => AuthModule),
     forwardRef(() => StayModule),
     LaundryModule,
     FrigoModule,

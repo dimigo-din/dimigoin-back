@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  HttpException,
-  Inject,
-  Injectable,
-  HttpStatus,
-} from "@nestjs/common";
+import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -26,14 +20,11 @@ import { DIMIJwtPayload, DIMIRefreshPayload } from "../interface";
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
-
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
 
     @InjectModel(Token.name)
     private tokenModule: Model<TokenDocument>,
-
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
   ) {}
 
   googleOAuthClient = new OAuth2Client(

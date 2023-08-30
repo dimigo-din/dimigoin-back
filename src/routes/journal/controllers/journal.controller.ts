@@ -15,7 +15,6 @@ import {
   ManageJournal,
 } from "../dto/journal.dto";
 import { Request } from "express";
-import { AuthGuard } from "@nestjs/passport";
 
 @Controller("journal")
 export class JournalController {

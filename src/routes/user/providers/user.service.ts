@@ -1,4 +1,4 @@
-import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, ObjectId } from "mongoose";
 
@@ -17,7 +17,6 @@ import { LaundryService } from "../../laundry/providers/laundry.service";
 import { StayService } from "../../stay/providers/stay.service";
 import { FrigoService } from "../../frigo/providers/frigo.service";
 import { Permissions } from "src/common/types";
-import { AuthService } from "src/auth/providers/auth.service";
 
 import XLSX from "xlsx";
 
@@ -32,9 +31,6 @@ export class UserService {
 
     @InjectModel(Group.name)
     private groupModel: Model<GroupDocument>,
-
-    @Inject(forwardRef(() => AuthService))
-    private authService: AuthService,
 
     private laundryService: LaundryService,
     private stayService: StayService,

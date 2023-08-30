@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import {
@@ -24,7 +24,7 @@ import { DIMIJwtStrategy } from "./strategies";
       { name: Teacher.name, schema: TeacherSchema },
       { name: Token.name, schema: TokenSchema },
     ]),
-    forwardRef(() => UserModule),
+    UserModule,
     DIMIConfigModule,
     DIMIJWTModule,
   ],
