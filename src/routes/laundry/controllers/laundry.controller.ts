@@ -19,34 +19,34 @@ import {
   ViewPermissionGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
+  DIMIJwtAuthGuard,
 } from "src/auth/guards";
 import { StudentDocument, WasherDocument } from "src/schemas";
 import { LaundryService } from "../providers/laundry.service";
-import { AuthGuard } from "@nestjs/passport";
 
 @Controller("laundry")
 export class LaundryController {
   constructor(private readonly laundryService: LaundryService) {}
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("washer")
   async getAllWashers(): Promise<WasherDocument[]> {
     return await this.laundryService.getAllWashers();
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("washer/create")
   async createWasher(@Body() data: CreateWasherDto): Promise<WasherDocument> {
     return await this.laundryService.createWasher(data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Patch("washer/edit")
   async editWasher(@Body() data: EditWasherDto): Promise<WasherDocument> {
     return await this.laundryService.editWasher(data);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Post("apply")
   async applyLaundry(
     @Body() data: ApplyLaundryDto,
@@ -58,19 +58,19 @@ export class LaundryController {
     );
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete()
   async cancelLaundry(@Req() req: Request): Promise<WasherDocument> {
     return await this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("available")
   async getAvailable(@Req() req: Request): Promise<WasherDocument[]> {
     return await this.laundryService.getAvailable(req.user as StudentDocument);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Get("washer/reset")
   async resetWasher(): Promise<ResponseDto> {
     await this.laundryService.resetLaundry();

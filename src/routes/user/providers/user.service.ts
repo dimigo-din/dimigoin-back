@@ -10,8 +10,7 @@ import {
   Teacher,
   TeacherDocument,
 } from "src/schemas";
-import { CreateStudentDto } from "../dto/student.dto";
-import { CreateTeacherDto, ManageTeacherGroupDto } from "../dto/teacher.dto";
+import { ManageTeacherGroupDto } from "../dto/teacher.dto";
 import { ResponseDto } from "src/common/dto";
 
 import { LaundryService } from "../../laundry/providers/laundry.service";

@@ -9,7 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { Student, StudentDocument, Teacher } from "src/schemas";
+import { StudentDocument, Teacher } from "src/schemas";
 import { UserService } from "../providers/user.service";
 import { ManageTeacherGroupDto } from "../dto/teacher.dto";
 import { ResponseDto } from "src/common/dto";
@@ -18,21 +18,22 @@ import {
   ViewPermissionGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
+  DIMIJwtAuthGuard,
 } from "src/auth/guards";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { AuthGuard } from "@nestjs/passport";
 
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Student
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/student")
   async getAllStudent(): Promise<StudentDocument[]> {
     return await this.userService.getAllStudent();
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Post("/student/upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadStudent(
@@ -41,26 +42,26 @@ export class UserController {
     return await this.userService.uploadStudent(file);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("/student/my")
   async getMyInformation(@Req() req: Request): Promise<any> {
     return await this.userService.getMyInformation(req.user as StudentDocument);
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/student/:id")
   async getStudent(@Param("id") studentId: string): Promise<StudentDocument> {
     return await this.userService.getStudentById(studentId);
   }
 
   // Teacher
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/teacher")
   async getAllTeacher(): Promise<Teacher[]> {
     return await this.userService.getAllTeacher();
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("/teacher/upload")
   @UseInterceptors(FileInterceptor("file"))
   async createTeacherByFile(
@@ -69,13 +70,13 @@ export class UserController {
     return await this.userService.createTeacherByFile(file);
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/teacher/:id")
   async getTeacher(@Param("id") teacherId: string): Promise<Teacher> {
     return await this.userService.getTeacherById(teacherId);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("/teacher/group")
   async manageTeacherGroup(
     @Body() data: ManageTeacherGroupDto,

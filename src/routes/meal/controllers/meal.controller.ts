@@ -12,6 +12,7 @@ import { StudentDocument } from "src/schemas";
 import { MealService } from "../providers/meal.service";
 import moment from "moment";
 import {
+  DIMIJwtAuthGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   ViewPermissionGuard,
@@ -19,41 +20,41 @@ import {
 import { MealTimetable } from "src/schemas";
 import { CreateMealTimetableDto } from "../dto/meal.dto";
 
-import { AuthGuard } from "@nestjs/passport";
-
 @Controller("meal")
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getTodayMeal(): Promise<any> {
     return await this.mealService.getMeal(moment().format("YYYY-MM-DD"));
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Get("/update")
   async updateMeal(): Promise<any> {
     return await this.mealService.updateMeal();
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("/week")
   async getWeeklyMeal(): Promise<any> {
     return await this.mealService.getWeeklyMeal();
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/timetable/all")
   async getAllTimetable(): Promise<MealTimetable[]> {
     return await this.mealService.getAllTimetable();
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
     return await this.mealService.getMealTimetable(req.user as StudentDocument);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("/timetable")
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,
@@ -61,6 +62,7 @@ export class MealController {
     return await this.mealService.createMealTimetable(data);
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("/:date")
   async getMeal(@Param("date") date: string): Promise<any> {
     return await this.mealService.getMeal(date);

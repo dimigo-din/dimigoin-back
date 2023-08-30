@@ -1,8 +1,9 @@
-import { Get, Post, Body, UseGuards, Req, Delete } from "@nestjs/common";
+import { Get, Post, Body, UseGuards, Req, Delete, Put } from "@nestjs/common";
 import { Controller } from "@nestjs/common";
 import { JournalService } from "../providers/journal.service";
 import { JournalDocument } from "src/schemas";
 import {
+  DIMIJwtAuthGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   ViewPermissionGuard,
@@ -20,13 +21,13 @@ import { AuthGuard } from "@nestjs/passport";
 export class JournalController {
   constructor(private readonly journalService: JournalService) {}
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get()
   async getAllJournal(): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournal();
   }
 
-  @UseGuards(ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("student")
   async getAllJournalByStudent(
     @Body() data: GetJournalDto,
@@ -34,13 +35,13 @@ export class JournalController {
     return await this.journalService.getAllJournalByStudent(data.user);
   }
 
-  @UseGuards(StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("my")
   async getMyJournal(@Req() req: Request): Promise<JournalDocument[]> {
     return await this.journalService.getAllJournalByStudent(req.user._id);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post()
   async createJournal(
     @Body() data: CreateJournalDto,
@@ -48,13 +49,13 @@ export class JournalController {
     return await this.journalService.createJournal(data);
   }
 
-  @UseGuards(EditPermissionGuard)
-  @Post("manage")
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @Put()
   async manageJournal(@Body() data: ManageJournal): Promise<JournalDocument> {
     return await this.journalService.manageJournal(data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Delete()
   async deleteJournal(
     @Body() data: DeleteJournalDto,

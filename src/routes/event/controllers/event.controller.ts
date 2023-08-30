@@ -9,11 +9,10 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Request } from "express";
-import { EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
 import { EventDocument, StudentDocument } from "src/schemas";
 import { StayService } from "../../stay/providers/stay.service";
 import { EventService } from "../providers/event.service";
-import { AuthGuard } from "@nestjs/passport";
 
 @Controller("event")
 export class EventController {
@@ -22,6 +21,7 @@ export class EventController {
     private readonly stayService: StayService,
   ) {}
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getEvent(@Req() req: Request): Promise<{
     events: EventDocument[];
@@ -34,13 +34,14 @@ export class EventController {
     };
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {
     return await this.eventService.uploadEvent(file);
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("type")
   async isStay(): Promise<number> {
     return await this.stayService.isStay(new Date());
