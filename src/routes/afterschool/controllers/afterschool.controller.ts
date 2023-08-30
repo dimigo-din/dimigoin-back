@@ -22,19 +22,21 @@ import {
   AfterschoolDocument,
   StudentDocument,
 } from "src/schemas";
-import { AuthGuard } from "@nestjs/passport";
 
 import { EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard } from "src/auth/guards/jwt.guard";
 
 @Controller("afterschool")
 export class AfterschoolController {
   constructor(private readonly afterschoolService: AfterschoolService) {}
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getAllAfterschool(): Promise<AfterschoolDocument[]> {
     return await this.afterschoolService.getAllAfterschool();
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("/user")
   async getAfterschoolByUser(
     @Req() req: Request,
@@ -44,7 +46,7 @@ export class AfterschoolController {
     );
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(
@@ -53,6 +55,7 @@ export class AfterschoolController {
     return await this.afterschoolService.uploadAfterschool(file);
   }
 
+  @UseGuards(DIMIJwtAuthGuard, DIMIJwtAuthGuard)
   @Get(":id")
   async getAfterschoolById(
     @Param("id") id: string,
@@ -60,7 +63,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
@@ -68,7 +71,7 @@ export class AfterschoolController {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Patch(":id")
   async manageAfterschoolById(
     @Param("id") id: string,
@@ -77,7 +80,7 @@ export class AfterschoolController {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
-  @UseGuards(EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Delete(":id")
   async deleteAfterschoolById(
     @Param("id") id: string,
@@ -85,12 +88,13 @@ export class AfterschoolController {
     return await this.afterschoolService.deleteAfterschoolById(id);
   }
 
-  // Afterschool Application
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("application")
   async getAllApplication(): Promise<AfterschoolApplicationDocument[]> {
     return await this.afterschoolService.getAllApplication();
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("application/my")
   async getMyApplication(
     @Req() req: Request,
@@ -100,6 +104,7 @@ export class AfterschoolController {
     );
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Get("application/:id")
   async getApplicationById(
     @Param("id") id: string,
@@ -107,6 +112,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getApplicationById(id);
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Post("application/:id")
   async createApplication(
     @Param("id") id: string,
@@ -118,6 +124,7 @@ export class AfterschoolController {
     );
   }
 
+  @UseGuards(DIMIJwtAuthGuard)
   @Delete("application/:id")
   async cancelApplication(
     @Param("id") id: string,

@@ -9,14 +9,13 @@ import {
   Token,
   TokenSchema,
 } from "src/schemas";
+
 import { UserModule } from "src/routes/user/user.module";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./providers/auth.service";
 
-import { DIMIConfigModule } from "../common";
-
-import { JwtStrategy } from "./strategies";
-import { JwtModule } from "@nestjs/jwt";
+import { DIMIConfigModule, DIMIJWTModule } from "../common";
+import { DIMIJwtStrategy } from "./strategies";
 
 @Module({
   imports: [
@@ -27,10 +26,10 @@ import { JwtModule } from "@nestjs/jwt";
     ]),
     forwardRef(() => UserModule),
     DIMIConfigModule,
-    JwtModule.register({}),
+    DIMIJWTModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, DIMIJwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

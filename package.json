@@ -1,6 +1,6 @@
 {
   "name": "dimigoin-back-v4",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "한국디지털미디어고등학교 인트라넷, 디미고인의 백엔드 v4입니다.",
   "author": "디미고 인트라넷 개발팀, DIN",
   "private": true,

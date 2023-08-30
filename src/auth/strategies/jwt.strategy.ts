@@ -14,7 +14,7 @@ import { DIMIJwtPayload } from "../interface";
 import { UserService } from "src/routes";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
+export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
