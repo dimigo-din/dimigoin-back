@@ -8,7 +8,7 @@ export class DIMILoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const startTimestamp = Date.now();
     const requestMethod = req.method;
-    const originURL = req.url || req.originalUrl;
+    const originURL = req.originalUrl;
     const httpVersion = `HTTP/${req.httpVersion}`;
     const userAgent = req.headers["user-agent"];
     const ipAddress =

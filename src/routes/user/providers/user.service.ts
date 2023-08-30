@@ -121,17 +121,17 @@ export class UserService {
   }
 
   async getMyInformation(user: StudentDocument): Promise<any> {
-    let laundry = await this.laundryService.getMyLaundry(user);
+    const laundry = await this.laundryService.getMyLaundry(user);
     const stay = await this.stayService.getMyStay(user);
     const frigo = await this.frigoService.getMyFrigo(user);
     const stayOutgo = await this.stayService.getMyStayOutgo(user);
-    if (typeof laundry == "number") laundry++;
+
+    console.log("info", stay, frigo, stayOutgo, laundry);
 
     return {
       laundry: laundry ? laundry : null,
       stay: stay ? stay : null,
       frigo: frigo ? frigo : null,
-      outgo: null, // TBA
       stayOutgo: stayOutgo ? stayOutgo : null,
     };
   }

@@ -21,7 +21,7 @@ export class FrigoService {
   async getMyFrigo(user: StudentDocument): Promise<object | boolean> {
     const frigoRequest = await this.frigoModel.findOne({ id: user._id });
     if (!frigoRequest) return false;
-    return { statusDto: frigoRequest.status, reason: frigoRequest.reason };
+    return { status: frigoRequest.status, reason: frigoRequest.reason };
   }
 
   async requestFrigo(

@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 import { Journal, JournalDocument } from "src/schemas";
 import {
   CreateJournalDto,
@@ -20,8 +20,12 @@ export class JournalService {
     return journals;
   }
 
-  async getAllJournalByStudent(user: string): Promise<JournalDocument[]> {
-    const journals = await this.journalModel.find({ user: user });
+  async getAllJournalByStudent(
+    user: string | ObjectId,
+  ): Promise<JournalDocument[]> {
+    console.log(user);
+    const journals = await this.journalModel.find({ user: user.toString() });
+    console.log(journals);
     return journals;
   }
 

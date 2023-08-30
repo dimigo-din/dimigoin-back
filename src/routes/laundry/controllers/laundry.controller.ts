@@ -23,6 +23,7 @@ import {
 } from "src/auth/guards";
 import { StudentDocument, WasherDocument } from "src/schemas";
 import { LaundryService } from "../providers/laundry.service";
+import { UpdateWriteOpResult } from "mongoose";
 
 @Controller("laundry")
 export class LaundryController {
@@ -60,7 +61,7 @@ export class LaundryController {
 
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete()
-  async cancelLaundry(@Req() req: Request): Promise<WasherDocument> {
+  async cancelLaundry(@Req() req: Request): Promise<UpdateWriteOpResult> {
     return await this.laundryService.cancelLaundry(req.user as StudentDocument);
   }
 
