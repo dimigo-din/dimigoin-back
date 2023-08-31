@@ -31,10 +31,23 @@ export class Washer {
   gender: string;
 
   @Prop({
-    length: 7,
-    type: [{ type: Types.ObjectId, ref: "Students", required: true }],
+    type: [
+      {
+        user: { type: Types.ObjectId, ref: "Student", required: false },
+        name: { type: String, required: false },
+        grade: { type: Number, required: false },
+        class: { type: Number, required: false },
+        number: { type: Number, required: false },
+      },
+    ],
   })
-  timetable: Types.ObjectId[];
+  timetable: {
+    user?: Types.ObjectId;
+    name?: string;
+    grade?: number;
+    class?: number;
+    number?: number;
+  }[];
 
   @Prop({ default: Date.now })
   created_at: Date;

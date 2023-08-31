@@ -7,14 +7,20 @@ import {
   IsString,
   IsIn,
   IsArray,
+  Matches,
 } from "class-validator";
 import { Types } from "mongoose";
 import { Seats, SeatValues, StatusValues } from "src/common/types";
 
+import { dateRegex, dateRegexMessage } from "src/common/regex";
+
 export class StayDateDTO {
   @ApiProperty()
   @IsString()
-  date: Date;
+  @Matches(dateRegex, {
+    message: dateRegexMessage,
+  })
+  date: string;
 
   @ApiProperty()
   @IsBoolean()
@@ -32,11 +38,17 @@ export class CreateStayDto {
 
   @ApiProperty()
   @IsString()
-  start: Date;
+  @Matches(dateRegex, {
+    message: dateRegexMessage,
+  })
+  start: string;
 
   @ApiProperty()
   @IsString()
-  end: Date;
+  @Matches(dateRegex, {
+    message: dateRegexMessage,
+  })
+  end: string;
 
   @ApiProperty()
   @Type(() => StayDateDTO)

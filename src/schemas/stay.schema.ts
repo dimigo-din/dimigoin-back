@@ -14,19 +14,19 @@ export class Stay {
   // apply startline, endline
   @Prop({
     required: true,
-    type: [[Date]],
+    type: [[String]],
   })
-  duration: Date[][];
+  duration: string[][];
 
   @Prop({
     required: true,
   })
-  start: Date;
+  start: string;
 
   @Prop({
     required: true,
   })
-  end: Date;
+  end: string;
 
   @Prop({
     required: true,
@@ -35,11 +35,11 @@ export class Stay {
 
   @Prop([
     {
-      date: { type: Date, required: true },
+      date: { type: String, required: true },
       free: { type: Boolean, required: true },
     },
   ])
-  dates: { date: Date; free: boolean }[];
+  dates: { date: string; free: boolean }[];
 
   @Prop({
     type: Object,
