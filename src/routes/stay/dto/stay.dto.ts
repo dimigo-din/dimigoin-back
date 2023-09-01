@@ -7,19 +7,18 @@ import {
   IsString,
   IsIn,
   IsArray,
-  Matches,
+  ValidateNested,
+  ArrayMinSize,
+  ArrayMaxSize,
 } from "class-validator";
 import { Types } from "mongoose";
 import { Seats, SeatValues, StatusValues } from "src/common/types";
-
-import { dateRegex, dateRegexMessage } from "src/common/regex";
+import { IsCustomDate, IsCustomDateTime } from "@src/common/validators";
 
 export class StayDateDTO {
   @ApiProperty()
   @IsString()
-  @Matches(dateRegex, {
-    message: dateRegexMessage,
-  })
+  @IsCustomDate()
   date: string;
 
   @ApiProperty()
@@ -27,10 +26,24 @@ export class StayDateDTO {
   free: boolean;
 }
 
+export class StayDurationDto {
+  @ApiProperty()
+  @IsString()
+  @IsCustomDateTime()
+  start: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsCustomDateTime()
+  end: string;
+}
+
 export class CreateStayDto {
   @ApiProperty()
   @IsArray()
-  duration: Date[][];
+  @ValidateNested()
+  @Type(() => StayDurationDto)
+  duration: StayDurationDto[];
 
   @ApiProperty()
   @IsBoolean()
@@ -38,19 +51,17 @@ export class CreateStayDto {
 
   @ApiProperty()
   @IsString()
-  @Matches(dateRegex, {
-    message: dateRegexMessage,
-  })
+  @IsCustomDate()
   start: string;
 
   @ApiProperty()
   @IsString()
-  @Matches(dateRegex, {
-    message: dateRegexMessage,
-  })
+  @IsCustomDate()
   end: string;
 
   @ApiProperty()
+  @IsArray()
+  @ValidateNested()
   @Type(() => StayDateDTO)
   dates: StayDateDTO[];
 
