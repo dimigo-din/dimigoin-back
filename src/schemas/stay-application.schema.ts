@@ -12,7 +12,8 @@ const options: SchemaOptions = {
 export class StayApplication {
   @Prop({
     required: true,
-    ref: "Stays",
+    type: Types.ObjectId,
+    ref: "Stay",
   })
   stay: Types.ObjectId;
 
@@ -23,11 +24,11 @@ export class StayApplication {
 
   @Prop({
     required: true,
-    ref: "Students",
+    type: Types.ObjectId,
+    ref: "Student",
   })
   user: Types.ObjectId;
 
-  // 좌석 미선택 사유
   @Prop({
     required: false,
   })

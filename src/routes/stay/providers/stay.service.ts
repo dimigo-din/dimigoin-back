@@ -1,15 +1,7 @@
-import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, ObjectId } from "mongoose";
-import {
-  ApplyStayDto,
-  ApplyStayOutgoDto,
-  ManageStayOutgoDto,
-  CreateStayDto,
-  ManageStayDto,
-  ApplyStayForceDto,
-} from "../dto/stay.dto";
-import { ResponseDto } from "src/common/dto";
+import { Model, Types } from "mongoose";
+import { ApplyStayDto, ApplyStayOutgoDto } from "../dto/stay.dto";
 import {
   Stay,
   StayDocument,
@@ -18,9 +10,13 @@ import {
   StayOutgo,
   StayOutgoDocument,
   StudentDocument,
-} from "src/schemas";
+} from "@src/schemas";
 import moment from "moment";
-import { UserService } from "../../user/providers/user.service";
+import {
+  stringDateToMoment,
+  stringDateTimeToMoment,
+  momentToStringDate,
+} from "@src/common/utils";
 
 @Injectable()
 export class StayService {
@@ -33,50 +29,29 @@ export class StayService {
 
     @InjectModel(StayOutgo.name)
     private stayOutgoModel: Model<StayOutgoDocument>,
-
-    @Inject(forwardRef(() => UserService))
-    private userService: UserService,
   ) {}
 
-  // Stay
-  async getAllStay(): Promise<StayDocument[]> {
-    const stays = await this.stayModel.find();
-    return stays;
-  }
-
-  async getStayInfo(stayId: string): Promise<any> {
-    const stay = await this.stayModel.findById(stayId);
-    if (!stay)
-      throw new HttpException("해당 잔류일정이 존재하지 않습니다.", 404);
-
-    const applications = await this.stayApplicationModel.find({
-      stay: stay._id,
-    });
-
-    const result = [];
-    for (const application of applications) {
-      const student = await this.userService.getStudentById(
-        application.user.toString(),
-      );
-      result.push({
-        _id: student._id,
-        grade: student.grade,
-        class: student.class,
-        number: student.number,
-        name: student.name,
-        gender: student.gender,
-        seat: application.seat,
-        reason: application.reason,
-      });
-    }
-
-    return result;
-  }
-
-  async getCurrentStay(): Promise<StayDocument> {
+  async getCurrent(): Promise<StayDocument> {
     const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
 
     return stay;
+  }
+
+  async getApplications(): Promise<StayApplicationDocument[]> {
+    const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
+
+    const stayApplications = await this.stayApplicationModel
+      .find({
+        stay: stay._id,
+      })
+      .populate({
+        path: "user",
+        select: "name grade class number",
+      });
+
+    return stayApplications;
   }
 
   async getStayApplication(id: string): Promise<StayApplicationDocument[]> {
@@ -89,48 +64,20 @@ export class StayService {
     return appliers;
   }
 
-  async createStay(data: CreateStayDto): Promise<StayDocument> {
-    const existingStay = await this.stayModel.findOne({ current: true });
-    if (data.current && existingStay)
-      throw new HttpException("이미 활성화된 잔류일정이 존재합니다.", 403);
-
-    const stay = new this.stayModel({
-      ...data,
-    });
-
-    await stay.save();
-
-    return stay;
-  }
-
-  async manageStay(data: ManageStayDto): Promise<StayDocument> {
-    const existingStay = await this.stayModel.findOne({ current: true });
-    if (data.current && existingStay)
-      throw new HttpException("이미 활성화된 잔류일정이 존재합니다.", 403);
-
-    const stay = await this.stayModel.findById(data.stay);
-    if (!stay)
-      throw new HttpException("해당 잔류일정이 존재하지 않습니다.", 404);
-    stay.current = data.current;
-
-    await stay.save();
-
-    return stay;
-  }
-
-  async applyStay(
-    data: ApplyStayDto,
+  async apply(
     user: StudentDocument,
+    data: ApplyStayDto,
   ): Promise<StayApplicationDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException("신청가능한 잔류일정이 없습니다.", 404);
 
-    const now = moment(new Date());
-
+    const now = moment();
     if (
       !now.isBetween(
-        stay.duration[user.grade - 1][0],
-        stay.duration[user.grade - 1][1],
+        stringDateTimeToMoment(stay.duration[user.grade - 1].start),
+        stringDateTimeToMoment(stay.duration[user.grade - 1].end),
+        undefined,
+        "[)",
       )
     )
       throw new HttpException("해당 학년의 신청기간이 아닙니다.", 403);
@@ -145,69 +92,40 @@ export class StayService {
       throw new HttpException("이미 잔류를 신청했습니다.", 403);
 
     const application = new this.stayApplicationModel({
-      ...data,
-      user: user._id,
       stay: stay._id,
+      user: user._id,
+      ...data,
     });
-
     await application.save();
 
     return application;
   }
 
-  async applyStayForce(
-    data: ApplyStayForceDto,
-  ): Promise<StayApplicationDocument> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) throw new HttpException("신청가능한 잔류일정이 없습니다.", 404);
-
-    const user = await this.userService.getStudentById(data.user.toString());
-    if (!user) throw new HttpException("해당 학생을 찾을 수 없습니다.", 404);
-
-    if (!stay.seat[user.gender + user.grade].includes(data.seat))
-      throw new HttpException("해당 학년이 신청 가능한 좌석이 아닙니다.", 403);
-
-    const existingApplication = await this.stayApplicationModel.findOne({
-      user: user._id,
-    });
-    if (existingApplication)
-      throw new HttpException("이미 잔류를 신청했습니다.", 403);
-
-    const application = new this.stayApplicationModel({
-      ...data,
-      stay: stay._id,
-    });
-
-    await application.save();
-
-    return application;
-  }
-
-  async cancelStay(user: string, force: boolean): Promise<ResponseDto> {
+  async cancel(user: StudentDocument): Promise<StayApplicationDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException("취소가능한 잔류일정이 없습니다.", 404);
 
-    const student = await this.userService.getStudentById(user);
-    const now = moment(new Date());
+    const now = moment();
     if (
-      !force &&
       !now.isBetween(
-        stay.duration[student.grade - 1][0],
-        stay.duration[student.grade - 1][1],
+        stringDateTimeToMoment(stay.duration[user.grade - 1].start),
+        stringDateTimeToMoment(stay.duration[user.grade - 1].end),
+        undefined,
+        "[)",
       )
     )
       throw new HttpException("해당 학년의 취소기간이 아닙니다.", 403);
 
-    const application = await this.stayApplicationModel.findOneAndDelete({
+    const stayApplication = await this.stayApplicationModel.findOneAndDelete({
       stay: stay._id,
-      user: user,
+      user: user._id,
     });
-    if (!application)
+    if (!stayApplication)
       throw new HttpException("취소할 잔류신청이 없습니다.", 404);
 
-    await this.stayOutgoModel.deleteMany({ user: user });
+    await this.stayOutgoModel.deleteMany({ user: user._id });
 
-    return { statusCode: 200, message: "success" };
+    return stayApplication;
   }
 
   async getMyStay(user: StudentDocument): Promise<object | boolean> {
@@ -223,7 +141,6 @@ export class StayService {
     return { seat: application.seat, reason: application.reason };
   }
 
-  // Stay Outgo
   async getMyStayOutgo(user: StudentDocument): Promise<any> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return false;
@@ -238,102 +155,106 @@ export class StayService {
     return outgo;
   }
 
-  async applyStayOutgo(
+  async applyOutgo(
+    user: StudentDocument,
     application: ApplyStayOutgoDto,
-    user: ObjectId,
   ): Promise<StayOutgoDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException("신청가능한 잔류일정이 없습니다.", 404);
 
-    const start = moment(application.duration.start);
-    const end = moment(application.duration.end);
+    const stayApplication = await this.stayApplicationModel.findOne({
+      stay: stay._id,
+      user: user._id,
+    });
+    if (!stayApplication)
+      throw new HttpException("잔류를 신청하지 않았습니다.", 403);
 
-    for (const StayDate of stay.dates) {
-      const startline = moment(StayDate.date).startOf("day");
-      const endline = startline.clone().endOf("day");
+    const applicationDate = stringDateToMoment(application.date);
+    const applicationStart = stringDateTimeToMoment(application.duration.start);
+    const applicationEnd = stringDateTimeToMoment(application.duration.end);
 
-      if (application.free) {
-        if (moment(application.date).isSame(StayDate.date)) {
-          const existingOutgoFree = await this.stayOutgoModel.findOne({
-            stay: stay._id,
-            user: user,
-            date: StayDate.date,
-            free: true,
-          });
+    const targetStayOutgo = stay.dates.find((stayDate) =>
+      stringDateToMoment(stayDate.date).isSame(applicationDate),
+    );
+    if (!targetStayOutgo)
+      throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 404);
 
-          if (existingOutgoFree)
-            throw new HttpException("이미 자기개발 외출을 신청했습니다.", 403);
+    if (application.free) {
+      if (!targetStayOutgo.free)
+        throw new HttpException(
+          "해당 날짜는 자기개발 외출이 불가능합니다.",
+          403,
+        );
 
-          const mealLunch = application.meal.lunch;
-          delete application["duration"];
-          delete application["reason"];
-          delete application["meal"];
+      const existingStayOutgoFree = await this.stayOutgoModel.findOne({
+        stay: stay._id,
+        user: user._id,
+        date: momentToStringDate(applicationDate),
+        free: true,
+      });
+      if (existingStayOutgoFree)
+        throw new HttpException("이미 자기개발 외출을 신청했습니다.", 403);
 
-          const stayOutgo = new this.stayOutgoModel({
-            ...application,
-            meal: {
-              breakfast: false,
-              lunch: mealLunch,
-              dinner: false,
-            },
-            user: user,
-            stay: stay._id,
-            status: "A",
-          });
+      const mealLunch = application.meal.lunch;
+      delete application["duration"];
+      delete application["reason"];
+      delete application["meal"];
 
-          await stayOutgo.save();
-          return stayOutgo;
-        }
-      } else if (
-        start.isBetween(startline, endline) &&
-        end.isBetween(startline, endline) &&
-        end.isAfter(start)
-      ) {
-        const stayOutgo = new this.stayOutgoModel({
-          ...application,
-          user: user,
-          stay: stay._id,
-          status: "W",
-        });
+      const stayOutgo = new this.stayOutgoModel({
+        stay: stay._id,
+        user: user._id,
+        status: "A",
+        ...application,
+        meal: {
+          breakfast: false,
+          lunch: mealLunch,
+          dinner: false,
+        },
+      });
+      await stayOutgo.save();
 
-        await stayOutgo.save();
-        return stayOutgo;
-      }
+      return stayOutgo;
+    } else {
+      const targetStayOutgoStart = stringDateToMoment(
+        targetStayOutgo.date,
+      ).startOf("day");
+      const targetStayOutgoEnd = stringDateToMoment(targetStayOutgo.date).endOf(
+        "day",
+      );
+
+      if (
+        !applicationStart.isBetween(targetStayOutgoStart, targetStayOutgoEnd) ||
+        !applicationEnd.isBetween(targetStayOutgoStart, targetStayOutgoEnd) ||
+        applicationEnd.isBefore(applicationStart)
+      )
+        throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 404);
+
+      const stayOutgo = new this.stayOutgoModel({
+        stay: stay._id,
+        user: user._id,
+        status: "W",
+        ...application,
+      });
+      await stayOutgo.save();
+
+      return stayOutgo;
     }
-
-    throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 404);
   }
 
-  async cancelStayOutgo(
-    outgoId: string,
+  async cancelOutgo(
     user: StudentDocument,
-  ): Promise<ResponseDto> {
-    const stayOutgo = await this.stayOutgoModel.findById(outgoId);
-    if (!stayOutgo)
+    outgoId: Types.ObjectId,
+  ): Promise<StayOutgoDocument> {
+    const stayOutgoApplication = await this.stayOutgoModel.findOneAndDelete({
+      _id: outgoId,
+      user: user._id,
+    });
+    if (!stayOutgoApplication)
       throw new HttpException("해당 잔류외출 신청이 존재하지 않습니다.", 404);
-    if (stayOutgo.user != user._id)
-      throw new HttpException("자신의 잔류외출 신청만 취소할수 있습니다.", 403);
 
-    await this.stayOutgoModel.findByIdAndDelete(outgoId);
-
-    return { statusCode: 200, message: "success" };
+    return stayOutgoApplication;
   }
 
-  async manageStayOutgo(data: ManageStayOutgoDto): Promise<StayOutgoDocument> {
-    const stayOutgo = await this.stayOutgoModel.findById(data.outgo);
-    if (!stayOutgo)
-      throw new HttpException("해당 잔류외출 신청이 존재하지 않습니다.", 404);
-    if (stayOutgo.free)
-      throw new HttpException("자기개발 외출은 수정할 수 없습니다.", 403);
-
-    stayOutgo.status = data.status;
-
-    await stayOutgo.save();
-
-    return stayOutgo;
-  }
-
-  // util
   async isStay(date: Date): Promise<number> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return 0;

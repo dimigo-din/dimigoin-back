@@ -12,10 +12,10 @@ import {
   ArrayMaxSize,
 } from "class-validator";
 import { Types } from "mongoose";
-import { Seats, SeatValues, StatusValues } from "src/common/types";
+import { Seats, SeatValues, StatusValues } from "@src/common/types";
 import { IsCustomDate, IsCustomDateTime } from "@src/common/validators";
 
-export class StayDateDTO {
+export class StayDateDto {
   @ApiProperty()
   @IsString()
   @IsCustomDate()
@@ -41,6 +41,8 @@ export class StayDurationDto {
 export class CreateStayDto {
   @ApiProperty()
   @IsArray()
+  @ArrayMinSize(3)
+  @ArrayMaxSize(3)
   @ValidateNested()
   @Type(() => StayDurationDto)
   duration: StayDurationDto[];
@@ -62,8 +64,8 @@ export class CreateStayDto {
   @ApiProperty()
   @IsArray()
   @ValidateNested()
-  @Type(() => StayDateDTO)
-  dates: StayDateDTO[];
+  @Type(() => StayDateDto)
+  dates: StayDateDto[];
 
   @ApiProperty()
   @IsObject()
@@ -129,11 +131,13 @@ export class StayOutgoMealDto {
 export class StayOutgoDurationDto {
   @ApiProperty()
   @IsString()
-  start: Date;
+  @IsCustomDateTime()
+  start: string;
 
   @ApiProperty()
   @IsString()
-  end: Date;
+  @IsCustomDateTime()
+  end: string;
 }
 
 export class ApplyStayOutgoDto {
@@ -143,7 +147,8 @@ export class ApplyStayOutgoDto {
 
   @ApiProperty()
   @IsString()
-  date: Date;
+  @IsCustomDate()
+  date: string;
 
   @ApiProperty()
   @IsString()

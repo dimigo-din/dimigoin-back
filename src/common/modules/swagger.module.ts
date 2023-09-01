@@ -15,5 +15,9 @@ export const DIMISwaggerSetup = async (app: INestApplication) => {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api-docs", app, document);
+  const options = {
+    explorer: false,
+    customSiteTitle: cluster.name,
+  };
+  SwaggerModule.setup("api-docs", app, document, options);
 };

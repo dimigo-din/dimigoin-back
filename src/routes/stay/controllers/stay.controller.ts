@@ -8,116 +8,99 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
-import {
-  CreateStayDto,
-  ManageStayDto,
-  ApplyStayDto,
-  RejectStayDto,
-  ApplyStayOutgoDto,
-  ManageStayOutgoDto,
-  ApplyStayForceDto,
-} from "../dto/stay.dto";
-import { ResponseDto } from "src/common/dto";
-import {
-  EditPermissionGuard,
-  ViewPermissionGuard,
-  StudentOnlyGuard,
-  DIMIJwtAuthGuard,
-} from "src/auth/guards";
-import { Stay, StayApplication, StayOutgo, StudentDocument } from "src/schemas";
+import { ApplyStayDto, ApplyStayOutgoDto } from "../dto/stay.dto";
+import { Types } from "mongoose";
+import { StudentOnlyGuard, DIMIJwtAuthGuard } from "src/auth/guards";
+import { StayDocument, StayApplication, StayOutgo } from "src/schemas";
 import { StayService } from "../providers/stay.service";
+import { createOpertation } from "@src/common/utils";
 
+@ApiTags("Stay")
 @Controller("stay")
 export class StayController {
   constructor(private readonly stayService: StayService) {}
 
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get()
-  async getAllStay(): Promise<Stay[]> {
-    return await this.stayService.getAllStay();
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "현재 잔류 정보",
+      description:
+        "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록을 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard)
-  @Get("/current")
-  async getCurrentStayInfo(): Promise<any> {
-    const stay = await this.stayService.getCurrentStay();
-    const application = await this.stayService.getStayInfo(stay._id);
-    return { stay: stay, application: application };
+  @Get()
+  async getStay(): Promise<{
+    stay: StayDocument;
+    applications: StayApplication[];
+  }> {
+    const currentStay = await this.stayService.getCurrent();
+    const currentApplications = await this.stayService.getApplications();
+    return {
+      stay: currentStay,
+      applications: currentApplications,
+    };
   }
 
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get("/:id")
-  async getStayInfo(@Param("id") stayId: string): Promise<any> {
-    return await this.stayService.getStayInfo(stayId);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post()
-  async createStay(@Body() data: CreateStayDto): Promise<Stay> {
-    return await this.stayService.createStay(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("manage")
-  async manageStay(@Body() data: ManageStayDto): Promise<Stay> {
-    return await this.stayService.manageStay(data);
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 신청",
+      description: "학생이 잔류를 신청합니다.",
+      only: "student",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
-  @Post("apply")
+  @Post()
   async applyStay(
-    @Body() data: ApplyStayDto,
     @Req() req: Request,
+    @Body() data: ApplyStayDto,
   ): Promise<StayApplication> {
-    return await this.stayService.applyStay(data, req.user as StudentDocument);
+    return await this.stayService.apply(req.user, data);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("apply/force")
-  async applyStayForce(
-    @Body() data: ApplyStayForceDto,
-  ): Promise<StayApplication> {
-    return await this.stayService.applyStayForce(data);
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 신청 취소",
+      description: "학생이 잔류 신청을 취소합니다.",
+      only: "student",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete()
-  async cancelStay(@Req() req: Request): Promise<ResponseDto> {
-    return await this.stayService.cancelStay(req.user._id, false);
+  async cancelStay(@Req() req: Request): Promise<StayApplication> {
+    return await this.stayService.cancel(req.user);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Delete("reject")
-  async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
-    return await this.stayService.cancelStay(data.user, true);
-  }
-
-  // Stay Outgo
+  @ApiOperation(
+    createOpertation({
+      name: "잔류외출 신청",
+      description: "학생이 잔류외출을 신청합니다.",
+      only: "student",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
-  @Post("outgo/apply")
+  @Post("outgo")
   async applyStayOutgo(
     @Req() req: Request,
     @Body() data: ApplyStayOutgoDto,
-  ): Promise<StayOutgo | ResponseDto> {
-    return await this.stayService.applyStayOutgo(data, req.user._id);
+  ): Promise<StayOutgo> {
+    return await this.stayService.applyOutgo(req.user, data);
   }
 
+  @ApiOperation(
+    createOpertation({
+      name: "잔류외출 신청 취소",
+      description: "학생이 잔류외출 신청을 취소합니다.",
+      only: "student",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete("outgo/:id")
   async cancelStayOutgo(
     @Req() req: Request,
-    @Param("id") outgoId: string,
-  ): Promise<ResponseDto> {
-    return await this.stayService.cancelStayOutgo(
-      outgoId,
-      req.user as StudentDocument,
-    );
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("outgo/manage")
-  async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
-    return await this.stayService.manageStayOutgo(data);
+    @Param("id") outgoId: Types.ObjectId,
+  ): Promise<StayOutgo> {
+    return await this.stayService.cancelOutgo(req.user, outgoId);
   }
 }

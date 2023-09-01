@@ -11,39 +11,46 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Stay {
-  // apply startline, endline
-  @Prop({
-    required: true,
-    type: [[String]],
-  })
-  duration: string[][];
+  @Prop([
+    {
+      start: { type: String, required: true },
+      end: { type: String, required: true },
+    },
+  ])
+  duration: { start: string; end: string }[];
 
   @Prop({
     required: true,
+    type: String,
   })
   start: string;
 
   @Prop({
     required: true,
+    type: String,
   })
   end: string;
 
   @Prop({
     required: true,
+    type: Boolean,
   })
   current: boolean;
 
-  @Prop([
-    {
-      date: { type: String, required: true },
-      free: { type: Boolean, required: true },
-    },
-  ])
+  @Prop({
+    required: true,
+    type: [
+      {
+        date: { type: String, required: true },
+        free: { type: Boolean, required: true },
+      },
+    ],
+  })
   dates: { date: string; free: boolean }[];
 
   @Prop({
-    type: Object,
     required: true,
+    type: Object,
   })
   seat: Seats;
 }

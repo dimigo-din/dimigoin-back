@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from "class-validator";
 import moment from "moment";
 
-export function IsCustomDate(validationOptions?: ValidationOptions) {
+export const IsCustomDate = (validationOptions?: ValidationOptions) => {
   return function (object: object, propertyName: string) {
     registerDecorator({
       name: "isCustomDate",
@@ -18,4 +18,4 @@ export function IsCustomDate(validationOptions?: ValidationOptions) {
       },
     });
   };
-}
+};

@@ -13,53 +13,59 @@ const options: SchemaOptions = {
 export class StayOutgo {
   @Prop({
     required: true,
+    type: Boolean,
   })
   free: boolean;
 
   @Prop({
     required: true,
-    ref: "Stays",
+    type: Types.ObjectId,
+    ref: "Stay",
   })
   stay: Types.ObjectId;
 
   @Prop({
     required: true,
-    ref: "Students",
+    type: Types.ObjectId,
+    ref: "Student",
   })
   user: Types.ObjectId;
 
   @Prop({
     required: true,
+    type: String,
     enum: StatusValues,
   })
   status: string;
 
   @Prop({
     required: true,
+    type: String,
   })
-  date: Date;
+  date: string;
 
   @Prop({
     required: false,
     type: {
-      start: { type: Date, required: true },
-      end: { type: Date, required: true },
+      start: { type: String, required: true },
+      end: { type: String, required: true },
     },
   })
-  duration: { start: Date; end: Date };
+  duration: { start: string; end: string };
 
   @Prop({
     required: true,
     type: {
-      breakfast: { type: Boolean, required: false },
-      lunch: { type: Boolean, required: false },
-      dinner: { type: Boolean, required: false },
+      breakfast: { type: Boolean, required: true },
+      lunch: { type: Boolean, required: true },
+      dinner: { type: Boolean, required: true },
     },
   })
   meal: { breakfast: boolean; lunch: boolean; dinner: boolean };
 
   @Prop({
     required: false,
+    type: String,
   })
   reason: string;
 }

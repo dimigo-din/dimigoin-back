@@ -8,9 +8,9 @@ import {
   StayOutgo,
   StayOutgoSchema,
 } from "src/schemas";
-import { StayService } from "./providers/stay.service";
-import { StayController } from "./controllers/stay.controller";
 import { UserModule } from "../user";
+import providers from "./providers";
+import controllers from "./controllers";
 
 @Module({
   imports: [
@@ -21,8 +21,8 @@ import { UserModule } from "../user";
     ]),
     forwardRef(() => UserModule),
   ],
-  controllers: [StayController],
-  providers: [StayService],
-  exports: [StayService],
+  controllers: controllers,
+  providers: providers,
+  exports: providers,
 })
 export class StayModule {}

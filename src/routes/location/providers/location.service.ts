@@ -51,7 +51,7 @@ export class LocationService {
 
     const isStay = await this.stayService.isStay(new Date());
     if (isStay) {
-      const stay = await this.stayService.getCurrentStay();
+      const stay = await this.stayService.getCurrent();
       const appliers = await this.stayService.getStayApplication(stay._id);
 
       const isStayApplier = appliers.some((v) => v.user === user._id);
