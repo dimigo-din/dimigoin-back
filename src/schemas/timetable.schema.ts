@@ -15,7 +15,7 @@ export class Timetable {
   @Prop({
     required: true,
   })
-  date: Date;
+  date: string;
 
   @Prop({
     required: true,

@@ -1,25 +1,29 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
-import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard } from "src/auth/guards";
+import { createOpertation } from "src/common/utils";
 
-import { TimetableService } from "../providers/timetable.service";
+import { TimetableDocument } from "src/schemas";
 
+import { TimetableService } from "../providers";
+@ApiTags("Timetable")
 @Controller("timetable")
 export class TimetableController {
   constructor(private readonly timetableService: TimetableService) {}
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Get("/update")
-  async updateTimetable(): Promise<any> {
-    return await this.timetableService.updateTimetable();
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "시간표",
+      description: "해당하는 학년 반의 시간표를 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard)
   @Get("/:grade/:class")
   async getTimetable(
     @Param("grade") _grade: number,
     @Param("class") _class: number,
-  ): Promise<any> {
-    return await this.timetableService.getTimetable(_grade, _class);
+  ): Promise<TimetableDocument[]> {
+    return await this.timetableService.get(_grade, _class);
   }
 }
