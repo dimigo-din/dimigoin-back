@@ -1,7 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsIn, IsNumber, IsString } from "class-validator";
+import {
+  IsIn,
+  IsNumber,
+  IsString,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+} from "class-validator";
 
-import { GradeValues } from "src/common/types";
+import { GradeValues, ClassValues } from "src/common/types";
 
 export class CreateMealTimetableDto {
   @ApiProperty()
@@ -10,10 +17,16 @@ export class CreateMealTimetableDto {
   grade: number;
 
   @ApiProperty()
+  @IsArray()
+  @ArrayMinSize(ClassValues.length)
+  @ArrayMaxSize(ClassValues.length)
   @IsString({ each: true })
   lunch: string[];
 
   @ApiProperty()
+  @IsArray()
+  @ArrayMinSize(ClassValues.length)
+  @ArrayMaxSize(ClassValues.length)
   @IsString({ each: true })
   dinner: string[];
 }

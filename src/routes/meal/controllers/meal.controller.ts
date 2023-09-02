@@ -1,72 +1,40 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
-import moment from "moment";
 
-import {
-  DIMIJwtAuthGuard,
-  EditPermissionGuard,
-  StudentOnlyGuard,
-  ViewPermissionGuard,
-} from "src/auth/guards";
+import { DIMIJwtAuthGuard, StudentOnlyGuard } from "src/auth/guards";
+import { createOpertation } from "src/common/utils";
 
-import { StudentDocument, MealTimetable } from "src/schemas";
+import { StudentDocument, MealTimetable, MealDocument } from "src/schemas";
 
-import { CreateMealTimetableDto } from "../dto";
 import { MealService } from "../providers";
 
+@ApiTags("Meal")
 @Controller("meal")
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
+  @ApiOperation(
+    createOpertation({
+      name: "급식",
+      description: "일주일치 급식을 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
-  async getTodayMeal(): Promise<any> {
-    return await this.mealService.getMeal(moment().format("YYYY-MM-DD"));
+  async getMeals(): Promise<MealDocument[]> {
+    return await this.mealService.get();
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Get("/update")
-  async updateMeal(): Promise<any> {
-    return await this.mealService.updateMeal();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("/week")
-  async getWeeklyMeal(): Promise<any> {
-    return await this.mealService.getWeeklyMeal();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get("/timetable/all")
-  async getAllTimetable(): Promise<MealTimetable[]> {
-    return await this.mealService.getAllTimetable();
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "급식 시간표",
+      description: "급식 시간표를 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
-    return await this.mealService.getMealTimetable(req.user as StudentDocument);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("/timetable")
-  async createMealTimetable(
-    @Body() data: CreateMealTimetableDto,
-  ): Promise<MealTimetable> {
-    return await this.mealService.createMealTimetable(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("/:date")
-  async getMeal(@Param("date") date: string): Promise<any> {
-    return await this.mealService.getMeal(date);
+    return await this.mealService.getTimetable(req.user as StudentDocument);
   }
 }

@@ -18,7 +18,7 @@ export class Meal {
   @Prop({
     required: true,
   })
-  date: Date;
+  date: string;
 
   @Prop({
     required: true,
