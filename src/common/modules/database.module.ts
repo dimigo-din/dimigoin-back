@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { MongooseModule, MongooseModuleAsyncOptions } from "@nestjs/mongoose";
 
-import { DIMIConfigModule } from "../modules";
+import { DIMIConfigModule } from "./config.module";
 
 export const Mongooseoptions: MongooseModuleAsyncOptions = {
   imports: [DIMIConfigModule],

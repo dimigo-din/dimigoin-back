@@ -9,7 +9,7 @@ import {
 import { LoginDto, refreshTokenDto } from "src/routes/user/dto";
 
 import { DIMIRefreshPayload } from "../interface";
-import { AuthService } from "../providers/auth.service";
+import { AuthService } from "../providers";
 
 @Controller("auth")
 export class AuthController {

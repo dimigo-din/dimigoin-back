@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { ClassValues, GradeValues, StatusValues } from "../common";
+import { ClassValues, GradeValues, StatusValues } from "src/common";
 
 export type FrigoDocument = Frigo & Document;
 

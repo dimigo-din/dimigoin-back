@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { GradeValues } from "../common";
+import { GradeValues } from "src/common";
 
 export type MealTimetableDocument = MealTimetable & Document;
 

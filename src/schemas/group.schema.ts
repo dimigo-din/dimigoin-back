@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Permissions } from "../common";
+import { Permissions } from "src/common";
 
 export type GroupDocument = Group & Document;
 

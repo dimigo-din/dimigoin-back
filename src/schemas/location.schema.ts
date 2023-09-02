@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { ClassValues, GradeValues } from "../common";
+import { ClassValues, GradeValues } from "src/common";
 
 export type LocationDocument = Location & Document;
 

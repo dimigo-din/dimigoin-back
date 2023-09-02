@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { ClassValues, GenderValues, GradeValues, Permissions } from "../common";
+import {
+  ClassValues,
+  GenderValues,
+  GradeValues,
+  Permissions,
+} from "src/common";
 
 export type StudentDocument = Student & Document;
 

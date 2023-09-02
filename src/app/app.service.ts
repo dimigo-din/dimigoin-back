@@ -4,7 +4,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import _ from "lodash";
 
-import { ClusterDto, Deployment } from "../common";
+import { ClusterDto, Deployment } from "src/common";
 
 @Injectable()
 export class AppService {

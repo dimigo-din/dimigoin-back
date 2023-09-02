@@ -3,6 +3,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { UserModule } from "src/routes/user/user.module";
 
+import { DIMIConfigModule, DIMIJWTModule } from "src/common";
+
 import {
   Student,
   StudentSchema,
@@ -11,8 +13,6 @@ import {
   Token,
   TokenSchema,
 } from "src/schemas";
-
-import { DIMIConfigModule, DIMIJWTModule } from "../common";
 
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./providers/auth.service";

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { ClassValues, GradeValues } from "../common";
+import { ClassValues, GradeValues } from "src/common";
 
 export type TimetableDocument = Timetable & Document;
 

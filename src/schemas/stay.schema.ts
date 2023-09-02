@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Seats } from "../common";
+import { Seats } from "src/common";
 
 export type StayDocument = Stay & Document;
 

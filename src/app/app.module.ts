@@ -1,14 +1,17 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import importToArray from "import-to-array";
 import * as moment from "moment-timezone";
 
-import { AuthModule } from "../auth";
-import { DIMIEssentialModules, DIMILoggerMiddleware } from "../common";
-import { StaticModules } from "../routes";
+import { AuthModule } from "src/auth";
+
+import { DIMIEssentialModules, DIMILoggerMiddleware } from "src/common";
+
+import * as routes from "src/routes";
 
 import { AppService } from "./app.service";
 
 @Module({
-  imports: [AuthModule, ...DIMIEssentialModules, ...StaticModules],
+  imports: [AuthModule, ...DIMIEssentialModules, ...importToArray(routes)],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
