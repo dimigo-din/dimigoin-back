@@ -1,6 +1,5 @@
-import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { Module } from "@nestjs/common";
-
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import "dotenv/config";
 
 export const JWTOptions: JwtModuleOptions = {

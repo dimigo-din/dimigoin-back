@@ -1,11 +1,13 @@
+import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { Model } from "mongoose";
-import { Timetable, TimetableDocument } from "src/schemas";
-import { HttpService } from "@nestjs/axios";
-import aliases from "../aliases.json";
 import moment from "moment";
+import { Model } from "mongoose";
+
+import { Timetable, TimetableDocument } from "src/schemas";
+
+import aliases from "../aliases.json";
 
 @Injectable()
 export class TimetableService {

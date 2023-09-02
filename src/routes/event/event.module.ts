@@ -1,17 +1,21 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
+import { StayModule } from "src/routes/stay";
+
 import { Event, EventSchema } from "src/schemas";
-import { EventService } from "./providers/event.service";
-import { EventController } from "./controllers/event.controller";
-import { StayModule } from "../stay/stay.module";
+
+import * as eventControllers from "./controllers";
+import * as eventServices from "./providers";
 
 @Module({
   imports: [
-    StayModule,
     MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
+    StayModule,
   ],
-  controllers: [EventController],
-  providers: [EventService],
-  exports: [EventService],
+  controllers: importToArray(eventControllers),
+  providers: importToArray(eventServices),
+  exports: importToArray(eventServices),
 })
 export class EventModule {}

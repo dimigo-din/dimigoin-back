@@ -1,5 +1,9 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
+import { UserModule } from "src/routes/user";
+
 import {
   Stay,
   StaySchema,
@@ -8,9 +12,9 @@ import {
   StayOutgo,
   StayOutgoSchema,
 } from "src/schemas";
-import { UserModule } from "../user";
-import providers from "./providers";
-import controllers from "./controllers";
+
+import * as stayControllers from "./controllers";
+import * as stayServices from "./providers";
 
 @Module({
   imports: [
@@ -21,8 +25,8 @@ import controllers from "./controllers";
     ]),
     forwardRef(() => UserModule),
   ],
-  controllers: controllers,
-  providers: providers,
-  exports: providers,
+  controllers: importToArray(stayControllers),
+  providers: importToArray(stayServices),
+  exports: importToArray(stayServices),
 })
 export class StayModule {}

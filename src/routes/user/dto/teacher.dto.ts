@@ -1,7 +1,8 @@
-import { Length, Matches, IsIn, IsString, IsMongoId } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { GenderValues, Permissions, PositionValues } from "src/common/types";
+import { Length, Matches, IsIn, IsString, IsMongoId } from "class-validator";
 import { Types } from "mongoose";
+
+import { GenderValues, Permissions, PositionValues } from "src/common/types";
 
 export class CreateTeacherDto {
   @ApiProperty()

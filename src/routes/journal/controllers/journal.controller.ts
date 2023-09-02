@@ -1,20 +1,31 @@
-import { Get, Post, Body, UseGuards, Req, Delete, Patch } from "@nestjs/common";
-import { Controller } from "@nestjs/common";
-import { JournalService } from "../providers/journal.service";
-import { JournalDocument } from "src/schemas";
+import {
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Delete,
+  Patch,
+  Controller,
+} from "@nestjs/common";
+import { Request } from "express";
+
 import {
   DIMIJwtAuthGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   ViewPermissionGuard,
 } from "src/auth/guards";
+
+import { JournalDocument } from "src/schemas";
+
 import {
   CreateJournalDto,
   DeleteJournalDto,
   GetJournalDto,
   ManageJournal,
-} from "../dto/journal.dto";
-import { Request } from "express";
+} from "../dto";
+import { JournalService } from "../providers";
 
 @Controller("journal")
 export class JournalController {

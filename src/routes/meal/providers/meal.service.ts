@@ -1,12 +1,19 @@
+import { HttpService } from "@nestjs/axios";
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { Model } from "mongoose";
-import { Meal, MealDocument, StudentDocument } from "src/schemas";
-import { HttpService } from "@nestjs/axios";
-import moment from "moment";
 import cheerio from "cheerio";
-import { MealTimetable, MealTimetableDocument } from "src/schemas";
+import moment from "moment";
+import { Model } from "mongoose";
+
+import {
+  Meal,
+  MealDocument,
+  StudentDocument,
+  MealTimetable,
+  MealTimetableDocument,
+} from "src/schemas";
+
 import { CreateMealTimetableDto } from "../dto/meal.dto";
 
 @Injectable()

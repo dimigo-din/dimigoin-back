@@ -1,18 +1,19 @@
 import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-
+import { JwtService } from "@nestjs/jwt";
+import { InjectModel } from "@nestjs/mongoose";
+import { OAuth2Client } from "google-auth-library";
 import { Model } from "mongoose";
-import { LoginDto } from "src/routes/user/dto/user.dto";
+
+import { LoginDto } from "src/routes/user/dto";
+import { UserService } from "src/routes/user/providers/user.service";
+
 import {
   StudentDocument,
   TeacherDocument,
   Token,
   TokenDocument,
 } from "src/schemas";
-import { UserService } from "src/routes/user/providers/user.service";
-import { OAuth2Client } from "google-auth-library";
 
 import { DIMIJwtPayload, DIMIRefreshPayload } from "../interface";
 

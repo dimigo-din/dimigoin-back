@@ -1,5 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+
 import { AppService } from "src/app/app.service";
 
 export const DIMISwaggerSetup = async (app: INestApplication) => {

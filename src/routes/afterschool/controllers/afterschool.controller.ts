@@ -13,9 +13,10 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Request } from "express";
+
+import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
-import { AfterschoolService } from "../providers/afterschool.service";
-import { ManageAfterschoolDto } from "../dto/afterschoool.dto";
+
 import {
   AfterschoolApplicationDocument,
   AfterschoolApplicationResponse,
@@ -23,8 +24,8 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { EditPermissionGuard } from "src/auth/guards";
-import { DIMIJwtAuthGuard } from "src/auth/guards/jwt.guard";
+import { ManageAfterschoolDto } from "../dto";
+import { AfterschoolService } from "../providers";
 
 @Controller("afterschool")
 export class AfterschoolController {

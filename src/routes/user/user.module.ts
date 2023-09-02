@@ -1,5 +1,11 @@
-import { forwardRef, Global, Module } from "@nestjs/common";
+import { Global, Module, forwardRef } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
+import { FrigoModule } from "src/routes/frigo";
+import { LaundryModule } from "src/routes/laundry";
+import { StayModule } from "src/routes/stay";
+
 import {
   Group,
   GroupSchema,
@@ -8,11 +14,9 @@ import {
   Teacher,
   TeacherSchema,
 } from "src/schemas";
-import { FrigoModule } from "../frigo/frigo.module";
-import { LaundryModule } from "../laundry/laundry.module";
-import { StayModule } from "../stay/stay.module";
-import { UserController } from "./controllers/user.controller";
-import { UserService } from "./providers/user.service";
+
+import * as userControllers from "./controllers";
+import * as userServices from "./providers";
 
 @Global()
 @Module({
@@ -26,8 +30,8 @@ import { UserService } from "./providers/user.service";
     LaundryModule,
     FrigoModule,
   ],
-  controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
+  controllers: importToArray(userControllers),
+  providers: importToArray(userServices),
+  exports: importToArray(userServices),
 })
 export class UserModule {}

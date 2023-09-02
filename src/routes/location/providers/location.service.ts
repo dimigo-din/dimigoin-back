@@ -2,7 +2,10 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
+
 import { ResponseDto } from "src/common/dto";
+import { StayService } from "src/routes/stay/providers";
+
 import {
   Location,
   LocationDocument,
@@ -10,7 +13,6 @@ import {
   PlaceDocument,
   StudentDocument,
 } from "src/schemas";
-import { StayService } from "../../stay/providers/stay.service";
 
 @Injectable()
 export class LocationService {

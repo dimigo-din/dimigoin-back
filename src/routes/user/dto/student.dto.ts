@@ -1,5 +1,6 @@
-import { Length, Matches, IsIn, IsString, IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Length, Matches, IsIn, IsString, IsNumber } from "class-validator";
+
 import { ClassValues, GenderValues, GradeValues } from "src/common/types";
 
 export class CreateStudentDto {

@@ -1,17 +1,21 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
+import { StayModule } from "src/routes/stay";
+
 import { Washer, WasherSchema } from "src/schemas";
-import { LaundryService } from "./providers/laundry.service";
-import { LaundryController } from "./controllers/laundry.controller";
-import { StayModule } from "../stay/stay.module";
+
+import * as laundryControllers from "./controllers";
+import * as laundryServices from "./providers";
 
 @Module({
   imports: [
-    StayModule,
     MongooseModule.forFeature([{ name: Washer.name, schema: WasherSchema }]),
+    StayModule,
   ],
-  controllers: [LaundryController],
-  providers: [LaundryService],
-  exports: [LaundryService],
+  controllers: importToArray(laundryControllers),
+  providers: importToArray(laundryServices),
+  exports: importToArray(laundryServices),
 })
 export class LaundryModule {}

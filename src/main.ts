@@ -1,4 +1,6 @@
 import { NestFactory } from "@nestjs/core";
+import helmet from "helmet";
+
 import { AppModule } from "./app";
 import {
   DIMINotFoundFilter,
@@ -6,8 +8,6 @@ import {
   DIMIWrapperInterceptor,
   DIMIValidationPipe,
 } from "./common";
-
-import helmet from "helmet";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

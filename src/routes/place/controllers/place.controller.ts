@@ -7,10 +7,13 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
+
+import { DIMIJwtAuthGuard } from "src/auth/guards";
+
 import { PlaceDocument, PlaceGroupDocument } from "src/schemas";
-import { PlaceService } from "../providers/place.service";
-import { CreatePlaceDto, CreatePlaceGroupDto } from "../dto/place.dto";
-import { DIMIJwtAuthGuard } from "src/auth";
+
+import { CreatePlaceDto, CreatePlaceGroupDto } from "../dto";
+import { PlaceService } from "../providers";
 
 @Controller("place")
 export class PlaceController {

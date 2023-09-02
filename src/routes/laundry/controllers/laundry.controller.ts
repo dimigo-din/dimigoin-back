@@ -9,20 +9,19 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { Request } from "express";
-import {
-  ApplyLaundryDto,
-  CreateWasherDto,
-  EditWasherDto,
-} from "../dto/laundry.dto";
-import { ResponseDto } from "src/common/dto";
+
 import {
   ViewPermissionGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   DIMIJwtAuthGuard,
 } from "src/auth/guards";
+import { ResponseDto } from "src/common/dto";
+
 import { StudentDocument, WasherDocument } from "src/schemas";
-import { LaundryService } from "../providers/laundry.service";
+
+import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from "../dto";
+import { LaundryService } from "../providers";
 
 @Controller("laundry")
 export class LaundryController {

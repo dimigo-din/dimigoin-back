@@ -8,17 +8,19 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { Request } from "express";
-import { StudentDocument } from "src/schemas";
-import { MealService } from "../providers/meal.service";
 import moment from "moment";
+
 import {
   DIMIJwtAuthGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   ViewPermissionGuard,
 } from "src/auth/guards";
-import { MealTimetable } from "src/schemas";
-import { CreateMealTimetableDto } from "../dto/meal.dto";
+
+import { StudentDocument, MealTimetable } from "src/schemas";
+
+import { CreateMealTimetableDto } from "../dto";
+import { MealService } from "../providers";
 
 @Controller("meal")
 export class MealController {

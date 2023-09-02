@@ -5,10 +5,11 @@ import {
   HttpException,
   HttpStatus,
 } from "@nestjs/common";
-import { LoginDto, refreshTokenDto } from "src/routes/user/dto/user.dto";
-import { AuthService } from "../providers/auth.service";
+
+import { LoginDto, refreshTokenDto } from "src/routes/user/dto";
 
 import { DIMIRefreshPayload } from "../interface";
+import { AuthService } from "../providers/auth.service";
 
 @Controller("auth")
 export class AuthController {

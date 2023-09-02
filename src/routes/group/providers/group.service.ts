@@ -1,9 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Group, GroupDocument } from "src/schemas";
-import { CreateGroupDto } from "../dto/group.dto";
+
 import { ResponseDto } from "src/common/dto";
+
+import { Group, GroupDocument } from "src/schemas";
+
+import { CreateGroupDto } from "../dto";
 
 @Injectable()
 export class GroupService {

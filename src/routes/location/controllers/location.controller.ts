@@ -1,9 +1,12 @@
 import { Controller, Delete, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
+
+import { DIMIJwtAuthGuard } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
+
 import { Location, LocationDocument, StudentDocument } from "src/schemas";
-import { LocationService } from "../providers/location.service";
-import { DIMIJwtAuthGuard } from "src/auth";
+
+import { LocationService } from "../providers";
 
 @Controller("location")
 export class LocationController {

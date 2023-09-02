@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+
 import { StatusValues } from "../common";
 
 export type StayOutgoDocument = StayOutgo & Document;

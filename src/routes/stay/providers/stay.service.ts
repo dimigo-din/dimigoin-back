@@ -1,7 +1,14 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import moment from "moment";
 import { Model, Types } from "mongoose";
-import { ApplyStayDto, ApplyStayOutgoDto } from "../dto/stay.dto";
+
+import {
+  stringDateToMoment,
+  stringDateTimeToMoment,
+  momentToStringDate,
+} from "src/common/utils";
+
 import {
   Stay,
   StayDocument,
@@ -10,13 +17,11 @@ import {
   StayOutgo,
   StayOutgoDocument,
   StudentDocument,
-} from "@src/schemas";
-import moment from "moment";
-import {
-  stringDateToMoment,
-  stringDateTimeToMoment,
-  momentToStringDate,
-} from "@src/common/utils";
+} from "src/schemas";
+
+import { ApplyStayDto, ApplyStayOutgoDto } from "../dto";
+
+import { StayManageService } from "./stay.manage.service";
 
 @Injectable()
 export class StayService {
@@ -29,6 +34,8 @@ export class StayService {
 
     @InjectModel(StayOutgo.name)
     private stayOutgoModel: Model<StayOutgoDocument>,
+
+    private stayManageService: StayManageService,
   ) {}
 
   async getCurrent(): Promise<StayDocument> {
@@ -38,7 +45,7 @@ export class StayService {
     return stay;
   }
 
-  async getApplications(): Promise<StayApplicationDocument[]> {
+  async getCurrentApplications(): Promise<StayApplicationDocument[]> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
 
@@ -82,23 +89,7 @@ export class StayService {
     )
       throw new HttpException("해당 학년의 신청기간이 아닙니다.", 403);
 
-    if (!stay.seat[user.gender + user.grade].includes(data.seat))
-      throw new HttpException("해당 학년이 신청 가능한 좌석이 아닙니다.", 403);
-
-    const existingApplication = await this.stayApplicationModel.findOne({
-      user: user._id,
-    });
-    if (existingApplication)
-      throw new HttpException("이미 잔류를 신청했습니다.", 403);
-
-    const application = new this.stayApplicationModel({
-      stay: stay._id,
-      user: user._id,
-      ...data,
-    });
-    await application.save();
-
-    return application;
+    return this.stayManageService.applyStudent(user._id, data);
   }
 
   async cancel(user: StudentDocument): Promise<StayApplicationDocument> {
@@ -116,16 +107,7 @@ export class StayService {
     )
       throw new HttpException("해당 학년의 취소기간이 아닙니다.", 403);
 
-    const stayApplication = await this.stayApplicationModel.findOneAndDelete({
-      stay: stay._id,
-      user: user._id,
-    });
-    if (!stayApplication)
-      throw new HttpException("취소할 잔류신청이 없습니다.", 404);
-
-    await this.stayOutgoModel.deleteMany({ user: user._id });
-
-    return stayApplication;
+    return this.stayManageService.cancelStudent(user._id);
   }
 
   async getMyStay(user: StudentDocument): Promise<object | boolean> {

@@ -10,12 +10,15 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
-import { ApplyStayDto, ApplyStayOutgoDto } from "../dto/stay.dto";
 import { Types } from "mongoose";
+
 import { StudentOnlyGuard, DIMIJwtAuthGuard } from "src/auth/guards";
-import { StayDocument, StayApplication, StayOutgo } from "src/schemas";
-import { StayService } from "../providers/stay.service";
-import { createOpertation } from "@src/common/utils";
+import { createOpertation } from "src/common/utils";
+
+import { Stay, StayApplication, StayOutgo, StudentDocument } from "src/schemas";
+
+import { ApplyStayDto, ApplyStayOutgoDto } from "../dto";
+import { StayService } from "../providers";
 
 @ApiTags("Stay")
 @Controller("stay")
@@ -31,12 +34,12 @@ export class StayController {
   )
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
-  async getStay(): Promise<{
-    stay: StayDocument;
+  async getCurrentStay(): Promise<{
+    stay: Stay;
     applications: StayApplication[];
   }> {
     const currentStay = await this.stayService.getCurrent();
-    const currentApplications = await this.stayService.getApplications();
+    const currentApplications = await this.stayService.getCurrentApplications();
     return {
       stay: currentStay,
       applications: currentApplications,
@@ -56,7 +59,7 @@ export class StayController {
     @Req() req: Request,
     @Body() data: ApplyStayDto,
   ): Promise<StayApplication> {
-    return await this.stayService.apply(req.user, data);
+    return await this.stayService.apply(req.user as StudentDocument, data);
   }
 
   @ApiOperation(
@@ -69,7 +72,7 @@ export class StayController {
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<StayApplication> {
-    return await this.stayService.cancel(req.user);
+    return await this.stayService.cancel(req.user as StudentDocument);
   }
 
   @ApiOperation(
@@ -85,7 +88,7 @@ export class StayController {
     @Req() req: Request,
     @Body() data: ApplyStayOutgoDto,
   ): Promise<StayOutgo> {
-    return await this.stayService.applyOutgo(req.user, data);
+    return await this.stayService.applyOutgo(req.user as StudentDocument, data);
   }
 
   @ApiOperation(
@@ -101,6 +104,9 @@ export class StayController {
     @Req() req: Request,
     @Param("id") outgoId: Types.ObjectId,
   ): Promise<StayOutgo> {
-    return await this.stayService.cancelOutgo(req.user, outgoId);
+    return await this.stayService.cancelOutgo(
+      req.user as StudentDocument,
+      outgoId,
+    );
   }
 }

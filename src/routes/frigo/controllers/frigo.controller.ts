@@ -7,17 +7,20 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { FrigoDocument, StudentDocument } from "src/schemas";
-import { FrigoService } from "../providers/frigo.service";
-import { ManageFrigoDto, RequestFrigoDto } from "../dto/frigo.dto";
-import { ResponseDto } from "src/common/dto";
 import { Request } from "express";
+
 import {
   DIMIJwtAuthGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   ViewPermissionGuard,
 } from "src/auth/guards";
+import { ResponseDto } from "src/common/dto";
+
+import { FrigoDocument, StudentDocument } from "src/schemas";
+
+import { ManageFrigoDto, RequestFrigoDto } from "../dto";
+import { FrigoService } from "../providers";
 
 @Controller("frigo")
 export class FrigoController {

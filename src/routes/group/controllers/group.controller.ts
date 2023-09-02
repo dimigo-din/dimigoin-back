@@ -1,14 +1,23 @@
-import { Get, Post, Body, HttpException, UseGuards } from "@nestjs/common";
-import { Controller } from "@nestjs/common";
-import { GroupService } from "../providers/group.service";
-import { GroupDocument } from "src/schemas";
-import { CreateGroupDto } from "../dto/group.dto";
-import { ResponseDto } from "src/common/dto";
+import {
+  Get,
+  Post,
+  Body,
+  HttpException,
+  UseGuards,
+  Controller,
+} from "@nestjs/common";
+
 import {
   DIMIJwtAuthGuard,
   EditPermissionGuard,
   ViewPermissionGuard,
 } from "src/auth/guards";
+import { ResponseDto } from "src/common/dto";
+
+import { GroupDocument } from "src/schemas";
+
+import { CreateGroupDto } from "../dto";
+import { GroupService } from "../providers";
 
 @Controller("group")
 export class GroupController {

@@ -3,26 +3,24 @@ import {
   Controller,
   Post,
   Get,
-  Put,
   Delete,
   Param,
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
-import {
-  CreateStayDto,
-  ManageStayDto,
-  RejectStayDto,
-  ManageStayOutgoDto,
-  ApplyStayForceDto,
-} from "../dto/stay.dto";
-import { ResponseDto } from "src/common/dto";
+import { Types } from "mongoose";
+
 import {
   EditPermissionGuard,
   ViewPermissionGuard,
   DIMIJwtAuthGuard,
 } from "src/auth/guards";
-import { Stay, StayApplication, StayOutgo } from "src/schemas";
+import { ObjectIdPipe } from "src/common/pipes";
+import { createOpertation } from "src/common/utils";
+
+import { Stay, StayApplication } from "src/schemas";
+
+import { ApplyStayDto, CreateStayDto } from "../dto";
 import { StayManageService } from "../providers";
 
 @ApiTags("Stay Manage")
@@ -30,61 +28,92 @@ import { StayManageService } from "../providers";
 export class StayManageController {
   constructor(private readonly stayManageService: StayManageService) {}
 
-  @ApiOperation({ summary: "모든 잔류 정보" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 정보",
+      description: "모든 잔류 정보를 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get()
   async getAllStay(): Promise<Stay[]> {
     return await this.stayManageService.getAll();
   }
 
-  @ApiOperation({ summary: "잔류 생성" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 정보",
+      description: "잔류를 생성합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
     return await this.stayManageService.create(data);
   }
 
-  @ApiOperation({ summary: "잔류 수정" })
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Put()
-  async manageStay(@Body() data: ManageStayDto): Promise<Stay> {
-    return await this.stayManageService.edit(data);
-  }
-
-  @ApiOperation({ summary: "잔류 정보" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 정보",
+      description: "특정 잔류 정보를 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/:id")
-  async getStayInfo(@Param("id") stayId: string): Promise<any> {
-    return await this.stayManageService.getStayInfo(stayId);
+  async getStayInfo(
+    @Param("id", ObjectIdPipe) stayId: Types.ObjectId,
+  ): Promise<{
+    stay: Stay;
+    applications: StayApplication[];
+  }> {
+    const stay = await this.stayManageService.get(stayId);
+    const applications = await this.stayManageService.getApplications(stayId);
+    return {
+      stay,
+      applications,
+    };
   }
 
-  @ApiOperation({ summary: "잔류 삭제" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 삭제",
+      description: "잔류를 삭제합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Delete("/:id")
-  async deleteStay(@Body() data: ManageStayDto): Promise<Stay> {
-    return await this.stayManageService.edit(data);
+  async deleteStay(
+    @Param("id", ObjectIdPipe) stayId: Types.ObjectId,
+  ): Promise<Stay> {
+    return await this.stayManageService.delete(stayId);
   }
 
-  @ApiOperation({ summary: "잔류 학생 추가" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 학생 추가",
+      description: "학생 잔류 신청을 추가합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("student")
-  async applyStayForce(
-    @Body() data: ApplyStayForceDto,
+  @Post("student/:id")
+  async applyStudent(
+    @Param("id", ObjectIdPipe) studentId: Types.ObjectId,
+    @Body() data: ApplyStayDto,
   ): Promise<StayApplication> {
-    return await this.stayManageService.applyStayForce(data);
+    return await this.stayManageService.applyStudent(studentId, data);
   }
 
-  @ApiOperation({ summary: "잔류 학생 삭제" })
+  @ApiOperation(
+    createOpertation({
+      name: "잔류 학생 삭제",
+      description: "학생 잔류 신청을 삭제합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Delete("student")
-  async rejectStay(@Body() data: RejectStayDto): Promise<ResponseDto> {
-    return await this.stayManageService.cancelStay(data.user, true);
-  }
-
-  @ApiOperation({ summary: "잔류외출 학생 추가" })
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("outgo/student")
-  async manageStayOutgo(@Body() data: ManageStayOutgoDto): Promise<StayOutgo> {
-    return await this.stayManageService.manageStayOutgo(data);
+  @Delete("student/:id")
+  async cancelStudent(
+    @Param("id", ObjectIdPipe) studentId: Types.ObjectId,
+  ): Promise<StayApplication> {
+    return await this.stayManageService.cancelStudent(studentId);
   }
 }

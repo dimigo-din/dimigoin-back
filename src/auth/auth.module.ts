@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { UserModule } from "src/routes/user/user.module";
+
 import {
   Student,
   StudentSchema,
@@ -10,11 +12,10 @@ import {
   TokenSchema,
 } from "src/schemas";
 
-import { UserModule } from "src/routes/user/user.module";
+import { DIMIConfigModule, DIMIJWTModule } from "../common";
+
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./providers/auth.service";
-
-import { DIMIConfigModule, DIMIJWTModule } from "../common";
 import { DIMIJwtStrategy } from "./strategies";
 
 @Module({

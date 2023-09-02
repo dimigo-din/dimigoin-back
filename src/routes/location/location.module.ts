@@ -1,9 +1,13 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
 import { Place, PlaceSchema, Location, LocationSchema } from "src/schemas";
+
 import { StayModule } from "../stay/stay.module";
-import { LocationController } from "./controllers/location.controller";
-import { LocationService } from "./providers/location.service";
+
+import * as locationControllers from "./controllers";
+import * as locationServices from "./providers";
 
 @Module({
   imports: [
@@ -13,8 +17,8 @@ import { LocationService } from "./providers/location.service";
     ]),
     StayModule,
   ],
-  controllers: [LocationController],
-  providers: [LocationService],
-  exports: [LocationService],
+  controllers: importToArray(locationControllers),
+  providers: importToArray(locationServices),
+  exports: importToArray(locationServices),
 })
 export class LocationModule {}

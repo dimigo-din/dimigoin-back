@@ -1,13 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import * as moment from "moment-timezone";
+
+import { AuthModule } from "../auth";
+import { DIMIEssentialModules, DIMILoggerMiddleware } from "../common";
+import { StaticModules } from "../routes";
 
 import { AppService } from "./app.service";
-
-import { DIMIEssentialModules, DIMILoggerMiddleware } from "../common";
-
-import { StaticModules } from "../routes";
-import { AuthModule } from "../auth";
-
-import * as moment from "moment-timezone";
 
 @Module({
   imports: [AuthModule, ...DIMIEssentialModules, ...StaticModules],

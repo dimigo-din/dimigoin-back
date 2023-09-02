@@ -9,18 +9,21 @@ import {
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { StudentDocument, Teacher } from "src/schemas";
-import { UserService } from "../providers/user.service";
-import { ManageTeacherGroupDto } from "../dto/teacher.dto";
-import { ResponseDto } from "src/common/dto";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Request } from "express";
+
 import {
   ViewPermissionGuard,
   EditPermissionGuard,
   StudentOnlyGuard,
   DIMIJwtAuthGuard,
 } from "src/auth/guards";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { ResponseDto } from "src/common/dto";
+
+import { StudentDocument, Teacher } from "src/schemas";
+
+import { ManageTeacherGroupDto } from "../dto";
+import { UserService } from "../providers";
 
 @Controller("user")
 export class UserController {

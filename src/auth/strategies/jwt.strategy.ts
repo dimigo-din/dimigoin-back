@@ -1,4 +1,3 @@
-import { PassportStrategy } from "@nestjs/passport";
 import {
   forwardRef,
   HttpException,
@@ -7,11 +6,12 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
 
-import { DIMIJwtPayload } from "../interface";
+import { UserService } from "src/routes/user/providers";
 
-import { UserService } from "src/routes";
+import { DIMIJwtPayload } from "../interface";
 
 @Injectable()
 export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {

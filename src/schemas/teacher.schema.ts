@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+
 import { Permissions } from "../common";
 
 export type TeacherDocument = Teacher & Document;

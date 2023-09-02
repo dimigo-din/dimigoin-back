@@ -1,9 +1,12 @@
+import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { HttpModule } from "@nestjs/axios";
+import importToArray from "import-to-array";
+
 import { Timetable, TimetableSchema } from "src/schemas";
-import { TimetableService } from "./providers/timetable.service";
-import { TimetableController } from "./controllers/timetable.controller";
+
+import * as timetableControllers from "./controllers";
+import * as timetableServices from "./providers";
 
 @Module({
   imports: [
@@ -15,8 +18,8 @@ import { TimetableController } from "./controllers/timetable.controller";
     ]),
     HttpModule,
   ],
-  controllers: [TimetableController],
-  providers: [TimetableService],
-  exports: [TimetableService],
+  controllers: importToArray(timetableControllers),
+  providers: importToArray(timetableServices),
+  exports: importToArray(timetableServices),
 })
 export class TimetableModule {}

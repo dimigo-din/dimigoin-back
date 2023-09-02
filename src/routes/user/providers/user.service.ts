@@ -1,6 +1,13 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, ObjectId } from "mongoose";
+import XLSX from "xlsx";
+
+import { ResponseDto } from "src/common/dto";
+import { Permissions } from "src/common/types";
+import { FrigoService } from "src/routes/frigo/providers";
+import { LaundryService } from "src/routes/laundry/providers";
+import { StayService } from "src/routes/stay/providers";
 
 import {
   Group,
@@ -10,15 +17,8 @@ import {
   Teacher,
   TeacherDocument,
 } from "src/schemas";
-import { ManageTeacherGroupDto } from "../dto/teacher.dto";
-import { ResponseDto } from "src/common/dto";
 
-import { LaundryService } from "../../laundry/providers/laundry.service";
-import { StayService } from "../../stay/providers/stay.service";
-import { FrigoService } from "../../frigo/providers/frigo.service";
-import { Permissions } from "src/common/types";
-
-import XLSX from "xlsx";
+import { ManageTeacherGroupDto } from "../dto";
 
 @Injectable()
 export class UserService {
@@ -64,6 +64,13 @@ export class UserService {
   async getAllStudent(): Promise<StudentDocument[]> {
     const students = await this.studentModel.find();
     return students;
+  }
+
+  async getStudent(studentId: Types.ObjectId): Promise<StudentDocument> {
+    const student = await this.studentModel.findById(studentId);
+    if (!student) throw new HttpException("학생이 존재하지 않습니다.", 404);
+
+    return student;
   }
 
   async getStudentById(_id: string): Promise<StudentDocument> {

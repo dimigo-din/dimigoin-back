@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { Event, EventDocument } from "src/schemas";
 import moment from "moment";
+import { Model } from "mongoose";
 import XLSX from "xlsx";
-import { StayService } from "../../stay/providers/stay.service";
+
+import { StayService } from "src/routes/stay/providers";
+
+import { Event, EventDocument } from "src/schemas";
 
 @Injectable()
 export class EventService {

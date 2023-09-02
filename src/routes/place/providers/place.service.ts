@@ -1,13 +1,15 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { CreatePlaceDto, CreatePlaceGroupDto } from "../dto/place.dto";
+
 import {
   Place,
   PlaceDocument,
   PlaceGroup,
   PlaceGroupDocument,
 } from "src/schemas";
+
+import { CreatePlaceDto, CreatePlaceGroupDto } from "../dto";
 
 @Injectable()
 export class PlaceService {

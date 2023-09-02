@@ -1,5 +1,7 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+
 import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+
 import { TimetableService } from "../providers/timetable.service";
 
 @Controller("timetable")

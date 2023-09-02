@@ -21,7 +21,7 @@ export const globalOpcode: { [key in OpcodeNames]: OpcodeItem } = {
     "인증되지 않았습니다. JWT 토큰을 넣어주세요.",
   ),
   ValidateFailed: $(
-    1,
+    400,
     HttpStatus.BAD_REQUEST,
     "잘못된 형식입니다. 모든 정보를 올바르게 입력해주세요.",
   ),

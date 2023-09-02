@@ -1,6 +1,6 @@
-import { MongooseModule, MongooseModuleAsyncOptions } from "@nestjs/mongoose";
-import { ConfigService } from "@nestjs/config";
 import { Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { MongooseModule, MongooseModuleAsyncOptions } from "@nestjs/mongoose";
 
 import { DIMIConfigModule } from "../modules";
 

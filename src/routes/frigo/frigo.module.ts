@@ -1,15 +1,18 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
 import { Frigo, FrigoSchema } from "src/schemas";
-import { FrigoController } from "./controllers/frigo.controller";
-import { FrigoService } from "./providers/frigo.service";
+
+import * as frigoControllers from "./controllers";
+import * as frigoServices from "./providers";
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Frigo.name, schema: FrigoSchema }]),
   ],
-  controllers: [FrigoController],
-  providers: [FrigoService],
-  exports: [FrigoService],
+  controllers: importToArray(frigoControllers),
+  providers: importToArray(frigoServices),
+  exports: importToArray(frigoServices),
 })
 export class FrigoModule {}

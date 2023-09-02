@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+
 import { GenderValues, GradeValues, WasherValues } from "../common";
 
 export type WasherDocument = Washer & Document;

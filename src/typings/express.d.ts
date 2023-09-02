@@ -1,4 +1,4 @@
-import { StudentDocument, TeacherDocument } from "../common/schemas";
+import { StudentDocument, TeacherDocument } from "src/schemas";
 
 declare module "express" {
   interface Request {

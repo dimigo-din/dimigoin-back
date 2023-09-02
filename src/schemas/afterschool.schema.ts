@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+
 import { GradeValues } from "../common";
 
 export type AfterschoolDocument = Afterschool & Document;

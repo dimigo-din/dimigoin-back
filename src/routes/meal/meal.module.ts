@@ -1,14 +1,17 @@
+import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { HttpModule } from "@nestjs/axios";
+import importToArray from "import-to-array";
+
 import {
   Meal,
   MealSchema,
   MealTimetable,
   MealTimetableSchema,
 } from "src/schemas";
-import { MealService } from "./providers/meal.service";
-import { MealController } from "./controllers/meal.controller";
+
+import * as mealControllers from "./controllers";
+import * as mealServices from "./providers";
 
 @Module({
   imports: [
@@ -18,8 +21,8 @@ import { MealController } from "./controllers/meal.controller";
     ]),
     HttpModule,
   ],
-  controllers: [MealController],
-  providers: [MealService],
-  exports: [MealService],
+  controllers: importToArray(mealControllers),
+  providers: importToArray(mealServices),
+  exports: importToArray(mealServices),
 })
 export class MealModule {}

@@ -1,8 +1,10 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
+import XLSX from "xlsx";
+
 import { ResponseDto } from "src/common/dto";
-import { ManageAfterschoolDto } from "../dto/afterschoool.dto";
+
 import {
   Afterschool,
   AfterschoolApplication,
@@ -10,7 +12,8 @@ import {
   AfterschoolApplicationDocument,
   StudentDocument,
 } from "src/schemas";
-import XLSX from "xlsx";
+
+import { ManageAfterschoolDto } from "../dto";
 
 @Injectable()
 export class AfterschoolService {

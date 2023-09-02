@@ -1,5 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
+import { UserModule } from "src/routes/user";
 
 import {
   Afterschool,
@@ -7,9 +10,9 @@ import {
   AfterschoolApplication,
   AfterschoolApplicationSchema,
 } from "src/schemas";
-import { UserModule } from "../user/user.module";
-import { AfterschoolController } from "./controllers/afterschool.controller";
-import { AfterschoolService } from "./providers/afterschool.service";
+
+import * as afterschoolControllers from "./controllers";
+import * as afterschoolServices from "./providers";
 
 @Module({
   imports: [
@@ -22,8 +25,8 @@ import { AfterschoolService } from "./providers/afterschool.service";
     ]),
     UserModule,
   ],
-  controllers: [AfterschoolController],
-  providers: [AfterschoolService],
-  exports: [AfterschoolService],
+  controllers: importToArray(afterschoolControllers),
+  providers: importToArray(afterschoolServices),
+  exports: importToArray(afterschoolServices),
 })
 export class AfterschoolModule {}

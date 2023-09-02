@@ -2,13 +2,12 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
-import {
-  ApplyLaundryDto,
-  CreateWasherDto,
-  EditWasherDto,
-} from "../dto/laundry.dto";
+
+import { StayService } from "src/routes/stay/providers";
+
 import { StudentDocument, Washer, WasherDocument } from "src/schemas";
-import { StayService } from "../../stay/providers/stay.service";
+
+import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from "../dto";
 
 @Injectable()
 export class LaundryService {

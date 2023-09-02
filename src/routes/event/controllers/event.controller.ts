@@ -9,10 +9,13 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Request } from "express";
+
 import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { StayService } from "src/routes/stay/providers";
+
 import { EventDocument, StudentDocument } from "src/schemas";
-import { StayService } from "../../stay/providers/stay.service";
-import { EventService } from "../providers/event.service";
+
+import { EventService } from "../providers";
 
 @Controller("event")
 export class EventController {

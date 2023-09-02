@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsIn, IsNumber, IsString } from "class-validator";
+
 import { GradeValues } from "src/common/types";
 
 export class ManageAfterschoolDto {

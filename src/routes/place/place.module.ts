@@ -1,8 +1,11 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import importToArray from "import-to-array";
+
 import { Place, PlaceGroup, PlaceGroupSchema, PlaceSchema } from "src/schemas";
-import { PlaceController } from "./controllers/place.controller";
-import { PlaceService } from "./providers/place.service";
+
+import * as placeControllers from "./controllers";
+import * as placeServices from "./providers";
 
 @Module({
   imports: [
@@ -11,8 +14,8 @@ import { PlaceService } from "./providers/place.service";
       { name: PlaceGroup.name, schema: PlaceGroupSchema },
     ]),
   ],
-  controllers: [PlaceController],
-  providers: [PlaceService],
-  exports: [PlaceService],
+  controllers: importToArray(placeControllers),
+  providers: importToArray(placeServices),
+  exports: importToArray(placeServices),
 })
 export class PlaceModule {}
