@@ -66,8 +66,6 @@ export class TimetableManageService {
                 }),
             };
 
-            console.log(dailyTimetable);
-
             list.push(dailyTimetable);
           }
         }

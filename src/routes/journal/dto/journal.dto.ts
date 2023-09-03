@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsMongoId, IsString } from "class-validator";
 
+import { IsCustomDate } from "src/common/validators";
+
 export class GetJournalDto {
   @ApiProperty()
   @IsMongoId()
@@ -15,10 +17,6 @@ export class DeleteJournalDto {
 
 export class CreateJournalDto {
   @ApiProperty()
-  @IsMongoId()
-  user: string;
-
-  @ApiProperty()
   @IsString()
   title: string;
 
@@ -28,7 +26,8 @@ export class CreateJournalDto {
 
   @ApiProperty()
   @IsString()
-  date: Date;
+  @IsCustomDate()
+  date: string;
 }
 
 export class ManageJournal {
@@ -46,5 +45,6 @@ export class ManageJournal {
 
   @ApiProperty()
   @IsString()
-  date: Date;
+  @IsCustomDate()
+  date: string;
 }

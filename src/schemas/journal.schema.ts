@@ -23,11 +23,12 @@ export class Journal {
   @Prop({
     required: true,
   })
-  date: Date;
+  date: string;
 
   @Prop({
     required: true,
-    ref: "Students",
+    type: Types.ObjectId,
+    ref: "Student",
   })
   user: Types.ObjectId;
 }

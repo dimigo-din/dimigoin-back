@@ -1,75 +1,29 @@
-import {
-  Get,
-  Post,
-  Body,
-  UseGuards,
-  Req,
-  Delete,
-  Patch,
-  Controller,
-} from "@nestjs/common";
+import { Get, UseGuards, Req, Controller } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
-import {
-  DIMIJwtAuthGuard,
-  EditPermissionGuard,
-  StudentOnlyGuard,
-  ViewPermissionGuard,
-} from "src/auth/guards";
+import { DIMIJwtAuthGuard, StudentOnlyGuard } from "src/auth/guards";
+import { createOpertation } from "src/common/utils";
 
-import { JournalDocument } from "src/schemas";
+import { JournalDocument, StudentDocument } from "src/schemas";
 
-import {
-  CreateJournalDto,
-  DeleteJournalDto,
-  GetJournalDto,
-  ManageJournal,
-} from "../dto";
 import { JournalService } from "../providers";
 
+@ApiTags("Journal")
 @Controller("journal")
 export class JournalController {
   constructor(private readonly journalService: JournalService) {}
 
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get()
-  async getAllJournal(): Promise<JournalDocument[]> {
-    return await this.journalService.getAllJournal();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get("student")
-  async getAllJournalByStudent(
-    @Body() data: GetJournalDto,
-  ): Promise<JournalDocument[]> {
-    return await this.journalService.getAllJournalByStudent(data.user);
-  }
-
+  @ApiOperation(
+    createOpertation({
+      name: "지도일지",
+      description: "자신의 지도일지를 가져옵니다.",
+      only: "student",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
-  @Get("my")
+  @Get()
   async getMyJournal(@Req() req: Request): Promise<JournalDocument[]> {
-    return await this.journalService.getAllJournalByStudent(req.user._id);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post()
-  async createJournal(
-    @Body() data: CreateJournalDto,
-  ): Promise<JournalDocument> {
-    return await this.journalService.createJournal(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Patch()
-  async manageJournal(@Body() data: ManageJournal): Promise<JournalDocument> {
-    return await this.journalService.manageJournal(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Delete()
-  async deleteJournal(
-    @Body() data: DeleteJournalDto,
-  ): Promise<JournalDocument> {
-    return await this.journalService.deleteJournal(data);
+    return await this.journalService.get(req.user as StudentDocument);
   }
 }
