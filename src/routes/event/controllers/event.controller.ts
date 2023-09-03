@@ -1,22 +1,16 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Req,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard } from "src/auth/guards";
+import { createOpertation } from "src/common/utils";
 import { StayService } from "src/routes/stay/providers";
 
 import { EventDocument, StudentDocument } from "src/schemas";
 
 import { EventService } from "../providers";
 
+@ApiTags("Event")
 @Controller("event")
 export class EventController {
   constructor(
@@ -24,6 +18,12 @@ export class EventController {
     private readonly stayService: StayService,
   ) {}
 
+  @ApiOperation(
+    createOpertation({
+      name: "이벤트",
+      description: "이벤트를 반환합니다.",
+    }),
+  )
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getEvent(@Req() req: Request): Promise<{
@@ -31,22 +31,10 @@ export class EventController {
     type: number;
   }> {
     const user = req.user as StudentDocument;
+
     return {
-      events: await this.eventService.getEvent(user.grade),
-      type: await this.stayService.isStay(new Date()),
+      events: await this.eventService.get(user.grade),
+      type: await this.stayService.isStay(),
     };
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("upload")
-  @UseInterceptors(FileInterceptor("file"))
-  async uploadEvent(@UploadedFile() file: Express.Multer.File): Promise<any> {
-    return await this.eventService.uploadEvent(file);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("type")
-  async isStay(): Promise<number> {
-    return await this.stayService.isStay(new Date());
   }
 }

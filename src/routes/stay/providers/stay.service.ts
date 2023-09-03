@@ -126,15 +126,15 @@ export class StayService {
     return appliers;
   }
 
-  async isStay(date: Date): Promise<number> {
+  async isStay(): Promise<number> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) return 0;
-    const startline = moment(stay.start);
-    const endline = moment(stay.end).endOf("day");
-    const target = moment(date);
 
-    if (target.isBetween(startline, endline)) return 1;
-    return 0;
+    const start = moment(stay.start).startOf("day");
+    const end = moment(stay.end).endOf("day");
+    const target = moment();
+
+    return target.isBetween(start, end, undefined, "[)") ? 1 : 0;
   }
 
   async getMyStay(student: StudentDocument): Promise<object | boolean> {

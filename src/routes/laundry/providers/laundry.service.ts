@@ -52,7 +52,7 @@ export class LaundryService {
   }
 
   async getAvailable(user: StudentDocument): Promise<WasherDocument[]> {
-    const isStay = await this.stayService.isStay(new Date());
+    const isStay = await this.stayService.isStay();
     const filter = { gender: user.gender, grade: 0 };
     if (!isStay) filter.grade = user.grade;
     else delete filter["grade"];
@@ -89,7 +89,7 @@ export class LaundryService {
       throw new HttpException("이미 세탁을 신청했습니다.", 404);
 
     const washer = await this.washerModel.findOne({ name: data.name });
-    const isStay = await this.stayService.isStay(new Date());
+    const isStay = await this.stayService.isStay();
 
     if (!washer)
       throw new HttpException("해당 세탁기가 존재하지 않습니다.", 404);

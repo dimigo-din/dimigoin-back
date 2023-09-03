@@ -7,6 +7,7 @@ import { createOpertation } from "src/common/utils";
 import { Timetable } from "src/schemas";
 
 import { TimetableManageService } from "../providers";
+
 @ApiTags("Timetable Manage")
 @Controller("manage/timetable")
 export class TimetableManageController {

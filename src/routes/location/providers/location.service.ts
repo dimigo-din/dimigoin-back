@@ -51,7 +51,7 @@ export class LocationService {
     const place = await this.placeModel.findById(placeId);
     if (!place) throw new HttpException("해당 장소가 존재하지 않습니다.", 404);
 
-    const isStay = await this.stayService.isStay(new Date());
+    const isStay = await this.stayService.isStay();
     if (isStay) {
       const stay = await this.stayService.getCurrent();
       const appliers = await this.stayService.getStayApplication(stay._id);
