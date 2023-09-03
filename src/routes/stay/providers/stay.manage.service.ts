@@ -134,6 +134,7 @@ export class StayManageService {
       throw new HttpException("해당 학년이 신청 가능한 좌석이 아닙니다.", 403);
 
     const existingApplication = await this.stayApplicationModel.findOne({
+      stay: stay._id,
       user: student._id,
     });
     if (existingApplication)
