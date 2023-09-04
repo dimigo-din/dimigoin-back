@@ -34,20 +34,18 @@ export class StayService {
     private stayManageService: StayManageService,
   ) {}
 
-  async getCurrent(): Promise<StayDocument> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
+  async getCurrentStay(): Promise<StayDocument> {
+    const currentStay = await this.stayManageService.getCurrentStay();
 
-    return stay;
+    return currentStay;
   }
 
-  async getCurrentApplications(): Promise<StayApplicationDocument[]> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
+  async getCurrentStayApplications(): Promise<StayApplicationDocument[]> {
+    const currentStay = await this.stayManageService.getCurrentStay();
 
     const stayApplications = await this.stayApplicationModel
       .find({
-        stay: stay._id,
+        stay: currentStay._id,
       })
       .populate({
         path: "user",
@@ -57,63 +55,62 @@ export class StayService {
     return stayApplications;
   }
 
-  async apply(
+  async applyStay(
     student: StudentDocument,
     data: ApplyStayDto,
   ): Promise<StayApplicationDocument> {
-    const stay = await this.canApply(student);
+    const stay = await this.canStayApply(student);
 
-    return this.stayManageService.applyStudent(student._id, stay._id, data);
+    return this.stayManageService.applyStudentStay(student._id, stay._id, data);
   }
 
-  async cancel(student: StudentDocument): Promise<StayApplicationDocument> {
-    const stay = await this.canApply(student);
+  async cancelStay(student: StudentDocument): Promise<StayApplicationDocument> {
+    const stay = await this.canStayApply(student);
 
-    return this.stayManageService.cancelStudent(student._id, stay._id);
+    return this.stayManageService.cancelStudentStay(student._id, stay._id);
   }
 
-  async applyOutgo(
+  async applyStayOutgo(
     student: StudentDocument,
     application: ApplyStayOutgoDto,
   ): Promise<StayOutgoDocument> {
-    const stay = await this.canApply(student);
+    const stay = await this.canStayApply(student);
 
-    return this.stayManageService.applyStudentOutgo(
+    return this.stayManageService.applyStudentStayOutgo(
       student._id,
       stay._id,
       application,
     );
   }
 
-  async cancelOutgo(
+  async cancelStayOutgo(
     student: StudentDocument,
     outgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
-    const stay = await this.canApply(student);
+    const stay = await this.canStayApply(student);
 
-    return this.stayManageService.cancelStudentOutgo(
+    return this.stayManageService.cancelStudentStayOutgo(
       student._id,
       stay._id,
       outgoId,
     );
   }
 
-  async canApply(student: StudentDocument): Promise<StayDocument> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) throw new HttpException("신청가능한 잔류일정이 없습니다.", 404);
+  async canStayApply(student: StudentDocument): Promise<StayDocument> {
+    const currentStay = await this.stayManageService.getCurrentStay();
 
     const now = moment();
     if (
       !now.isBetween(
-        stringDateTimeToMoment(stay.duration[student.grade - 1].start),
-        stringDateTimeToMoment(stay.duration[student.grade - 1].end),
+        stringDateTimeToMoment(currentStay.duration[student.grade - 1].start),
+        stringDateTimeToMoment(currentStay.duration[student.grade - 1].end),
         undefined,
         "[)",
       )
     )
       throw new HttpException("해당 학년의 신청기간이 아닙니다.", 403);
 
-    return stay;
+    return currentStay;
   }
 
   async getStayApplication(id: string): Promise<StayApplicationDocument[]> {
@@ -135,32 +132,5 @@ export class StayService {
     const target = moment();
 
     return target.isBetween(start, end, undefined, "[)") ? 1 : 0;
-  }
-
-  async getMyStay(student: StudentDocument): Promise<object | boolean> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) return false;
-
-    const application = await this.stayApplicationModel.findOne({
-      stay: stay._id,
-      user: student._id,
-    });
-    if (!application) return false;
-    if (!application.seat) application.seat = "미선택";
-    return { seat: application.seat, reason: application.reason };
-  }
-
-  async getMyStayOutgo(student: StudentDocument): Promise<any> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) return false;
-
-    const outgo = await this.stayOutgoModel.find({
-      stay: stay._id,
-      user: student._id,
-    });
-
-    if (outgo.length == 0) return false;
-
-    return outgo;
   }
 }

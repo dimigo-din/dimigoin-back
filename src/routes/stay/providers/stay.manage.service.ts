@@ -7,7 +7,7 @@ import {
   stringDateTimeToMoment,
   momentToStringDate,
 } from "src/common/utils";
-import { UserService } from "src/routes/user/providers";
+import { UserManageService } from "src/routes/user/providers";
 
 import {
   Stay,
@@ -32,17 +32,17 @@ export class StayManageService {
     @InjectModel(StayOutgo.name)
     private stayOutgoModel: Model<StayOutgoDocument>,
 
-    @Inject(forwardRef(() => UserService))
-    private userService: UserService,
+    @Inject(forwardRef(() => UserManageService))
+    private userManageService: UserManageService,
   ) {}
 
-  async getAll(): Promise<StayDocument[]> {
+  async getStays(): Promise<StayDocument[]> {
     const stays = await this.stayModel.find();
 
     return stays;
   }
 
-  async create(data: CreateStayDto): Promise<StayDocument> {
+  async createStay(data: CreateStayDto): Promise<StayDocument> {
     const stay = new this.stayModel({
       current: false,
       ...data,
@@ -52,7 +52,7 @@ export class StayManageService {
     return stay;
   }
 
-  async edit(
+  async editStay(
     stayId: Types.ObjectId,
     data: CreateStayDto,
   ): Promise<StayDocument> {
@@ -66,19 +66,21 @@ export class StayManageService {
     return stay;
   }
 
-  async delete(stayId: Types.ObjectId): Promise<StayDocument> {
+  async deleteStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
     await this.stayModel.findByIdAndDelete(stayId);
 
     return stay;
   }
 
-  async get(stayId: Types.ObjectId): Promise<StayDocument> {
-    const stay = await this.getStay(stayId);
+  async getStay(stayId: Types.ObjectId): Promise<StayDocument> {
+    const stay = await this.stayModel.findById(stayId);
+    if (!stay) throw new HttpException("해당 잔류 일정이 없습니다.", 404);
+
     return stay;
   }
 
-  async getApplications(
+  async getStayApplications(
     stayId: Types.ObjectId,
   ): Promise<StayApplicationDocument[]> {
     const stay = await this.getStay(stayId);
@@ -93,14 +95,14 @@ export class StayManageService {
     return applications;
   }
 
-  async getCurrentId(): Promise<Types.ObjectId> {
+  async getCurrentStay(): Promise<StayDocument> {
     const stay = await this.stayModel.findOne({ current: true });
     if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
 
-    return stay._id;
+    return stay;
   }
 
-  async setCurrent(stayId: Types.ObjectId): Promise<StayDocument> {
+  async setCurrentStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
     const currentStay = await this.stayModel.findOne({ current: true });
     if (currentStay) {
@@ -114,7 +116,7 @@ export class StayManageService {
     return stay;
   }
 
-  async deleteCurrent(stayId: Types.ObjectId): Promise<StayDocument> {
+  async deleteCurrentStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
     stay.current = false;
     await stay.save();
@@ -122,13 +124,28 @@ export class StayManageService {
     return stay;
   }
 
-  async applyStudent(
+  async getStudentStayApplication(
+    studentId: Types.ObjectId,
+    stayId: Types.ObjectId,
+  ): Promise<StayApplicationDocument> {
+    const stay = await this.getStay(stayId);
+    const student = await this.userManageService.getStudent(studentId);
+
+    const application = await this.stayApplicationModel.findOne({
+      stay: stay._id,
+      user: student._id,
+    });
+
+    return application;
+  }
+
+  async applyStudentStay(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
     data: ApplyStayDto,
   ): Promise<StayApplicationDocument> {
     const stay = await this.getStay(stayId);
-    const student = await this.userService.getStudent(studentId);
+    const student = await this.userManageService.getStudent(studentId);
 
     if (!stay.seat[student.gender + student.grade].includes(data.seat))
       throw new HttpException("해당 학년이 신청 가능한 좌석이 아닙니다.", 403);
@@ -155,12 +172,12 @@ export class StayManageService {
     return application;
   }
 
-  async cancelStudent(
+  async cancelStudentStay(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
   ): Promise<StayApplicationDocument> {
     const stay = await this.getStay(stayId);
-    const student = await this.userService.getStudent(studentId);
+    const student = await this.userManageService.getStudent(studentId);
 
     const application = await this.stayApplicationModel.findOneAndDelete({
       stay: stay._id,
@@ -174,13 +191,28 @@ export class StayManageService {
     return application;
   }
 
-  async applyStudentOutgo(
+  async getStudetnStayOutgo(
+    studentId: Types.ObjectId,
+    stayId: Types.ObjectId,
+  ): Promise<StayOutgoDocument[]> {
+    const stay = await this.getStay(stayId);
+    const student = await this.userManageService.getStudent(studentId);
+
+    const outgos = await this.stayOutgoModel.find({
+      stay: stay._id,
+      user: student._id,
+    });
+
+    return outgos;
+  }
+
+  async applyStudentStayOutgo(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
     application: ApplyStayOutgoDto,
   ): Promise<StayOutgoDocument> {
     const stay = await this.getStay(stayId);
-    const student = await this.userService.getStudent(studentId);
+    const student = await this.userManageService.getStudent(studentId);
 
     const stayApplication = await this.stayApplicationModel.findOne({
       stay: stay._id,
@@ -261,13 +293,13 @@ export class StayManageService {
     }
   }
 
-  async cancelStudentOutgo(
+  async cancelStudentStayOutgo(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
     outgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
     const stay = await this.getStay(stayId);
-    const student = await this.userService.getStudent(studentId);
+    const student = await this.userManageService.getStudent(studentId);
 
     const stayOutgo = await this.stayOutgoModel.findOneAndDelete({
       _id: outgoId,
@@ -278,12 +310,5 @@ export class StayManageService {
       throw new HttpException("해당 잔류외출 신청이 없습니다.", 404);
 
     return stayOutgo;
-  }
-
-  async getStay(stayId: Types.ObjectId): Promise<StayDocument> {
-    const stay = await this.stayModel.findById(stayId);
-    if (!stay) throw new HttpException("해당 잔류 일정이 없습니다.", 404);
-
-    return stay;
   }
 }

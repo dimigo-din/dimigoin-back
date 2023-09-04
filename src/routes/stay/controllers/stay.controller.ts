@@ -38,8 +38,9 @@ export class StayController {
     stay: Stay;
     applications: StayApplication[];
   }> {
-    const currentStay = await this.stayService.getCurrent();
-    const currentApplications = await this.stayService.getCurrentApplications();
+    const currentStay = await this.stayService.getCurrentStay();
+    const currentApplications =
+      await this.stayService.getCurrentStayApplications();
     return {
       stay: currentStay,
       applications: currentApplications,
@@ -59,7 +60,7 @@ export class StayController {
     @Req() req: Request,
     @Body() data: ApplyStayDto,
   ): Promise<StayApplication> {
-    return await this.stayService.apply(req.user as StudentDocument, data);
+    return await this.stayService.applyStay(req.user as StudentDocument, data);
   }
 
   @ApiOperation(
@@ -72,7 +73,7 @@ export class StayController {
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<StayApplication> {
-    return await this.stayService.cancel(req.user as StudentDocument);
+    return await this.stayService.cancelStay(req.user as StudentDocument);
   }
 
   @ApiOperation(
@@ -88,7 +89,10 @@ export class StayController {
     @Req() req: Request,
     @Body() data: ApplyStayOutgoDto,
   ): Promise<StayOutgo> {
-    return await this.stayService.applyOutgo(req.user as StudentDocument, data);
+    return await this.stayService.applyStayOutgo(
+      req.user as StudentDocument,
+      data,
+    );
   }
 
   @ApiOperation(
@@ -104,7 +108,7 @@ export class StayController {
     @Req() req: Request,
     @Param("id") outgoId: Types.ObjectId,
   ): Promise<StayOutgo> {
-    return await this.stayService.cancelOutgo(
+    return await this.stayService.cancelStayOutgo(
       req.user as StudentDocument,
       outgoId,
     );

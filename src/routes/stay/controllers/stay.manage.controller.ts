@@ -38,8 +38,8 @@ export class StayManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get()
-  async getAllStay(): Promise<Stay[]> {
-    return await this.stayManageService.getAll();
+  async getStays(): Promise<Stay[]> {
+    return await this.stayManageService.getStays();
   }
 
   @ApiOperation(
@@ -51,7 +51,7 @@ export class StayManageController {
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
-    return await this.stayManageService.create(data);
+    return await this.stayManageService.createStay(data);
   }
 
   @ApiOperation(
@@ -67,10 +67,12 @@ export class StayManageController {
     stay: Stay;
     applications: StayApplication[];
   }> {
-    const stayId = await this.stayManageService.getCurrentId();
+    const currentStay = await this.stayManageService.getCurrentStay();
 
-    const stay = await this.stayManageService.get(stayId);
-    const applications = await this.stayManageService.getApplications(stayId);
+    const stay = await this.stayManageService.getStay(currentStay._id);
+    const applications = await this.stayManageService.getStayApplications(
+      currentStay._id,
+    );
 
     return {
       stay,
@@ -89,7 +91,7 @@ export class StayManageController {
   async setCurrentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
   ): Promise<Stay> {
-    return await this.stayManageService.setCurrent(stayId);
+    return await this.stayManageService.setCurrentStay(stayId);
   }
 
   @ApiOperation(
@@ -103,7 +105,7 @@ export class StayManageController {
   async deleteCurrentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
   ): Promise<Stay> {
-    return await this.stayManageService.deleteCurrent(stayId);
+    return await this.stayManageService.deleteCurrentStay(stayId);
   }
 
   @ApiOperation(
@@ -114,14 +116,16 @@ export class StayManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/:stayId")
-  async getStayInfo(
+  async getStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
   ): Promise<{
     stay: Stay;
     applications: StayApplication[];
   }> {
-    const stay = await this.stayManageService.get(stayId);
-    const applications = await this.stayManageService.getApplications(stayId);
+    const stay = await this.stayManageService.getStay(stayId);
+    const applications = await this.stayManageService.getStayApplications(
+      stayId,
+    );
     return {
       stay,
       applications,
@@ -140,7 +144,7 @@ export class StayManageController {
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
     @Body() data: CreateStayDto,
   ): Promise<Stay> {
-    return await this.stayManageService.edit(stayId, data);
+    return await this.stayManageService.editStay(stayId, data);
   }
 
   @ApiOperation(
@@ -154,7 +158,7 @@ export class StayManageController {
   async deleteStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
   ): Promise<Stay> {
-    return await this.stayManageService.delete(stayId);
+    return await this.stayManageService.deleteStay(stayId);
   }
 
   @ApiOperation(
@@ -170,7 +174,11 @@ export class StayManageController {
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
     @Body() data: ApplyStayDto,
   ): Promise<StayApplication> {
-    return await this.stayManageService.applyStudent(studentId, stayId, data);
+    return await this.stayManageService.applyStudentStay(
+      studentId,
+      stayId,
+      data,
+    );
   }
 
   @ApiOperation(
@@ -185,7 +193,7 @@ export class StayManageController {
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
   ): Promise<StayApplication> {
-    return await this.stayManageService.cancelStudent(studentId, stayId);
+    return await this.stayManageService.cancelStudentStay(studentId, stayId);
   }
 
   @ApiOperation(
@@ -201,7 +209,7 @@ export class StayManageController {
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
     @Body() data: ApplyStayOutgoDto,
   ): Promise<StayOutgoDocument> {
-    return await this.stayManageService.applyStudentOutgo(
+    return await this.stayManageService.applyStudentStayOutgo(
       studentId,
       stayId,
       data,
@@ -221,7 +229,7 @@ export class StayManageController {
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
     @Param("outgoId", ObjectIdPipe) outgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
-    return await this.stayManageService.cancelStudentOutgo(
+    return await this.stayManageService.cancelStudentStayOutgo(
       studentId,
       stayId,
       outgoId,

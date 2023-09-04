@@ -29,13 +29,15 @@ export class MealManageService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getAllTimetable(): Promise<MealTimetableDocument[]> {
+  async getMealTimetables(): Promise<MealTimetableDocument[]> {
     const timetables = await this.mealTimetableModel.find();
 
     return timetables;
   }
 
-  async createTimetable(data: CreateMealTimetableDto): Promise<MealTimetable> {
+  async createMealTimetable(
+    data: CreateMealTimetableDto,
+  ): Promise<MealTimetable> {
     for (const lunchTime of data.lunch) {
       if (!moment(lunchTime, "HH:mm", true).isValid())
         throw new HttpException("시간 형식이 올바르지 않습니다.", 400);
@@ -121,7 +123,7 @@ export class MealManageService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async update(): Promise<Meal[]> {
+  async updateMeals(): Promise<Meal[]> {
     const mealList = await this.getMealList();
     const list = [];
     for (const meal of mealList) {

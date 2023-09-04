@@ -37,10 +37,10 @@ export class JournalManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/:studentId")
-  async getJournal(
+  async getStudentJournals(
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
   ): Promise<JournalDocument[]> {
-    return await this.journalManageService.get(studentId);
+    return await this.journalManageService.getStudentJournals(studentId);
   }
 
   @ApiOperation(
@@ -51,11 +51,14 @@ export class JournalManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Post("/:studentId")
-  async createJournal(
+  async createStudentJournal(
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
     @Body() data: CreateJournalDto,
   ): Promise<JournalDocument> {
-    return await this.journalManageService.create(studentId, data);
+    return await this.journalManageService.createStudentJournal(
+      studentId,
+      data,
+    );
   }
 
   @ApiOperation(
@@ -66,11 +69,11 @@ export class JournalManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Put("/:journalId")
-  async editJournal(
+  async editStudentJournal(
     @Param("journalId", ObjectIdPipe) journalId: Types.ObjectId,
     @Body() data: CreateJournalDto,
   ): Promise<JournalDocument> {
-    return await this.journalManageService.edit(journalId, data);
+    return await this.journalManageService.editStudentJournal(journalId, data);
   }
 
   @ApiOperation(
@@ -81,9 +84,9 @@ export class JournalManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Delete("/:journalId")
-  async deleteJournal(
+  async deleteStudentJournal(
     @Param("journalId", ObjectIdPipe) journalId: Types.ObjectId,
   ): Promise<JournalDocument> {
-    return await this.journalManageService.delete(journalId);
+    return await this.journalManageService.deleteStudentJournal(journalId);
   }
 }

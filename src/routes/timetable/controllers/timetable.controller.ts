@@ -25,6 +25,6 @@ export class TimetableController {
     @Param("grade") _grade: number,
     @Param("class") _class: number,
   ): Promise<TimetableDocument[]> {
-    return await this.timetableService.get(_grade, _class);
+    return await this.timetableService.getTimetable(_grade, _class);
   }
 }

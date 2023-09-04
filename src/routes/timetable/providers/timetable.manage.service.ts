@@ -22,7 +22,7 @@ export class TimetableManageService {
   ) {}
 
   @Cron(CronExpression.EVERY_6_HOURS)
-  async update(): Promise<Timetable[]> {
+  async updateTimetable(): Promise<Timetable[]> {
     const weekStart = momentToStringDate(moment().startOf("week"));
     const weekEnd = momentToStringDate(moment().endOf("week"));
 

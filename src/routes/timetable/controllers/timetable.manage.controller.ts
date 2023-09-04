@@ -24,6 +24,6 @@ export class TimetableManageController {
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Get()
   async updateTimetable(): Promise<Timetable[]> {
-    return await this.timetableManageService.update();
+    return await this.timetableManageService.updateTimetable();
   }
 }

@@ -6,25 +6,27 @@ import {
 } from "@nestjs/common";
 import { Request } from "express";
 
-import { UserService } from "src/routes/user/providers/user.service";
+import { UserManageService } from "src/routes/user/providers";
 
 import { TeacherDocument } from "src/schemas";
 
 @Injectable()
 export class EditPermissionGuard implements CanActivate {
-  constructor(@Inject(UserService) private readonly userService: UserService) {}
+  constructor(private readonly userManageService: UserManageService) {}
 
   async canActivate(context: ExecutionContext) {
     const req: Request = context.switchToHttp().getRequest();
     const user = req.user;
 
     const service = req.path.split("/")[1];
-    const permission = await this.userService.getPermissionByGroup(user.groups);
+    const permission = await this.userManageService.getPermissionByGroup(
+      user.groups,
+    );
     user.permissions.edit.push(...permission.edit);
 
     if (user.hasOwnProperty("positions")) {
       const teacher = user as TeacherDocument;
-      const positionPerm = await this.userService.getPermissionByPosition(
+      const positionPerm = await this.userManageService.getPermissionByPosition(
         teacher.positions,
       );
       user.permissions.edit.push(...positionPerm.edit);

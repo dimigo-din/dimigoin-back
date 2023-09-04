@@ -23,7 +23,7 @@ export class JournalController {
   )
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get()
-  async getMyJournal(@Req() req: Request): Promise<JournalDocument[]> {
-    return await this.journalService.get(req.user as StudentDocument);
+  async getJournals(@Req() req: Request): Promise<JournalDocument[]> {
+    return await this.journalService.getJournals(req.user as StudentDocument);
   }
 }

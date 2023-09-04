@@ -15,7 +15,9 @@ export class JournalService {
     private journalManageService: JournalManageService,
   ) {}
 
-  async get(student: StudentDocument): Promise<JournalDocument[]> {
-    return this.journalManageService.get(student._id);
+  async getJournals(student: StudentDocument): Promise<JournalDocument[]> {
+    const journals = this.journalManageService.getStudentJournals(student._id);
+
+    return journals;
   }
 }

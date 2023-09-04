@@ -9,15 +9,15 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
 
-import { UserService } from "src/routes/user/providers";
+import { UserManageService } from "src/routes/user/providers";
 
 import { DIMIJwtPayload } from "../interface";
 
 @Injectable()
 export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
+    // @Inject(forwardRef(() => UserManageService))
+    private readonly userManageService: UserManageService,
     private readonly configService: ConfigService,
   ) {
     super({
@@ -32,7 +32,7 @@ export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
     done: VerifiedCallback,
   ): Promise<any> {
     if (!payload.refresh) {
-      const user = await this.userService.getUserByObjectId(payload._id);
+      const user = await this.userManageService.getUserByObjectId(payload._id);
       if (user) {
         return done(null, user);
       }

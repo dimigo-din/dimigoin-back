@@ -14,21 +14,25 @@ const options: SchemaOptions = {
 export class Teacher {
   @Prop({
     required: true,
+    type: String,
   })
   name: string;
 
   @Prop({
     required: true,
+    type: String,
   })
   email: string;
 
   @Prop({
-    type: Types.ObjectId,
-    ref: "Groups",
+    required: true,
+    type: String,
+    enum: ["M", "F"],
   })
-  groups: Types.ObjectId[];
+  gender: string;
 
   @Prop({
+    required: true,
     type: Object,
     default: { view: [], edit: [] },
   })
@@ -36,29 +40,17 @@ export class Teacher {
 
   @Prop({
     required: true,
+    type: Types.ObjectId,
+    ref: "Group",
+  })
+  groups: Types.ObjectId[];
+
+  @Prop({
+    required: true,
     type: [String],
     enum: ["A", "T", "D"],
   })
   positions: string[];
-
-  @Prop({
-    required: true,
-    enum: ["M", "F"],
-  })
-  gender: string;
-
-  @Prop({ default: Date.now })
-  created_at: Date;
-
-  @Prop({ default: Date.now })
-  updated_at: Date;
 }
 
 export const TeacherSchema = SchemaFactory.createForClass(Teacher);
-
-TeacherSchema.pre<Teacher>("save", function (next) {
-  if (!this.created_at) {
-    this.created_at = new Date();
-  }
-  next();
-});

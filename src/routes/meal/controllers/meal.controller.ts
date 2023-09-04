@@ -23,7 +23,7 @@ export class MealController {
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getMeals(): Promise<MealDocument[]> {
-    return await this.mealService.get();
+    return await this.mealService.getMeals();
   }
 
   @ApiOperation(
@@ -35,6 +35,6 @@ export class MealController {
   @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
-    return await this.mealService.getTimetable(req.user as StudentDocument);
+    return await this.mealService.getMealTimetable(req.user as StudentDocument);
   }
 }

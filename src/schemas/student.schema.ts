@@ -19,62 +19,56 @@ const options: SchemaOptions = {
 export class Student {
   @Prop({
     required: true,
+    type: String,
   })
   name: string;
 
   @Prop({
     required: true,
+    type: String,
   })
   email: string;
 
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
   grade: number;
 
   @Prop({
     required: true,
+    type: Number,
     enum: ClassValues,
   })
   class: number;
 
   @Prop({
     required: true,
+    type: Number,
   })
   number: number;
 
   @Prop({
     required: true,
+    type: String,
     enum: GenderValues,
   })
   gender: string;
 
   @Prop({
+    required: true,
     type: Object,
     default: { view: [], edit: [] },
   })
   permissions: Permissions;
 
   @Prop({
+    required: true,
     type: Types.ObjectId,
-    ref: "Groups",
+    ref: "Group",
   })
   groups: Types.ObjectId[];
-
-  @Prop({ default: Date.now })
-  created_at: Date;
-
-  @Prop({ default: Date.now })
-  updated_at: Date;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
-
-// 임시, save시 업데이트
-StudentSchema.pre<Student>("save", function (next) {
-  if (!this.created_at) {
-    this.created_at = new Date();
-  }
-  next();
-});

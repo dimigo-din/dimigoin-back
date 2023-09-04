@@ -15,7 +15,7 @@ export class TimetableService {
     private timetableModel: Model<TimetableDocument>,
   ) {}
 
-  async get(
+  async getTimetable(
     _grade: keyof typeof GradeValues,
     _class: keyof typeof ClassValues,
   ): Promise<TimetableDocument[]> {

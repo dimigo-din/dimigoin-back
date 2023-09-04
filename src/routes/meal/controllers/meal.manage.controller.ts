@@ -26,8 +26,8 @@ export class MealManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
   @Get()
-  async updateMeal(): Promise<Meal[]> {
-    return await this.mealManageService.update();
+  async updateMeals(): Promise<Meal[]> {
+    return await this.mealManageService.updateMeals();
   }
 
   @ApiOperation(
@@ -38,8 +38,8 @@ export class MealManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
   @Get("/timetable")
-  async getAllMealTimetable(): Promise<MealTimetableDocument[]> {
-    return await this.mealManageService.getAllTimetable();
+  async getMealTimetables(): Promise<MealTimetableDocument[]> {
+    return await this.mealManageService.getMealTimetables();
   }
 
   @ApiOperation(
@@ -53,6 +53,6 @@ export class MealManageController {
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,
   ): Promise<MealTimetable> {
-    return await this.mealManageService.createTimetable(data);
+    return await this.mealManageService.createMealTimetable(data);
   }
 }

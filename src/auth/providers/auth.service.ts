@@ -6,7 +6,7 @@ import { OAuth2Client } from "google-auth-library";
 import { Model } from "mongoose";
 
 import { LoginDto } from "src/routes/user/dto";
-import { UserService } from "src/routes/user/providers/user.service";
+import { UserManageService } from "src/routes/user/providers";
 
 import {
   StudentDocument,
@@ -22,7 +22,7 @@ export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly userService: UserService,
+    private readonly userManageService: UserManageService,
 
     @InjectModel(Token.name)
     private tokenModule: Model<TokenDocument>,
@@ -43,7 +43,7 @@ export class AuthService {
         idToken: tokens.id_token,
       });
       const payload = ticket.getPayload();
-      return await this.userService.getUserByEmail(payload.email);
+      return await this.userManageService.getUserByEmail(payload.email);
     } catch (error) {
       throw new HttpException(
         "인증되지 않은 토큰입니다.",
@@ -94,7 +94,7 @@ export class AuthService {
       | DIMIJwtPayload
       | DIMIRefreshPayload,
   ): Promise<object> {
-    const user = await this.userService.getUserByObjectId(payload._id);
+    const user = await this.userManageService.getUserByObjectId(payload._id);
 
     const accessToken = await this.jwtService.signAsync(
       { ...user, refresh: false },

@@ -26,7 +26,7 @@ export class MealService {
     private readonly httpService: HttpService,
   ) {}
 
-  async get(): Promise<MealDocument[]> {
+  async getMeals(): Promise<MealDocument[]> {
     const meals = await this.mealModel.find({
       date: {
         $gte: momentToStringDate(moment().startOf("week")),
@@ -37,7 +37,7 @@ export class MealService {
     return meals;
   }
 
-  async getTimetable(user: StudentDocument): Promise<MealTimetable> {
+  async getMealTimetable(user: StudentDocument): Promise<MealTimetable> {
     const timetable = await this.mealTimetableModel.findOne({
       grade: user.grade,
     });
