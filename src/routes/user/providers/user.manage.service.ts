@@ -3,8 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, ObjectId } from "mongoose";
 import XLSX from "xlsx";
 
-import { Permissions } from "src/common/types";
-
 import {
   Student,
   StudentDocument,

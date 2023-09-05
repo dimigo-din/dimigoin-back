@@ -1,46 +1,35 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 
 import { FrigoService } from "src/routes/frigo/providers";
 import { LaundryManageService } from "src/routes/laundry/providers";
 import { StayManageService } from "src/routes/stay/providers";
 
 import {
-  Group,
-  GroupDocument,
-  Student,
   StudentDocument,
-  Teacher,
-  TeacherDocument,
   StayDocument,
   StayApplicationDocument,
   StayOutgoDocument,
+  LaundryApplicationDocument,
 } from "src/schemas";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(Student.name)
-    private studentModel: Model<StudentDocument>,
+    @Inject(forwardRef(() => LaundryManageService))
+    private laundryManageService: LaundryManageService,
 
-    @InjectModel(Teacher.name)
-    private teacherModel: Model<TeacherDocument>,
-
-    @InjectModel(Group.name)
-    private groupModel: Model<GroupDocument>,
-
-    private stayManageService: StayManageService,
     private frigoService: FrigoService,
+    private stayManageService: StayManageService,
   ) {}
 
   async getApplication(student: StudentDocument): Promise<{
-    laundry: any;
+    laundry: LaundryApplicationDocument | null;
     frigo: any;
     stay: StayApplicationDocument | null;
     stayOutgo: StayOutgoDocument[] | null;
   }> {
-    const laundry = false;
+    const laundry =
+      await this.laundryManageService.getStudentLaundryApplication(student._id);
     const frigo = await this.frigoService.getMyFrigo(student);
 
     let currentStayStatus = false;

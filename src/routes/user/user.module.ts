@@ -27,7 +27,7 @@ import * as userServices from "./providers";
       { name: Group.name, schema: GroupSchema },
     ]),
     forwardRef(() => StayModule),
-    LaundryModule,
+    forwardRef(() => LaundryModule),
     FrigoModule,
   ],
   controllers: importToArray(userControllers),
