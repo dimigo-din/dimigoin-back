@@ -130,10 +130,12 @@ export class StayManageService {
     const stay = await this.getStay(stayId);
     const student = await this.userManageService.getStudent(studentId);
 
-    const application = await this.stayApplicationModel.findOne({
-      stay: stay._id,
-      user: student._id,
-    });
+    const application = await this.stayApplicationModel
+      .findOne({
+        stay: stay._id,
+        user: student._id,
+      })
+      .populate("stay");
 
     return application;
   }

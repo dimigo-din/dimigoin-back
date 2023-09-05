@@ -1,8 +1,9 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import importToArray from "import-to-array";
 
 import { StayModule } from "src/routes/stay";
+import { UserModule } from "src/routes/user";
 
 import {
   Laundry,
@@ -26,6 +27,7 @@ import * as laundryServices from "./providers";
         schema: LaundryApplicationSchema,
       },
     ]),
+    forwardRef(() => UserModule),
     StayModule,
   ],
   controllers: importToArray(laundryControllers),

@@ -1,9 +1,9 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model, Types } from "mongoose";
 
-import { ResponseDto } from "src/common";
+import { UserManageService } from "src/routes/user/providers";
 
 import {
   Laundry,
@@ -27,6 +27,9 @@ export class LaundryManageService {
 
     @InjectModel(LaundryApplication.name)
     private laundryApplicationModel: Model<LaundryApplicationDocument>,
+
+    @Inject(forwardRef(() => UserManageService))
+    private userManageService: UserManageService,
   ) {}
 
   async getLaundries(): Promise<LaundryDocument[]> {
@@ -79,6 +82,24 @@ export class LaundryManageService {
     );
 
     return laundryTimetable;
+  }
+
+  async getStudentLaundryApplication(
+    studentId: Types.ObjectId,
+  ): Promise<LaundryApplicationDocument> {
+    const student = await this.userManageService.getStudent(studentId);
+    const laundryApplication = await this.laundryApplicationModel
+      .findOne({
+        student: student._id,
+      })
+      .populate({
+        path: "timetable",
+        populate: {
+          path: "laundry",
+        },
+      });
+
+    return laundryApplication;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
