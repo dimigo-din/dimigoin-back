@@ -33,7 +33,7 @@ export class Journal {
     type: Types.ObjectId,
     ref: "Student",
   })
-  user: Types.ObjectId;
+  student: Types.ObjectId;
 }
 
 export const JournalSchema = SchemaFactory.createForClass(Journal);

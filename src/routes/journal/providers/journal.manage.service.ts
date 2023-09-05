@@ -22,8 +22,10 @@ export class JournalManageService {
   ): Promise<JournalDocument[]> {
     const student = await this.userManageService.getStudent(studentId);
     const journals = await this.journalModel
-      .find({ user: student._id })
+      .find({ student: student._id })
       .sort({ date: -1 });
+
+    console.log(student, journals);
 
     return journals;
   }
@@ -33,7 +35,7 @@ export class JournalManageService {
     data: CreateJournalDto,
   ): Promise<JournalDocument> {
     const student = await this.userManageService.getStudent(studentId);
-    const journal = new this.journalModel({ user: student._id, ...data });
+    const journal = new this.journalModel({ student: student._id, ...data });
 
     await journal.save();
 
