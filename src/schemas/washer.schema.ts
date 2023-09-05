@@ -23,13 +23,14 @@ export class Washer {
     type: [Number],
     enum: GradeValues,
   })
-  grade: number[];
+  grade: (typeof GradeValues)[number][];
 
   @Prop({
     required: true,
+    type: String,
     enum: GenderValues,
   })
-  gender: string;
+  gender: (typeof GenderValues)[number];
 
   @Prop({
     type: [

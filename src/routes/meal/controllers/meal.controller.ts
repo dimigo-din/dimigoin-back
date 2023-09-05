@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { DIMIJwtAuthGuard, StudentOnlyGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import { StudentDocument, MealTimetable, MealDocument } from "src/schemas";
@@ -30,9 +30,10 @@ export class MealController {
     createOpertation({
       name: "급식 시간표",
       description: "급식 시간표를 반환합니다.",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get("/timetable")
   async getMealTimetable(@Req() req: Request): Promise<MealTimetable> {
     return await this.mealService.getMealTimetable(req.user as StudentDocument);

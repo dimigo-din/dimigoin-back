@@ -12,16 +12,19 @@ const options: SchemaOptions = {
 export class Journal {
   @Prop({
     required: true,
+    type: String,
   })
   type: string;
 
   @Prop({
     required: true,
+    type: String,
   })
   title: string;
 
   @Prop({
     required: true,
+    type: String,
   })
   date: string;
 

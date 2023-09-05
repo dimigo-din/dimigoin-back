@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Permissions } from "src/common";
-
 export type GroupDocument = Group & Document;
 
 const options: SchemaOptions = {
@@ -19,23 +17,10 @@ export class Group {
 
   @Prop({
     required: true,
-    type: Object,
-    default: { view: [], edit: [] },
+    type: [String],
+    default: [],
   })
-  permissions: Permissions;
-
-  @Prop({ default: Date.now })
-  created_at: Date;
-
-  @Prop({ default: Date.now })
-  updated_at: Date;
+  permissions: [];
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);
-
-GroupSchema.pre<Group>("save", function (next) {
-  if (!this.created_at) {
-    this.created_at = new Date();
-  }
-  next();
-});

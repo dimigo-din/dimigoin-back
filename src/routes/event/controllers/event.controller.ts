@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { DIMIJwtAuthGuard, StudentOnlyGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 import { StayService } from "src/routes/stay/providers";
 
@@ -22,10 +22,10 @@ export class EventController {
     createOpertation({
       name: "이벤트",
       description: "이벤트를 반환합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getEvent(@Req() req: Request): Promise<{
     events: EventDocument[];

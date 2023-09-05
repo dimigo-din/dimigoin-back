@@ -11,11 +11,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
-import {
-  ViewPermissionGuard,
-  EditPermissionGuard,
-  DIMIJwtAuthGuard,
-} from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ObjectIdPipe } from "src/common/pipes";
 import { createOpertation } from "src/common/utils";
 
@@ -34,7 +30,7 @@ export class UserManageController {
       description: "모든 학생의 목록을 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/student")
   async getStudents(): Promise<StudentDocument[]> {
     return await this.userManageService.getStudents();
@@ -46,7 +42,7 @@ export class UserManageController {
       description: "엑셀 파일을 통해 학생을 생성합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/student")
   @UseInterceptors(FileInterceptor("file"))
   async uploadStudent(
@@ -61,7 +57,7 @@ export class UserManageController {
       description: "해당하는 학생의 정보를 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/student/:studentId")
   async getStudent(
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
@@ -75,7 +71,7 @@ export class UserManageController {
       description: "모든 선생님의 목록을 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/teacher")
   async getTeachers(): Promise<Teacher[]> {
     return await this.userManageService.getTeachers();
@@ -87,7 +83,7 @@ export class UserManageController {
       description: "엑셀 파일을 통해 선생님을 생성합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/teacher")
   @UseInterceptors(FileInterceptor("file"))
   async uploadTeacher(
@@ -102,7 +98,7 @@ export class UserManageController {
       description: "해당하는 선생님의 정보를 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/teacher/:teacherId")
   async getTeacher(
     @Param("teacherId", ObjectIdPipe) teacherId: Types.ObjectId,

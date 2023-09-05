@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
-import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import { Timetable } from "src/schemas";
@@ -21,7 +21,7 @@ export class TimetableManageController {
       description: "시간표를 업데이트합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async updateTimetable(): Promise<Timetable[]> {
     return await this.timetableManageService.updateTimetable();

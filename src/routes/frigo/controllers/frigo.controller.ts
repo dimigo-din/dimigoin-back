@@ -11,9 +11,8 @@ import { Request } from "express";
 
 import {
   DIMIJwtAuthGuard,
-  EditPermissionGuard,
-  StudentOnlyGuard,
-  ViewPermissionGuard,
+  StudentGuard,
+  PermissionGuard,
 } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
 
@@ -26,13 +25,13 @@ import { FrigoService } from "../providers";
 export class FrigoController {
   constructor(private readonly frigoService: FrigoService) {}
 
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async getAllFrigoRequests(): Promise<FrigoDocument[]> {
     return await this.frigoService.getAllFrigo();
   }
 
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post()
   async requestFrigo(
     @Body() data: RequestFrigoDto,
@@ -44,13 +43,13 @@ export class FrigoController {
     );
   }
 
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Delete()
   async cancelFrigo(@Req() req: Request): Promise<ResponseDto> {
     return await this.frigoService.cancelFrigo(req.user as StudentDocument);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("manage")
   async manageFrigo(@Body() data: ManageFrigoDto): Promise<FrigoDocument> {
     return await this.frigoService.manageFrigo(data);

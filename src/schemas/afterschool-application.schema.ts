@@ -20,20 +20,23 @@ const options: SchemaOptions = {
 @Schema(options)
 export class AfterschoolApplication {
   @Prop({
-    ref: "Students",
     required: true,
+    type: Types.ObjectId,
+    ref: "Student",
   })
   user: Types.ObjectId;
 
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
-    ref: "Afterschools",
     required: true,
+    type: Types.ObjectId,
+    ref: "Afterschool",
   })
   afterschool: Types.ObjectId;
 }

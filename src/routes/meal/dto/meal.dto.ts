@@ -14,7 +14,7 @@ export class CreateMealTimetableDto {
   @ApiProperty()
   @IsNumber()
   @IsIn(GradeValues)
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @ApiProperty()
   @IsArray()

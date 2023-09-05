@@ -1,145 +1,135 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Cron, CronExpression } from "@nestjs/schedule";
+import moment from "moment";
 import { Model } from "mongoose";
 
-import { StayService } from "src/routes/stay/providers";
+import { StayManageService } from "src/routes/stay/providers";
 
-import { StudentDocument, Washer, WasherDocument } from "src/schemas";
+import {
+  Laundry,
+  LaundryDocument,
+  LaundryTimetable,
+  LaundryTimetableDocument,
+  LaundryApplication,
+  LaundryApplicationDocument,
+  StudentDocument,
+} from "src/schemas";
 
-import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from "../dto";
+import { ApplyLaundryDto } from "../dto";
+
+import { LaundryManageService } from "./laundry.manage.service";
 
 @Injectable()
 export class LaundryService {
   constructor(
-    @InjectModel(Washer.name)
-    private washerModel: Model<WasherDocument>,
+    @InjectModel(Laundry.name)
+    private laundryModel: Model<LaundryDocument>,
 
-    private stayService: StayService,
+    @InjectModel(LaundryTimetable.name)
+    private laundryTimetableModel: Model<LaundryTimetableDocument>,
+
+    @InjectModel(LaundryApplication.name)
+    private laundryApplicationModel: Model<LaundryApplicationDocument>,
+
+    private laundryManageService: LaundryManageService,
+    private stayManageService: StayManageService,
   ) {}
 
-  async getAllWashers(): Promise<WasherDocument[]> {
-    const washers = await this.washerModel.find();
-    return washers;
+  async getLaundryTimetables(
+    student: StudentDocument,
+  ): Promise<LaundryTimetableDocument[]> {
+    const type = await this.stayManageService.isStay();
+
+    const laundries = await this.laundryTimetableModel
+      .find({
+        gender: student.gender,
+        grade: student.grade,
+        type: type,
+      })
+      .populate("laundry");
+
+    return laundries;
   }
 
-  async createWasher(data: CreateWasherDto): Promise<WasherDocument> {
-    const existingWasher = await this.washerModel.findOne({ name: data.name });
-    if (existingWasher)
-      throw new HttpException("해당 세탁기가 이미 존재합니다.", 404);
+  async getLaundryApplications(
+    student: StudentDocument,
+  ): Promise<LaundryApplicationDocument[]> {
+    const laundryTimetableIds = (await this.getLaundryTimetables(student)).map(
+      (laundry) => laundry._id,
+    );
 
-    const timetable = Array(7).fill({});
-    const washer = new this.washerModel({
-      ...data,
-      timetable,
-    });
+    const laundryApplications = await this.laundryApplicationModel
+      .find({
+        timetable: { $in: laundryTimetableIds },
+      })
+      .populate({
+        path: "timetable",
+        populate: {
+          path: "laundry",
+        },
+      })
+      .populate({ path: "student", select: "name grade class number" });
 
-    await washer.save();
-
-    return washer;
-  }
-
-  async editWasher(data: EditWasherDto): Promise<WasherDocument> {
-    const washer = await this.washerModel.findOne({ name: data.name });
-    if (!washer)
-      throw new HttpException("해당 세탁기가 존재하지않습니다.", 404);
-
-    washer.grade = data.grade;
-
-    await washer.save();
-
-    return washer;
-  }
-
-  async getAvailable(user: StudentDocument): Promise<WasherDocument[]> {
-    const isStay = await this.stayService.isStay();
-    const filter = { gender: user.gender, grade: 0 };
-    if (!isStay) filter.grade = user.grade;
-    else delete filter["grade"];
-
-    const washers = await this.washerModel.find(filter);
-
-    return washers;
-  }
-
-  async getMyLaundry(user: StudentDocument): Promise<boolean | number> {
-    const washer = await this.washerModel.findOne({
-      timetable: { $elemMatch: { user: user._id } },
-    });
-    if (!washer) return false;
-
-    for (let j = 0; j < 7; j++) {
-      if (washer.timetable[j].user == user._id) return j;
-    }
+    return laundryApplications;
   }
 
   async applyLaundry(
+    student: StudentDocument,
     data: ApplyLaundryDto,
-    user: StudentDocument,
-  ): Promise<WasherDocument> {
-    const currentHour = new Date().getHours();
+  ): Promise<LaundryApplicationDocument> {
+    if (moment().hour() < 8)
+      throw new HttpException("세탁 신청은 8시부터 가능합니다.", 403);
 
-    if (currentHour < 8)
-      throw new HttpException("세탁 신청은 아침 8시부터 가능합니다.", 404);
+    const laundry = await this.laundryManageService.getLaundry(data.laundryId);
+    const type = await this.stayManageService.isStay();
 
-    const existingLaundry = await this.washerModel.findOne({
-      timetable: { $elemMatch: { user: user._id } },
+    const laundryTimetable = await this.laundryTimetableModel.findOne({
+      laundry: laundry._id,
+      gender: student.gender,
+      grade: student.grade,
+      type: type,
     });
-    if (existingLaundry)
-      throw new HttpException("이미 세탁을 신청했습니다.", 404);
+    if (!laundryTimetable)
+      throw new HttpException("신청 가능한 세탁기가 아닙니다.", 404);
+    if (data.time > laundryTimetable.sequence.length)
+      throw new HttpException("신청 가능한 시간이 아닙니다.", 404);
 
-    const washer = await this.washerModel.findOne({ name: data.name });
-    const isStay = await this.stayService.isStay();
+    const existingLaundryApplication =
+      await this.laundryApplicationModel.findOne({
+        timetable: laundryTimetable._id,
+        time: data.time,
+      });
+    if (existingLaundryApplication)
+      throw new HttpException("이미 신청된 시간입니다.", 403);
 
-    if (!washer)
-      throw new HttpException("해당 세탁기가 존재하지 않습니다.", 404);
-    if (washer.gender !== user.gender)
-      throw new HttpException("성별에 맞는 기숙사인지 다시 확인해주세요.", 404);
-    if (!washer.grade.includes(user.grade) && !isStay)
-      throw new HttpException("신청 가능한 학년이 아닙니다.", 404);
+    const existingStudentLaundryApplication =
+      await this.laundryApplicationModel.findOne({
+        student: student._id,
+      });
+    if (existingStudentLaundryApplication)
+      throw new HttpException("이미 신청한 세탁이 있습니다.", 403);
 
-    const maxApplyTime = isStay ? 7 : 5; // 평일에 5타임, 주말에 7타임
+    const laundryApplication = new this.laundryApplicationModel({
+      timetable: laundryTimetable._id,
+      student: student._id,
+      time: data.time,
+    });
 
-    if (data.time < maxApplyTime) {
-      if (washer.timetable[data.time].name)
-        throw new HttpException("이미 예약되어 있는 시간대입니다.", 404);
-      washer.timetable[data.time] = {
-        user: user._id,
-        name: user.name,
-        grade: user.grade,
-        class: user.class,
-        number: user.number,
-      };
-    } else throw new HttpException("신청 가능한 시간이 아닙니다.", 404);
+    await laundryApplication.save();
 
-    await washer.save();
-
-    return washer;
+    return laundryApplication;
   }
 
-  async cancelLaundry(user: StudentDocument): Promise<WasherDocument> {
-    const washer = await this.washerModel.findOneAndUpdate(
-      {
-        timetable: { $elemMatch: { user: user._id } },
-      },
-      {
-        $set: { "timetable.$": {} },
-        arrayFilters: [{ "timetable.user": user._id }],
-      },
-    );
+  async cancelLaundry(
+    student: StudentDocument,
+  ): Promise<LaundryApplicationDocument> {
+    const laundryApplication =
+      await this.laundryApplicationModel.findOneAndDelete({
+        student: student._id,
+      });
+    if (!laundryApplication)
+      throw new HttpException("신청한 세탁이 없습니다.", 404);
 
-    return washer;
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async resetLaundry() {
-    const washers = await this.washerModel.find();
-
-    const timetable = Array(7).fill({});
-
-    for (let i = 0; i < washers.length; i++) {
-      washers[i].timetable = timetable;
-      await washers[i].save();
-    }
+    return laundryApplication;
   }
 }

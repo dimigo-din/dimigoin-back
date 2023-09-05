@@ -1,5 +1,6 @@
 import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import moment from "moment";
 import { Model, Types } from "mongoose";
 
 import {
@@ -88,9 +89,7 @@ export class StayManageService {
       .find({
         stay: stay._id,
       })
-      .populate({
-        path: "user",
-      });
+      .populate("user");
 
     return applications;
   }
@@ -159,7 +158,7 @@ export class StayManageService {
 
     if (data.seat === "NONE" && !data.reason)
       throw new HttpException("미선택 사유를 입력해주세요.", 403);
-    if (data.seat !== "NONE") data.reason = "";
+    if (data.seat !== "NONE") delete data.reason;
 
     const application = new this.stayApplicationModel({
       stay: stay._id,
@@ -310,5 +309,16 @@ export class StayManageService {
       throw new HttpException("해당 잔류외출 신청이 없습니다.", 404);
 
     return stayOutgo;
+  }
+
+  async isStay(): Promise<number> {
+    const stay = await this.stayModel.findOne({ current: true });
+    if (!stay) return 0;
+
+    const start = moment(stay.start).startOf("day");
+    const end = moment(stay.end).endOf("day");
+    const target = moment();
+
+    return target.isBetween(start, end, undefined, "[)") ? 1 : 0;
   }
 }

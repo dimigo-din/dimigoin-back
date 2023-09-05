@@ -9,7 +9,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
-import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import { Event } from "src/schemas";
@@ -27,7 +27,7 @@ export class EventManageController {
       description: "이벤트를 업데이트합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @UseInterceptors(FileInterceptor("file"))
   @Put()
   async uploadEvent(

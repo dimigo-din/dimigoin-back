@@ -14,20 +14,23 @@ const options: SchemaOptions = {
 export class Frigo {
   @Prop({
     required: true,
+    type: String,
   })
   name: string;
 
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
     required: true,
+    type: Number,
     enum: ClassValues,
   })
-  class: number;
+  class: (typeof ClassValues)[number];
 
   @Prop({
     required: true,
@@ -38,11 +41,13 @@ export class Frigo {
 
   @Prop({
     required: true,
+    type: String,
   })
   reason: string;
 
   @Prop({
     required: true,
+    type: String,
     enum: StatusValues,
   })
   status: string;

@@ -3,6 +3,7 @@ import { Request } from "express";
 
 import { DIMIJwtAuthGuard } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
+import { GradeValues, ClassValues } from "src/common/types";
 
 import { Location, LocationDocument, StudentDocument } from "src/schemas";
 
@@ -21,8 +22,8 @@ export class LocationController {
   @UseGuards(DIMIJwtAuthGuard)
   @Get("/:grade/:class")
   async getLocationByGC(
-    @Param("grade") _grade: number,
-    @Param("class") _class: number,
+    @Param("grade") _grade: (typeof GradeValues)[number],
+    @Param("class") _class: (typeof ClassValues)[number],
   ): Promise<LocationDocument[]> {
     return await this.locationService.getLocationByGC(_grade, _class);
   }

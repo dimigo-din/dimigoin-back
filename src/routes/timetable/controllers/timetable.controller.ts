@@ -2,6 +2,7 @@ import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "src/auth/guards";
+import { GradeValues, ClassValues } from "src/common/types";
 import { createOpertation } from "src/common/utils";
 
 import { TimetableDocument } from "src/schemas";
@@ -22,8 +23,8 @@ export class TimetableController {
   @UseGuards(DIMIJwtAuthGuard)
   @Get("/:grade/:class")
   async getTimetable(
-    @Param("grade") _grade: number,
-    @Param("class") _class: number,
+    @Param("grade") _grade: (typeof GradeValues)[number],
+    @Param("class") _class: (typeof ClassValues)[number],
   ): Promise<TimetableDocument[]> {
     return await this.timetableService.getTimetable(_grade, _class);
   }

@@ -18,7 +18,7 @@ export class ManageAfterschoolDto {
 
   @ApiProperty()
   @IsIn(GradeValues, { each: true })
-  grade: number[];
+  grade: (typeof GradeValues)[number][];
 
   @ApiProperty()
   @IsString()

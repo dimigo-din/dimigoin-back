@@ -7,7 +7,7 @@ import {
 import { Observable } from "rxjs";
 
 @Injectable()
-export class StudentOnlyGuard implements CanActivate {
+export class StudentGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {

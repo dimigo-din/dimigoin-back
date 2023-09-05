@@ -12,12 +12,15 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Stay {
-  @Prop([
-    {
-      start: { type: String, required: true },
-      end: { type: String, required: true },
-    },
-  ])
+  @Prop({
+    required: true,
+    type: [
+      {
+        start: { type: String, required: true },
+        end: { type: String, required: true },
+      },
+    ],
+  })
   duration: { start: string; end: string }[];
 
   @Prop({

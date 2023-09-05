@@ -4,14 +4,28 @@ import importToArray from "import-to-array";
 
 import { StayModule } from "src/routes/stay";
 
-import { Washer, WasherSchema } from "src/schemas";
+import {
+  Laundry,
+  LaundrySchema,
+  LaundryTimetable,
+  LaundryTimetableSchema,
+  LaundryApplication,
+  LaundryApplicationSchema,
+} from "src/schemas";
 
 import * as laundryControllers from "./controllers";
 import * as laundryServices from "./providers";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Washer.name, schema: WasherSchema }]),
+    MongooseModule.forFeature([
+      { name: Laundry.name, schema: LaundrySchema },
+      { name: LaundryTimetable.name, schema: LaundryTimetableSchema },
+      {
+        name: LaundryApplication.name,
+        schema: LaundryApplicationSchema,
+      },
+    ]),
     StayModule,
   ],
   controllers: importToArray(laundryControllers),

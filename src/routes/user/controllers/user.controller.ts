@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { StudentOnlyGuard, DIMIJwtAuthGuard } from "src/auth/guards";
+import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import {
@@ -22,10 +22,10 @@ export class UserController {
     createOpertation({
       name: "신청정보",
       description: "자신의 신청정보를 반환합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getApplication(@Req() req: Request): Promise<{
     laundry: any;

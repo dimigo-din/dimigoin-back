@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { Permissions } from "src/common";
+import { GenderValues } from "src/common/types";
 
 export type TeacherDocument = Teacher & Document;
 
@@ -29,28 +29,22 @@ export class Teacher {
     type: String,
     enum: ["M", "F"],
   })
-  gender: string;
-
-  @Prop({
-    required: true,
-    type: Object,
-    default: { view: [], edit: [] },
-  })
-  permissions: Permissions;
-
-  @Prop({
-    required: true,
-    type: Types.ObjectId,
-    ref: "Group",
-  })
-  groups: Types.ObjectId[];
+  gender: (typeof GenderValues)[number];
 
   @Prop({
     required: true,
     type: [String],
-    enum: ["A", "T", "D"],
+    default: [],
   })
-  positions: string[];
+  permissions: string[];
+
+  @Prop({
+    required: true,
+    type: [Types.ObjectId],
+    ref: "Group",
+    default: [],
+  })
+  groups: Types.ObjectId[];
 }
 
 export const TeacherSchema = SchemaFactory.createForClass(Teacher);

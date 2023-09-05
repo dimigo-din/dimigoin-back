@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 import { Types } from "mongoose";
 
-import { StudentOnlyGuard, DIMIJwtAuthGuard } from "src/auth/guards";
+import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgo, StudentDocument } from "src/schemas";
@@ -51,10 +51,10 @@ export class StayController {
     createOpertation({
       name: "잔류 신청",
       description: "학생이 잔류를 신청합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post()
   async applyStay(
     @Req() req: Request,
@@ -67,10 +67,10 @@ export class StayController {
     createOpertation({
       name: "잔류 신청 취소",
       description: "학생이 잔류 신청을 취소합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Delete()
   async cancelStay(@Req() req: Request): Promise<StayApplication> {
     return await this.stayService.cancelStay(req.user as StudentDocument);
@@ -80,10 +80,10 @@ export class StayController {
     createOpertation({
       name: "잔류외출 신청",
       description: "학생이 잔류외출을 신청합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post("outgo")
   async applyStayOutgo(
     @Req() req: Request,
@@ -99,10 +99,10 @@ export class StayController {
     createOpertation({
       name: "잔류외출 신청 취소",
       description: "학생이 잔류외출 신청을 취소합니다.",
-      only: "student",
+      studentOnly: true,
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Delete("outgo/:id")
   async cancelStayOutgo(
     @Req() req: Request,

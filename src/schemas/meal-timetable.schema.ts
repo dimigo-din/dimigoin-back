@@ -14,17 +14,20 @@ const options: SchemaOptions = {
 export class MealTimetable {
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
     required: true,
+    type: [String],
   })
   lunch: string[];
 
   @Prop({
     required: true,
+    type: [String],
   })
   dinner: string[];
 }

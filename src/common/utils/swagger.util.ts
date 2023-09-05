@@ -1,29 +1,26 @@
 interface CreateOperationProps {
   name: string;
   description: string;
-  only?: "student" | "teacher";
+  studentOnly?: boolean;
 }
-type CreateOperation = ({ name, description, only }: CreateOperationProps) => {
+type CreateOperation = ({
+  name,
+  description,
+  studentOnly,
+}: CreateOperationProps) => {
   summary: string;
   description: string;
 };
 export const createOpertation: CreateOperation = ({
   name,
   description,
-  only,
+  studentOnly,
 }) => {
   return {
     summary: name,
     description: [
       `<h2>설명</h2><p>${description}</p>`,
-      only
-        ? `<h2>제한</h2><p>${
-            {
-              student: "학생",
-              teacher: "선생님",
-            }[only]
-          }</p>`
-        : null,
+      studentOnly && "<h2>학생 전용</h2>",
     ]
       .filter((v) => v)
       .join("<br>"),

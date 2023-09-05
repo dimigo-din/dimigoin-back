@@ -93,7 +93,7 @@ export class UserManageService {
         class: parseInt(student["반"].replace(/\D/g, "")),
         number: student["번호"],
         gender: student["성별"] === "남자" ? "M" : "F",
-        permissions: { view: [], edit: [] },
+        permissions: [],
         groups: [],
       });
     }
@@ -127,9 +127,8 @@ export class UserManageService {
         name: teacher["이름"],
         email: teacher["이메일 주소"],
         gender: teacher["성별"] === "남자" ? "M" : "F",
-        permissions: { view: [], edit: [] },
+        permissions: [],
         groups: [],
-        position: "T",
       });
     }
 
@@ -137,28 +136,10 @@ export class UserManageService {
     return teachers;
   }
 
-  async getPermissionByGroup(groups: Types.ObjectId[]): Promise<Permissions> {
-    const permission = { view: [], edit: [] };
+  async getGroupPermissions(groupId: Types.ObjectId): Promise<string[]> {
+    const group = await this.groupModel.findById(groupId);
+    if (!group) throw new HttpException("해당 그룹이 존재하지 않습니다.", 404);
 
-    for (let i = 0; i < groups.length; i++) {
-      const groupPerm = await this.groupModel.findById(groups[i]);
-      permission.view.push(...groupPerm.permissions.view);
-      permission.edit.push(...groupPerm.permissions.edit);
-    }
-
-    return permission;
-  }
-
-  async getPermissionByPosition(positions: string[]): Promise<Permissions> {
-    const permission = { view: [], edit: [] };
-    for (let i = 0; i < positions.length; i++) {
-      const positionPerm = await this.groupModel.findOne({
-        name: positions[i],
-      });
-      permission.view.push(...positionPerm.permissions.view);
-      permission.edit.push(...positionPerm.permissions.edit);
-    }
-
-    return permission;
+    return group.permissions;
   }
 }

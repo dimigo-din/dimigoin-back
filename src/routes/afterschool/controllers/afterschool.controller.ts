@@ -14,7 +14,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Request } from "express";
 
-import { DIMIJwtAuthGuard, EditPermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
 
 import {
@@ -47,7 +47,7 @@ export class AfterschoolController {
     );
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async uploadEvent(
@@ -64,7 +64,7 @@ export class AfterschoolController {
     return await this.afterschoolService.getAfterschoolById(id);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post()
   async createAfterschoolById(
     @Body() data: ManageAfterschoolDto,
@@ -72,7 +72,7 @@ export class AfterschoolController {
     return await this.afterschoolService.createAfterschoolById(data);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Patch(":id")
   async manageAfterschoolById(
     @Param("id") id: string,
@@ -81,7 +81,7 @@ export class AfterschoolController {
     return await this.afterschoolService.manageAfterschoolById(id, data);
   }
 
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete(":id")
   async deleteAfterschoolById(
     @Param("id") id: string,

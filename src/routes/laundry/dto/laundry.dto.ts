@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsIn, IsNumber, IsString } from "class-validator";
+import { Types } from "mongoose";
 
 import { GenderValues, GradeValues } from "src/common/types";
 
@@ -10,12 +11,12 @@ export class CreateWasherDto {
 
   @ApiProperty()
   @IsIn(GradeValues, { each: true })
-  grade: number[];
+  grade: (typeof GradeValues)[number][];
 
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  readonly gender: string;
+  readonly gender: (typeof GenderValues)[number];
 }
 
 export class EditWasherDto {
@@ -25,13 +26,13 @@ export class EditWasherDto {
 
   @ApiProperty()
   @IsIn(GradeValues, { each: true })
-  grade: number[];
+  grade: (typeof GradeValues)[number][];
 }
 
 export class ApplyLaundryDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  laundryId: Types.ObjectId;
 
   @ApiProperty()
   @IsNumber()

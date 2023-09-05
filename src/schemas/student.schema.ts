@@ -1,12 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import {
-  ClassValues,
-  GenderValues,
-  GradeValues,
-  Permissions,
-} from "src/common";
+import { ClassValues, GenderValues, GradeValues } from "src/common";
 
 export type StudentDocument = Student & Document;
 
@@ -34,14 +29,14 @@ export class Student {
     type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
     required: true,
     type: Number,
     enum: ClassValues,
   })
-  class: number;
+  class: (typeof ClassValues)[number];
 
   @Prop({
     required: true,
@@ -54,19 +49,20 @@ export class Student {
     type: String,
     enum: GenderValues,
   })
-  gender: string;
+  gender: (typeof GenderValues)[number];
 
   @Prop({
     required: true,
-    type: Object,
-    default: { view: [], edit: [] },
+    type: [String],
+    default: [],
   })
-  permissions: Permissions;
+  permissions: string[];
 
   @Prop({
     required: true,
-    type: Types.ObjectId,
+    type: [Types.ObjectId],
     ref: "Group",
+    default: [],
   })
   groups: Types.ObjectId[];
 }

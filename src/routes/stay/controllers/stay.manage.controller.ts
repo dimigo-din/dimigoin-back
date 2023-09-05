@@ -12,11 +12,7 @@ import {
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
-import {
-  EditPermissionGuard,
-  ViewPermissionGuard,
-  DIMIJwtAuthGuard,
-} from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ObjectIdPipe } from "src/common/pipes";
 import { createOpertation } from "src/common/utils";
 
@@ -36,7 +32,7 @@ export class StayManageController {
       description: "모든 잔류를 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async getStays(): Promise<Stay[]> {
     return await this.stayManageService.getStays();
@@ -48,7 +44,7 @@ export class StayManageController {
       description: "잔류를 생성합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post()
   async createStay(@Body() data: CreateStayDto): Promise<Stay> {
     return await this.stayManageService.createStay(data);
@@ -61,7 +57,7 @@ export class StayManageController {
         "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록을 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/current")
   async getCurrentStay(): Promise<{
     stay: Stay;
@@ -86,7 +82,7 @@ export class StayManageController {
       description: "해당 잔류를 활성화 합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Patch("/current/:stayId")
   async setCurrentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -100,7 +96,7 @@ export class StayManageController {
       description: "해당 잔류를 비활성화 합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/current/:stayId")
   async deleteCurrentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -114,7 +110,7 @@ export class StayManageController {
       description: "해당 잔류 정보와 잔류 신청자 목록을 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:stayId")
   async getStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -138,7 +134,7 @@ export class StayManageController {
       description: "해당 잔류 정보를 수정합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put("/:stayId")
   async editStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -153,7 +149,7 @@ export class StayManageController {
       description: "해당 잔류를 삭제합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:stayId")
   async deleteStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -167,7 +163,7 @@ export class StayManageController {
       description: "학생 잔류 신청을 추가합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/:stayId/:studentId")
   async applyStudentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -187,7 +183,7 @@ export class StayManageController {
       description: "학생 잔류 신청을 삭제합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:stayId/:studentId")
   async cancelStudentStay(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -202,7 +198,7 @@ export class StayManageController {
       description: "학생 잔류외출 신청을 추가합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/outgo/:stayId/:studentId")
   async applyStudentStayOutgo(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
@@ -222,7 +218,7 @@ export class StayManageController {
       description: "학생 잔류외출 신청을 삭제합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/outgo/:stayId/:studentId/:outgoId")
   async cancelStudentStayOutgo(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,

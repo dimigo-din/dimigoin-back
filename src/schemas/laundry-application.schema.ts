@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-export type StayApplicationDocument = StayApplication & Document;
+export type LaundryApplicationDocument = LaundryApplication & Document;
 
 const options: SchemaOptions = {
   timestamps: false,
@@ -9,33 +9,27 @@ const options: SchemaOptions = {
 };
 
 @Schema(options)
-export class StayApplication {
+export class LaundryApplication {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "Stay",
+    ref: "LaundryTimetable",
   })
-  stay: Types.ObjectId;
-
-  @Prop({
-    required: true,
-    type: String,
-  })
-  seat: string;
+  timetable: Types.ObjectId;
 
   @Prop({
     required: true,
     type: Types.ObjectId,
     ref: "Student",
   })
-  user: Types.ObjectId;
+  student: Types.ObjectId;
 
   @Prop({
-    required: false,
-    type: String,
+    required: true,
+    type: Number,
   })
-  reason: string;
+  time: number;
 }
 
-export const StayApplicationSchema =
-  SchemaFactory.createForClass(StayApplication);
+export const LaundryApplicationSchema =
+  SchemaFactory.createForClass(LaundryApplication);

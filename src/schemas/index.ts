@@ -17,3 +17,6 @@ export * from "./place.schema";
 export * from "./place-group.schema";
 export * from "./location.schema";
 export * from "./meal-timetable.schema";
+export * from "./laundry.schema";
+export * from "./laundry-timetable.schema";
+export * from "./laundry-application.schema";

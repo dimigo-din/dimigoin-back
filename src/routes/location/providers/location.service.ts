@@ -4,6 +4,7 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
 
 import { ResponseDto } from "src/common/dto";
+import { GradeValues, ClassValues } from "src/common/types";
 import { StayService } from "src/routes/stay/providers";
 
 import {
@@ -33,8 +34,8 @@ export class LocationService {
   }
 
   async getLocationByGC(
-    _grade: number,
-    _class: number,
+    _grade: (typeof GradeValues)[number],
+    _class: (typeof ClassValues)[number],
   ): Promise<LocationDocument[]> {
     const locations = await this.locationModel.find({
       grade: _grade,

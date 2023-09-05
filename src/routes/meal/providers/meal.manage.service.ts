@@ -47,7 +47,7 @@ export class MealManageService {
         throw new HttpException("시간 형식이 올바르지 않습니다.", 400);
     }
 
-    await this.mealTimetableModel.findOneAndUpdate(
+    const mealTimetable = await this.mealTimetableModel.findOneAndUpdate(
       {
         grade: data.grade,
       },
@@ -59,10 +59,11 @@ export class MealManageService {
       },
       {
         upsert: true,
+        new: true,
       },
     );
 
-    return data;
+    return mealTimetable;
   }
 
   private async getMealList(): Promise<any> {
@@ -172,25 +173,29 @@ export class MealManageService {
       }
     }
 
+    const meals = [];
     for (const meal of list) {
-      await this.mealModel.findOneAndUpdate(
-        {
-          id: meal.id,
-        },
-        {
-          $set: {
-            date: meal.date,
-            breakfast: meal.meal.breakfast,
-            lunch: meal.meal.lunch,
-            dinner: meal.meal.dinner,
+      meals.push(
+        await this.mealModel.findOneAndUpdate(
+          {
+            id: meal.id,
           },
-        },
-        {
-          upsert: true,
-        },
+          {
+            $set: {
+              date: meal.date,
+              breakfast: meal.meal.breakfast,
+              lunch: meal.meal.lunch,
+              dinner: meal.meal.dinner,
+            },
+          },
+          {
+            upsert: true,
+            new: true,
+          },
+        ),
       );
     }
 
-    return list;
+    return meals;
   }
 }

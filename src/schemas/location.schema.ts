@@ -14,35 +14,41 @@ const options: SchemaOptions = {
 export class Location {
   @Prop({
     required: true,
-    ref: "Students",
+    type: Types.ObjectId,
+    ref: "Student",
   })
   user: Types.ObjectId;
 
   @Prop({
     required: true,
+    type: String,
   })
   name: string;
 
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
     required: true,
+    type: Number,
     enum: ClassValues,
   })
-  class: number;
+  class: (typeof ClassValues)[number];
 
   @Prop({
     required: true,
+    type: String,
   })
   placeName: string;
 
   @Prop({
     required: true,
-    ref: "Places",
+    type: Types.ObjectId,
+    ref: "Place",
   })
   place: Types.ObjectId;
 }

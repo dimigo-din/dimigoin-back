@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { FrigoService } from "src/routes/frigo/providers";
-import { LaundryService } from "src/routes/laundry/providers";
+import { LaundryManageService } from "src/routes/laundry/providers";
 import { StayManageService } from "src/routes/stay/providers";
 
 import {
@@ -30,7 +30,6 @@ export class UserService {
     @InjectModel(Group.name)
     private groupModel: Model<GroupDocument>,
 
-    private laundryService: LaundryService,
     private stayManageService: StayManageService,
     private frigoService: FrigoService,
   ) {}
@@ -41,7 +40,7 @@ export class UserService {
     stay: StayApplicationDocument | null;
     stayOutgo: StayOutgoDocument[] | null;
   }> {
-    const laundry = await this.laundryService.getMyLaundry(student);
+    const laundry = false;
     const frigo = await this.frigoService.getMyFrigo(student);
 
     let currentStayStatus = false;

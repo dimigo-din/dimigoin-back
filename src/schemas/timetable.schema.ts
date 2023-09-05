@@ -14,23 +14,27 @@ const options: SchemaOptions = {
 export class Timetable {
   @Prop({
     required: true,
+    type: String,
   })
   date: string;
 
   @Prop({
     required: true,
+    type: Number,
     enum: GradeValues,
   })
-  grade: number;
+  grade: (typeof GradeValues)[number];
 
   @Prop({
     required: true,
+    type: Number,
     enum: ClassValues,
   })
-  class: number;
+  class: (typeof ClassValues)[number];
 
   @Prop({
     required: true,
+    type: [String],
   })
   sequence: string[];
 }

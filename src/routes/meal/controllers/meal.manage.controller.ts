@@ -1,11 +1,7 @@
 import { Body, Controller, Get, Put, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
-import {
-  DIMIJwtAuthGuard,
-  EditPermissionGuard,
-  ViewPermissionGuard,
-} from "src/auth/guards";
+import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
 import { Meal, MealTimetableDocument, MealTimetable } from "src/schemas";
@@ -24,7 +20,7 @@ export class MealManageController {
       description: "급식을 업데이트합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async updateMeals(): Promise<Meal[]> {
     return await this.mealManageService.updateMeals();
@@ -36,7 +32,7 @@ export class MealManageController {
       description: "모든 급식 시간표를 반환합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/timetable")
   async getMealTimetables(): Promise<MealTimetableDocument[]> {
     return await this.mealManageService.getMealTimetables();
@@ -48,7 +44,7 @@ export class MealManageController {
       description: "급식 시간표를 업데이트합니다.",
     }),
   )
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put("/timetable")
   async createMealTimetable(
     @Body() data: CreateMealTimetableDto,

@@ -2,77 +2,93 @@ import {
   Body,
   Controller,
   Get,
-  Patch,
   Post,
   Delete,
   Req,
   UseGuards,
 } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
+import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
+import { createOpertation } from "src/common/utils";
+
 import {
-  ViewPermissionGuard,
-  EditPermissionGuard,
-  StudentOnlyGuard,
-  DIMIJwtAuthGuard,
-} from "src/auth/guards";
-import { ResponseDto } from "src/common/dto";
+  StudentDocument,
+  LaundryTimetableDocument,
+  LaundryApplicationDocument,
+} from "src/schemas";
 
-import { StudentDocument, WasherDocument } from "src/schemas";
-
-import { ApplyLaundryDto, CreateWasherDto, EditWasherDto } from "../dto";
+import { ApplyLaundryDto } from "../dto";
 import { LaundryService } from "../providers";
 
+@ApiTags("Laundry")
 @Controller("laundry")
 export class LaundryController {
   constructor(private readonly laundryService: LaundryService) {}
 
-  @UseGuards(DIMIJwtAuthGuard, ViewPermissionGuard)
-  @Get("washer")
-  async getAllWashers(): Promise<WasherDocument[]> {
-    return await this.laundryService.getAllWashers();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Post("washer/create")
-  async createWasher(@Body() data: CreateWasherDto): Promise<WasherDocument> {
-    return await this.laundryService.createWasher(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Patch("washer/edit")
-  async editWasher(@Body() data: EditWasherDto): Promise<WasherDocument> {
-    return await this.laundryService.editWasher(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
-  @Post("apply")
-  async applyLaundry(
-    @Body() data: ApplyLaundryDto,
-    @Req() req: Request,
-  ): Promise<WasherDocument> {
-    return await this.laundryService.applyLaundry(
-      data,
+  @ApiOperation(
+    createOpertation({
+      name: "세탁기",
+      description: "사용가능한 세탁기와 신청정보를 반환합니다.",
+    }),
+  )
+  @Get()
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  async getLaundries(@Req() req: Request): Promise<{
+    timetables: LaundryTimetableDocument[];
+    applications: LaundryApplicationDocument[];
+  }> {
+    const laundryTimetables = await this.laundryService.getLaundryTimetables(
       req.user as StudentDocument,
     );
+
+    const laundryApplications =
+      await this.laundryService.getLaundryApplications(
+        req.user as StudentDocument,
+      );
+
+    return {
+      timetables: laundryTimetables,
+      applications: laundryApplications,
+    };
   }
 
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
+  @ApiOperation(
+    createOpertation({
+      name: "세탁 신청",
+      description: "세탁을 신청합니다.",
+    }),
+  )
+  @Post()
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  async applyLaundry(
+    @Req() req: Request,
+    @Body() data: ApplyLaundryDto,
+  ): Promise<LaundryApplicationDocument> {
+    const laundryApplication = await this.laundryService.applyLaundry(
+      req.user as StudentDocument,
+      data,
+    );
+
+    return laundryApplication;
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "세탁 신청 취소",
+      description: "세탁신청을 취소합니다.",
+    }),
+  )
   @Delete()
-  async cancelLaundry(@Req() req: Request): Promise<WasherDocument> {
-    return await this.laundryService.cancelLaundry(req.user as StudentDocument);
-  }
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  async cancelLaundry(
+    @Req() req: Request,
+  ): Promise<LaundryApplicationDocument> {
+    const laundryApplication = await this.laundryService.cancelLaundry(
+      req.user as StudentDocument,
+    );
 
-  @UseGuards(DIMIJwtAuthGuard, StudentOnlyGuard)
-  @Get("available")
-  async getAvailable(@Req() req: Request): Promise<WasherDocument[]> {
-    return await this.laundryService.getAvailable(req.user as StudentDocument);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, EditPermissionGuard)
-  @Get("washer/reset")
-  async resetWasher(): Promise<ResponseDto> {
-    await this.laundryService.resetLaundry();
-    return { statusCode: 200, message: "success" };
+    return laundryApplication;
   }
 }
