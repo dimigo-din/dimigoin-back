@@ -1,9 +1,13 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { DIMINotFoundFilter, DIMIUnauthorizedFilter } from './common/filters';
-import { setupSwagger } from './common/modules';
-import { ValidationPipe } from '@nestjs/common';
-import helmet from 'helmet';
+import { NestFactory } from "@nestjs/core";
+import helmet from "helmet";
+
+import { AppModule } from "./app";
+import {
+  DIMINotFoundFilter,
+  DIMISwaggerSetup,
+  DIMIWrapperInterceptor,
+  DIMIValidationPipe,
+} from "./common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,15 +15,13 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet({ contentSecurityPolicy: false }));
 
-  app.useGlobalPipes(new ValidationPipe());
-
+  app.useGlobalPipes(DIMIValidationPipe());
   app.useGlobalFilters(new DIMINotFoundFilter());
-  app.useGlobalFilters(new DIMIUnauthorizedFilter());
+  app.useGlobalInterceptors(new DIMIWrapperInterceptor());
 
-  await setupSwagger(app);
+  await DIMISwaggerSetup(app);
 
-  const port = parseInt(process.env.WEB_PORT) || 3000;
-  await app.listen(port);
+  await app.listen(3000);
 }
 
 bootstrap();
