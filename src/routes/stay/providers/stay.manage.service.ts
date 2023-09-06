@@ -135,7 +135,8 @@ export class StayManageService {
         stay: stay._id,
         student: student._id,
       })
-      .populate("stay");
+      .populate("stay")
+      .populate("student");
 
     return application;
   }
@@ -198,17 +199,21 @@ export class StayManageService {
     return application;
   }
 
-  async getStudetnStayOutgo(
+  async getStudetnStayOutgos(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
   ): Promise<StayOutgoDocument[]> {
     const stay = await this.getStay(stayId);
     const student = await this.userManageService.getStudent(studentId);
 
-    const outgos = await this.stayOutgoModel.find({
-      stay: stay._id,
-      student: student._id,
-    });
+    const outgos = await this.stayOutgoModel
+      .find({
+        stay: stay._id,
+        student: student._id,
+      })
+      .sort({ date: 1 })
+      .populate("stay")
+      .populate("student");
 
     return outgos;
   }

@@ -31,7 +31,7 @@ export class UserController {
     laundry: any;
     frigo: any;
     stay: StayApplicationDocument | null;
-    stayOutgo: StayOutgoDocument[] | null;
+    stayOutgos: StayOutgoDocument[] | null;
   }> {
     return await this.userService.getApplication(req.user as StudentDocument);
   }

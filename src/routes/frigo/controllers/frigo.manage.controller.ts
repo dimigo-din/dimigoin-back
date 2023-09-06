@@ -16,7 +16,7 @@ import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ObjectIdPipe } from "src/common/pipes";
 import { createOpertation } from "src/common/utils";
 
-import { FrigoDocument } from "src/schemas";
+import { FrigoDocument, FrigoApplicationDocument } from "src/schemas";
 
 import { CreateFrigoDto } from "../dto";
 import { FrigoManageService } from "../providers";
@@ -61,11 +61,15 @@ export class FrigoManageController {
   @Get("/current")
   async getCurrentFrigo(): Promise<{
     frigo: FrigoDocument;
+    applications: FrigoApplicationDocument[];
   }> {
     const frigo = await this.frigoManageService.getCurrentFrigo();
+    const applications =
+      await this.frigoManageService.getStudentFrigoApplications(frigo._id);
 
     return {
       frigo,
+      applications,
     };
   }
 
@@ -109,11 +113,15 @@ export class FrigoManageController {
     @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
   ): Promise<{
     frigo: FrigoDocument;
+    applications: FrigoApplicationDocument[];
   }> {
     const frigo = await this.frigoManageService.getFrigo(frigoId);
+    const applications =
+      await this.frigoManageService.getStudentFrigoApplications(frigo._id);
 
     return {
       frigo,
+      applications,
     };
   }
 

@@ -1,6 +1,8 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import importToArray from "import-to-array";
+
+import { UserModule } from "src/routes/user";
 
 import {
   Frigo,
@@ -18,6 +20,7 @@ import * as frigoServices from "./providers";
     MongooseModule.forFeature([
       { name: FrigoApplication.name, schema: FrigoApplicationSchema },
     ]),
+    forwardRef(() => UserModule),
   ],
   controllers: importToArray(frigoControllers),
   providers: importToArray(frigoServices),

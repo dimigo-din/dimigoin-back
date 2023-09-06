@@ -1,6 +1,8 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { HttpException, Injectable, Inject, forwardRef } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
+
+import { UserManageService } from "src/routes/user/providers";
 
 import {
   Frigo,
@@ -19,6 +21,9 @@ export class FrigoManageService {
 
     @InjectModel(FrigoApplication.name)
     private frigoApplicationModel: Model<FrigoApplicationDocument>,
+
+    @Inject(forwardRef(() => UserManageService))
+    private userManageService: UserManageService,
   ) {}
 
   async createFrigo(data: CreateFrigoDto): Promise<FrigoDocument> {
@@ -98,5 +103,36 @@ export class FrigoManageService {
 
     await frigo.save();
     return frigo;
+  }
+
+  async getStudentFrigoApplication(
+    studentId: Types.ObjectId,
+    frigoId: Types.ObjectId,
+  ): Promise<FrigoApplicationDocument> {
+    const student = await this.userManageService.getStudent(studentId);
+    const frigo = await this.getFrigo(frigoId);
+    const application = await this.frigoApplicationModel
+      .findOne({
+        student: student._id,
+        frigo: frigo._id,
+      })
+      .populate("frigo")
+      .populate("student");
+
+    return application;
+  }
+
+  async getStudentFrigoApplications(
+    frigoId: Types.ObjectId,
+  ): Promise<FrigoApplicationDocument[]> {
+    const frigo = await this.getFrigo(frigoId);
+    const applications = await this.frigoApplicationModel
+      .find({
+        frigo: frigo._id,
+      })
+      .populate("frigo")
+      .populate("student");
+
+    return applications;
   }
 }

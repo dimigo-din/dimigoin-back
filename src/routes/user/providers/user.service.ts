@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from "@nestjs/common";
 
-import { FrigoService } from "src/routes/frigo/providers";
+import { FrigoManageService } from "src/routes/frigo/providers";
 import { LaundryManageService } from "src/routes/laundry/providers";
 import { StayManageService } from "src/routes/stay/providers";
 
@@ -9,36 +9,37 @@ import {
   StayDocument,
   StayApplicationDocument,
   StayOutgoDocument,
+  FrigoDocument,
+  FrigoApplicationDocument,
   LaundryApplicationDocument,
 } from "src/schemas";
 
 @Injectable()
 export class UserService {
   constructor(
+    @Inject(forwardRef(() => StayManageService))
+    private stayManageService: StayManageService,
+
+    @Inject(forwardRef(() => FrigoManageService))
+    private frigoManageService: FrigoManageService,
+
     @Inject(forwardRef(() => LaundryManageService))
     private laundryManageService: LaundryManageService,
-
-    private frigoService: FrigoService,
-    private stayManageService: StayManageService,
   ) {}
 
   async getApplication(student: StudentDocument): Promise<{
     laundry: LaundryApplicationDocument | null;
     frigo: any;
     stay: StayApplicationDocument | null;
-    stayOutgo: StayOutgoDocument[] | null;
+    stayOutgos: StayOutgoDocument[] | null;
   }> {
-    const laundry =
-      await this.laundryManageService.getStudentLaundryApplication(student._id);
-    const frigo = false;
-
     let currentStayStatus = false;
     let stayApplicationStatus = false;
-    let stayOutgoStatus = false;
+    let stayOutgosStatus = false;
 
     let currentStay: StayDocument | null;
     let stayApplication: StayApplicationDocument | null;
-    let stayOutgo: StayOutgoDocument[] | null;
+    let stayOutgos: StayOutgoDocument[] | null;
 
     try {
       currentStay = await this.stayManageService.getCurrentStay();
@@ -61,20 +62,52 @@ export class UserService {
 
     if (stayApplicationStatus)
       try {
-        stayOutgo = await this.stayManageService.getStudetnStayOutgo(
+        stayOutgos = await this.stayManageService.getStudetnStayOutgos(
           student._id,
           currentStay._id,
         );
-        stayOutgoStatus = true;
+        stayOutgosStatus = true;
       } catch {
-        stayOutgoStatus = false;
+        stayOutgosStatus = false;
       }
 
+    let currentFrigoStatus = false;
+    let frigoApplicationStatus = false;
+
+    let currentFrigo: FrigoDocument | null;
+    let frigoApplication: FrigoApplicationDocument | null;
+
+    try {
+      currentFrigo = await this.frigoManageService.getCurrentFrigo();
+      currentFrigoStatus = true;
+    } catch {
+      currentFrigoStatus = false;
+    }
+
+    if (currentFrigoStatus)
+      try {
+        frigoApplication =
+          await this.frigoManageService.getStudentFrigoApplication(
+            student._id,
+            currentFrigo._id,
+          );
+        frigoApplicationStatus = true;
+      } catch {
+        frigoApplicationStatus = false;
+      }
+
+    const laundry =
+      await this.laundryManageService.getStudentLaundryApplication(student._id);
+
     return {
-      laundry: laundry ? laundry : null,
-      frigo: frigo ? frigo : null,
       stay: stayApplicationStatus ? stayApplication : null,
-      stayOutgo: stayOutgoStatus ? stayOutgo : null,
+      stayOutgos: stayOutgosStatus
+        ? stayOutgos.length
+          ? stayOutgos
+          : null
+        : null,
+      frigo: frigoApplicationStatus ? frigoApplication : null,
+      laundry: laundry ? laundry : null,
     };
   }
 }
