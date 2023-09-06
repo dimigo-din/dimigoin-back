@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-export type JournalDocument = Journal & Document;
+import { StatusValues } from "src/common";
+
+export type FrigoApplicationDocument = FrigoApplication & Document;
 
 const options: SchemaOptions = {
   timestamps: false,
@@ -9,7 +11,14 @@ const options: SchemaOptions = {
 };
 
 @Schema(options)
-export class Journal {
+export class FrigoApplication {
+  @Prop({
+    required: true,
+    type: Types.ObjectId,
+    ref: "Frigo",
+  })
+  frigo: string;
+
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -21,19 +30,15 @@ export class Journal {
     required: true,
     type: String,
   })
-  date: string;
+  reason: string;
 
   @Prop({
     required: true,
     type: String,
+    enum: StatusValues,
   })
-  type: string;
-
-  @Prop({
-    required: true,
-    type: String,
-  })
-  title: string;
+  status: (typeof StatusValues)[number];
 }
 
-export const JournalSchema = SchemaFactory.createForClass(Journal);
+export const FrigoApplicationSchema =
+  SchemaFactory.createForClass(FrigoApplication);

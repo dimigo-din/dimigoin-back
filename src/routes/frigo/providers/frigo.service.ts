@@ -1,79 +1,69 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
 
-import { ResponseDto } from "src/common/dto";
+import {
+  FrigoDocument,
+  FrigoApplication,
+  FrigoApplicationDocument,
+  StudentDocument,
+} from "src/schemas";
 
-import { Frigo, FrigoDocument, StudentDocument } from "src/schemas";
+import { ApplyFrigoDto } from "../dto";
 
-import { ManageFrigoDto, RequestFrigoDto } from "../dto";
+import { FrigoManageService } from "./frigo.manage.service";
 
 @Injectable()
 export class FrigoService {
   constructor(
-    @InjectModel(Frigo.name)
-    private frigoModel: Model<FrigoDocument>,
+    @InjectModel(FrigoApplication.name)
+    private frigoApplicationModel: Model<FrigoApplicationDocument>,
+
+    private frigoManageService: FrigoManageService,
   ) {}
 
-  async getAllFrigo(): Promise<FrigoDocument[]> {
-    const frigoRequests = await this.frigoModel.find();
-    return frigoRequests;
-  }
-
-  async getMyFrigo(user: StudentDocument): Promise<object | boolean> {
-    const frigoRequest = await this.frigoModel.findOne({ id: user._id });
-    if (!frigoRequest) return false;
-    return { status: frigoRequest.status, reason: frigoRequest.reason };
-  }
-
-  async requestFrigo(
-    data: RequestFrigoDto,
-    user: StudentDocument,
-  ): Promise<FrigoDocument> {
-    const existingFrigoRequest = await this.frigoModel.findOne({
-      id: user._id,
-    });
-    if (existingFrigoRequest)
-      throw new HttpException("이미 이번주 금요귀가를 신청했습니다.", 404);
-
-    const frigoRequest = new this.frigoModel({
-      ...data,
-      id: user._id,
-      grade: user.grade,
-      class: user.class,
-      name: user.name,
-      status: "W",
-    });
-
-    await frigoRequest.save();
-
-    return frigoRequest;
-  }
-
-  async cancelFrigo(user: StudentDocument): Promise<ResponseDto> {
-    const frigo = await this.frigoModel
-      .findOneAndDelete({ id: user._id })
-      .lean();
-    if (!frigo) throw new HttpException("금요귀가를 신청하지 않았습니다.", 404);
-
-    return { statusCode: 200, message: "success" };
-  }
-
-  async manageFrigo(data: ManageFrigoDto): Promise<FrigoDocument> {
-    const frigo = await this.frigoModel.findById(data.frigo);
-    if (!frigo)
-      throw new HttpException("해당 금요귀가 요청이 존재하지 않습니다.", 404);
-
-    frigo.status = data.status;
-    await frigo.save();
+  async getCurrentFrigo(): Promise<FrigoDocument> {
+    const frigo = this.frigoManageService.getCurrentFrigo();
 
     return frigo;
   }
 
-  @Cron(CronExpression.EVERY_WEEK)
-  async resetFrigo() {
-    // every week, frigo reset
-    await this.frigoModel.deleteMany({});
+  async applyFrigo(
+    student: StudentDocument,
+    data: ApplyFrigoDto,
+  ): Promise<FrigoApplicationDocument> {
+    const frigo = await this.frigoManageService.getCurrentFrigo();
+
+    const existingApplication = await this.frigoApplicationModel.findOne({
+      frigo: frigo._id,
+      student: student._id,
+    });
+    if (existingApplication)
+      throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
+
+    const application = new this.frigoApplicationModel({
+      frigo: frigo._id,
+      student: student._id,
+      status: "W",
+      ...data,
+    });
+    await application.save();
+
+    return application;
+  }
+
+  async cancelFrigo(
+    student: StudentDocument,
+  ): Promise<FrigoApplicationDocument> {
+    const frigo = await this.frigoManageService.getCurrentFrigo();
+
+    const frigoApplication = await this.frigoApplicationModel.findOneAndDelete({
+      frigo: frigo._id,
+      student: student._id,
+    });
+    if (!frigoApplication)
+      throw new HttpException("금요귀가를 신청하지 않았습니다.", 404);
+
+    return frigoApplication;
   }
 }

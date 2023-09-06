@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
+import { SeatValues } from "src/common/types";
+
 export type StayApplicationDocument = StayApplication & Document;
 
 const options: SchemaOptions = {
@@ -19,16 +21,17 @@ export class StayApplication {
 
   @Prop({
     required: true,
-    type: String,
-  })
-  seat: string;
-
-  @Prop({
-    required: true,
     type: Types.ObjectId,
     ref: "Student",
   })
-  user: Types.ObjectId;
+  student: Types.ObjectId;
+
+  @Prop({
+    required: true,
+    type: String,
+    enum: SeatValues,
+  })
+  seat: (typeof SeatValues)[number];
 
   @Prop({
     required: false,

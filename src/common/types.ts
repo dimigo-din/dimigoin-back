@@ -58,11 +58,6 @@ export interface refreshTokenVerified {
   userId: string;
 }
 
-export interface Permissions {
-  view: string[];
-  edit: string[];
-}
-
 export interface Seats {
   M1: string[];
   M2: string[];

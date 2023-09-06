@@ -30,7 +30,7 @@ export class UserService {
   }> {
     const laundry =
       await this.laundryManageService.getStudentLaundryApplication(student._id);
-    const frigo = await this.frigoService.getMyFrigo(student);
+    const frigo = false;
 
     let currentStayStatus = false;
     let stayApplicationStatus = false;

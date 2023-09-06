@@ -63,11 +63,9 @@ export class StayManageController {
     stay: Stay;
     applications: StayApplication[];
   }> {
-    const currentStay = await this.stayManageService.getCurrentStay();
-
-    const stay = await this.stayManageService.getStay(currentStay._id);
+    const stay = await this.stayManageService.getCurrentStay();
     const applications = await this.stayManageService.getStayApplications(
-      currentStay._id,
+      stay._id,
     );
 
     return {
@@ -219,16 +217,16 @@ export class StayManageController {
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Delete("/outgo/:stayId/:studentId/:outgoId")
+  @Delete("/outgo/:stayId/:studentId/:stayOutgoId")
   async cancelStudentStayOutgo(
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
-    @Param("outgoId", ObjectIdPipe) outgoId: Types.ObjectId,
+    @Param("stayOutgoId", ObjectIdPipe) stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
     return await this.stayManageService.cancelStudentStayOutgo(
       studentId,
       stayId,
-      outgoId,
+      stayOutgoId,
     );
   }
 }

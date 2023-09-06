@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
-
-import { ClassValues, GradeValues, StatusValues } from "src/common";
+import { Document } from "mongoose";
 
 export type FrigoDocument = Frigo & Document;
 
@@ -16,41 +14,13 @@ export class Frigo {
     required: true,
     type: String,
   })
-  name: string;
+  date: string;
 
   @Prop({
     required: true,
-    type: Number,
-    enum: GradeValues,
+    type: Boolean,
   })
-  grade: (typeof GradeValues)[number];
-
-  @Prop({
-    required: true,
-    type: Number,
-    enum: ClassValues,
-  })
-  class: (typeof ClassValues)[number];
-
-  @Prop({
-    required: true,
-    type: Types.ObjectId,
-    ref: "Students",
-  })
-  id: Types.ObjectId;
-
-  @Prop({
-    required: true,
-    type: String,
-  })
-  reason: string;
-
-  @Prop({
-    required: true,
-    type: String,
-    enum: StatusValues,
-  })
-  status: string;
+  current: boolean;
 }
 
 export const FrigoSchema = SchemaFactory.createForClass(Frigo);

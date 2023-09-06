@@ -48,7 +48,7 @@ export class StayService {
         stay: currentStay._id,
       })
       .populate({
-        path: "user",
+        path: "student",
         select: "name grade class number",
       });
 
@@ -85,14 +85,14 @@ export class StayService {
 
   async cancelStayOutgo(
     student: StudentDocument,
-    outgoId: Types.ObjectId,
+    stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
     const stay = await this.canStayApply(student);
 
     return this.stayManageService.cancelStudentStayOutgo(
       student._id,
       stay._id,
-      outgoId,
+      stayOutgoId,
     );
   }
 

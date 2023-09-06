@@ -14,12 +14,6 @@ const options: SchemaOptions = {
 export class StayOutgo {
   @Prop({
     required: true,
-    type: Boolean,
-  })
-  free: boolean;
-
-  @Prop({
-    required: true,
     type: Types.ObjectId,
     ref: "Stay",
   })
@@ -30,14 +24,13 @@ export class StayOutgo {
     type: Types.ObjectId,
     ref: "Student",
   })
-  user: Types.ObjectId;
+  student: Types.ObjectId;
 
   @Prop({
     required: true,
-    type: String,
-    enum: StatusValues,
+    type: Boolean,
   })
-  status: string;
+  free: boolean;
 
   @Prop({
     required: true,
@@ -69,6 +62,13 @@ export class StayOutgo {
     type: String,
   })
   reason: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    enum: StatusValues,
+  })
+  status: (typeof StatusValues)[number];
 }
 
 export const StayOutgoSchema = SchemaFactory.createForClass(StayOutgo);

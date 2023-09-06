@@ -69,7 +69,7 @@ export class StayManageService {
 
   async deleteStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
-    await this.stayModel.findByIdAndDelete(stayId);
+    await this.stayModel.findByIdAndDelete(stay._id);
 
     return stay;
   }
@@ -89,7 +89,7 @@ export class StayManageService {
       .find({
         stay: stay._id,
       })
-      .populate("user");
+      .populate("student");
 
     return applications;
   }
@@ -133,7 +133,7 @@ export class StayManageService {
     const application = await this.stayApplicationModel
       .findOne({
         stay: stay._id,
-        user: student._id,
+        student: student._id,
       })
       .populate("stay");
 
@@ -153,10 +153,16 @@ export class StayManageService {
 
     const existingApplication = await this.stayApplicationModel.findOne({
       stay: stay._id,
-      user: student._id,
+      student: student._id,
     });
     if (existingApplication)
       throw new HttpException("이미 잔류를 신청했습니다.", 403);
+
+    const existingSeat = await this.stayApplicationModel.findOne({
+      stay: stay._id,
+      seat: data.seat,
+    });
+    if (existingSeat) throw new HttpException("이미 신청된 좌석입니다.", 403);
 
     if (data.seat === "NONE" && !data.reason)
       throw new HttpException("미선택 사유를 입력해주세요.", 403);
@@ -164,7 +170,7 @@ export class StayManageService {
 
     const application = new this.stayApplicationModel({
       stay: stay._id,
-      user: student._id,
+      student: student._id,
       ...data,
     });
 
@@ -182,12 +188,12 @@ export class StayManageService {
 
     const application = await this.stayApplicationModel.findOneAndDelete({
       stay: stay._id,
-      user: student._id,
+      student: student._id,
     });
     if (!application)
       throw new HttpException("취소할 잔류신청이 없습니다.", 404);
 
-    await this.stayOutgoModel.deleteMany({ user: studentId });
+    await this.stayOutgoModel.deleteMany({ student: studentId });
 
     return application;
   }
@@ -201,7 +207,7 @@ export class StayManageService {
 
     const outgos = await this.stayOutgoModel.find({
       stay: stay._id,
-      user: student._id,
+      student: student._id,
     });
 
     return outgos;
@@ -217,7 +223,7 @@ export class StayManageService {
 
     const stayApplication = await this.stayApplicationModel.findOne({
       stay: stay._id,
-      user: student._id,
+      student: student._id,
     });
     if (!stayApplication)
       throw new HttpException("잔류를 신청하지 않았습니다.", 403);
@@ -241,7 +247,7 @@ export class StayManageService {
 
       const existingStayOutgoFree = await this.stayOutgoModel.findOne({
         stay: stay._id,
-        user: student._id,
+        student: student._id,
         date: momentToStringDate(applicationDate),
         free: true,
       });
@@ -255,7 +261,7 @@ export class StayManageService {
 
       const stayOutgo = new this.stayOutgoModel({
         stay: stay._id,
-        user: student._id,
+        student: student._id,
         status: "A",
         ...application,
         meal: {
@@ -284,7 +290,7 @@ export class StayManageService {
 
       const stayOutgo = new this.stayOutgoModel({
         stay: stay._id,
-        user: student._id,
+        student: student._id,
         status: "W",
         ...application,
       });
@@ -297,15 +303,15 @@ export class StayManageService {
   async cancelStudentStayOutgo(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
-    outgoId: Types.ObjectId,
+    stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgoDocument> {
     const stay = await this.getStay(stayId);
     const student = await this.userManageService.getStudent(studentId);
 
     const stayOutgo = await this.stayOutgoModel.findOneAndDelete({
-      _id: outgoId,
+      _id: stayOutgoId,
       stay: stay._id,
-      user: student._id,
+      student: student._id,
     });
     if (!stayOutgo)
       throw new HttpException("해당 잔류외출 신청이 없습니다.", 404);

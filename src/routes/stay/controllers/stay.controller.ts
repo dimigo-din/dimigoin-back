@@ -106,11 +106,11 @@ export class StayController {
   @Delete("outgo/:id")
   async cancelStayOutgo(
     @Req() req: Request,
-    @Param("id") outgoId: Types.ObjectId,
+    @Param("id") stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgo> {
     return await this.stayService.cancelStayOutgo(
       req.user as StudentDocument,
-      outgoId,
+      stayOutgoId,
     );
   }
 }

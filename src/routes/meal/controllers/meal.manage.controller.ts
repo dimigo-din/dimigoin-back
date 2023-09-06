@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -21,7 +21,7 @@ export class MealManageController {
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Get()
+  @Post()
   async updateMeals(): Promise<Meal[]> {
     return await this.mealManageService.updateMeals();
   }

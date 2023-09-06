@@ -31,6 +31,7 @@ export class LaundryController {
     createOpertation({
       name: "세탁기",
       description: "사용가능한 세탁기와 신청정보를 반환합니다.",
+      studentOnly: true,
     }),
   )
   @Get()
@@ -58,6 +59,7 @@ export class LaundryController {
     createOpertation({
       name: "세탁 신청",
       description: "세탁을 신청합니다.",
+      studentOnly: true,
     }),
   )
   @Post()
@@ -78,6 +80,7 @@ export class LaundryController {
     createOpertation({
       name: "세탁 신청 취소",
       description: "세탁신청을 취소합니다.",
+      studentOnly: true,
     }),
   )
   @Delete()

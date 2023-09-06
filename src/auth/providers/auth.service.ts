@@ -101,7 +101,7 @@ export class AuthService {
       {
         algorithm: "HS512",
         secret: this.configService.get<string>("JWT_SECRET_KEY"),
-        expiresIn: "1w",
+        expiresIn: "30m",
       },
     );
 

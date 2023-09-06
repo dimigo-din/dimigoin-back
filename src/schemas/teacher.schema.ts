@@ -27,7 +27,7 @@ export class Teacher {
   @Prop({
     required: true,
     type: String,
-    enum: ["M", "F"],
+    enum: GenderValues,
   })
   gender: (typeof GenderValues)[number];
 

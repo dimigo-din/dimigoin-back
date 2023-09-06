@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Post, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -22,7 +22,7 @@ export class TimetableManageController {
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Get()
+  @Post()
   async updateTimetable(): Promise<Timetable[]> {
     return await this.timetableManageService.updateTimetable();
   }
