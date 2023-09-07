@@ -1,13 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
-
-export class Permissions {
-  @ApiProperty()
-  view: string[];
-
-  @ApiProperty()
-  edit: string[];
-}
+import { IsArray, IsString } from "class-validator";
 
 export class CreateGroupDto {
   @ApiProperty()
@@ -15,5 +7,7 @@ export class CreateGroupDto {
   name: string;
 
   @ApiProperty()
-  permissions: Permissions;
+  @IsArray()
+  @IsString({ each: true })
+  permissions: string[];
 }

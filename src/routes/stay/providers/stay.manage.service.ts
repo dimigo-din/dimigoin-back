@@ -48,8 +48,8 @@ export class StayManageService {
       current: false,
       ...data,
     });
-    await stay.save();
 
+    await stay.save();
     return stay;
   }
 
@@ -63,7 +63,6 @@ export class StayManageService {
     }
 
     await stay.save();
-
     return stay;
   }
 
@@ -110,16 +109,17 @@ export class StayManageService {
     }
 
     stay.current = true;
-    await stay.save();
 
+    await stay.save();
     return stay;
   }
 
   async deleteCurrentStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
-    stay.current = false;
-    await stay.save();
 
+    stay.current = false;
+
+    await stay.save();
     return stay;
   }
 
@@ -176,7 +176,6 @@ export class StayManageService {
     });
 
     await application.save();
-
     return application;
   }
 
@@ -275,8 +274,8 @@ export class StayManageService {
           dinner: false,
         },
       });
-      await stayOutgo.save();
 
+      await stayOutgo.save();
       return stayOutgo;
     } else {
       const targetStayOutgoStart = stringDateToMoment(
@@ -299,8 +298,8 @@ export class StayManageService {
         status: "W",
         ...application,
       });
-      await stayOutgo.save();
 
+      await stayOutgo.save();
       return stayOutgo;
     }
   }

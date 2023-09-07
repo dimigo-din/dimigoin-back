@@ -73,8 +73,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 시간표 업데이트",
-      description: "세탁기 시간표를 업데이트합니다.",
+      name: "세탁 시간표 수정",
+      description: "세탁기 시간표를 수정합니다.",
     }),
   )
   @Put("/timetable")

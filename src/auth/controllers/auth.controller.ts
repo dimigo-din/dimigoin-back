@@ -8,7 +8,7 @@ import {
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { createOpertation } from "src/common/utils";
-import { LoginDto, refreshTokenDto } from "src/routes/user/dto";
+import { LoginDto, RefreshTokenDto } from "src/routes/user/dto";
 
 import { DIMIRefreshPayload } from "../interface";
 import { AuthService } from "../providers";
@@ -37,7 +37,7 @@ export class AuthController {
     }),
   )
   @Post("/refresh")
-  async refresh(@Body() data: refreshTokenDto): Promise<object> {
+  async refresh(@Body() data: RefreshTokenDto): Promise<object> {
     const payload: DIMIRefreshPayload = await this.authService.verify(
       data.token,
     );
@@ -57,7 +57,7 @@ export class AuthController {
     }),
   )
   @Post("/logout")
-  async logout(@Body() data: refreshTokenDto): Promise<string> {
+  async logout(@Body() data: RefreshTokenDto): Promise<string> {
     await this.authService.verify(data.token);
     await this.authService.removeExistingToken(data.token);
     return "success";

@@ -1,1 +1,1 @@
-export * from "./group.service";
+export * from "./group.manage.service";

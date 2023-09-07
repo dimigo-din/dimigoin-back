@@ -1,1 +1,1 @@
-export * from "./group.controller";
+export * from "./group.manage.controller";

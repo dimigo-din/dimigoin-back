@@ -7,7 +7,7 @@ export class LoginDto {
   token: string;
 }
 
-export class refreshTokenDto {
+export class RefreshTokenDto {
   @ApiProperty()
   @IsString()
   readonly token: string;

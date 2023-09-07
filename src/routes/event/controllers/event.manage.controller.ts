@@ -23,8 +23,8 @@ export class EventManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "이벤트 업데이트",
-      description: "이벤트를 업데이트합니다.",
+      name: "이벤트 수정",
+      description: "이벤트를 수정합니다.",
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
