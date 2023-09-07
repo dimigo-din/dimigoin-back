@@ -13,7 +13,7 @@ export const AfterschoolTimeValues = [
 ] as const;
 export const TypeValues = [0, 1] as const;
 export const ScheduleTypeValues = [
-  "test",
+  "exam",
   "event",
   "home",
   "stay",
