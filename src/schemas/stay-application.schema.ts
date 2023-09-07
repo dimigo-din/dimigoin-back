@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { SeatValues } from "src/common/types";
+import { SeatValues, Seat } from "src/common/types";
 
 export type StayApplicationDocument = StayApplication & Document;
 
@@ -31,7 +31,7 @@ export class StayApplication {
     type: String,
     enum: SeatValues,
   })
-  seat: (typeof SeatValues)[number];
+  seat: Seat;
 
   @Prop({
     required: false,

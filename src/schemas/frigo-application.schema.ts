@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { StatusValues } from "src/common";
+import { StatusValues, Status } from "src/common";
 
 export type FrigoApplicationDocument = FrigoApplication & Document;
 
@@ -37,7 +37,7 @@ export class FrigoApplication {
     type: String,
     enum: StatusValues,
   })
-  status: (typeof StatusValues)[number];
+  status: Status;
 }
 
 export const FrigoApplicationSchema =

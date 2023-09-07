@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { GradeValues } from "src/common/types";
+import { GradeValues, TypeValues, Grade, Type } from "src/common/types";
 
 export type EventDocument = Event & Document;
 
@@ -41,14 +41,14 @@ export class Event {
     type: Number,
     enum: GradeValues,
   })
-  grade: (typeof GradeValues)[number];
+  grade: Grade;
 
   @Prop({
     required: true,
     type: Number,
-    enum: [0, 1],
+    enum: TypeValues,
   })
-  type: number;
+  type: Type;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

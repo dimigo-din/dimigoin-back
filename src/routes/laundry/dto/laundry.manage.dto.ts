@@ -2,13 +2,20 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsIn, IsNumber, IsMongoId, IsArray } from "class-validator";
 import { Types } from "mongoose";
 
-import { GenderValues, GradeValues, PositionValues } from "src/common/types";
+import {
+  GradeValues,
+  GenderValues,
+  PositionValues,
+  Grade,
+  Gender,
+  Position,
+} from "src/common/types";
 
 export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  gender: (typeof GenderValues)[number];
+  gender: Gender;
 
   @ApiProperty()
   @IsNumber()
@@ -17,7 +24,7 @@ export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
   @IsIn(PositionValues)
-  position: (typeof PositionValues)[number];
+  position: Position;
 }
 
 export class CreateLaundryTimetableDto {
@@ -32,12 +39,12 @@ export class CreateLaundryTimetableDto {
   @ApiProperty()
   @IsArray()
   @IsIn(GradeValues, { each: true })
-  grade: (typeof GradeValues)[number][];
+  grade: Grade;
 
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  gender: (typeof GenderValues)[number];
+  gender: Gender;
 
   @ApiProperty()
   @IsNumber()

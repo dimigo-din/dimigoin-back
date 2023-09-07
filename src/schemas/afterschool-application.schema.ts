@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { GradeValues } from "src/common";
-
 import { AfterschoolDocument } from "./afterschool.schema";
 
 export type AfterschoolApplicationDocument = AfterschoolApplication & Document;
@@ -22,23 +20,16 @@ export class AfterschoolApplication {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "Student",
+    ref: "Afterschool",
   })
-  user: Types.ObjectId;
-
-  @Prop({
-    required: true,
-    type: Number,
-    enum: GradeValues,
-  })
-  grade: (typeof GradeValues)[number];
+  afterschool: Types.ObjectId;
 
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "Afterschool",
+    ref: "Student",
   })
-  afterschool: Types.ObjectId;
+  student: Types.ObjectId;
 }
 
 export const AfterschoolApplicationSchema = SchemaFactory.createForClass(

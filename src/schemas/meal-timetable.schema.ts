@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { GradeValues } from "src/common";
+import { GradeValues, Grade } from "src/common";
 
 export type MealTimetableDocument = MealTimetable & Document;
 
@@ -17,7 +17,7 @@ export class MealTimetable {
     type: Number,
     enum: GradeValues,
   })
-  grade: (typeof GradeValues)[number];
+  grade: Grade;
 
   @Prop({
     required: true,

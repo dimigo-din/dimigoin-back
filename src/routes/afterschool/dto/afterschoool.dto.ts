@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsIn, IsNumber, IsString } from "class-validator";
 
-import { GradeValues } from "src/common/types";
+import { GradeValues, Grade } from "src/common/types";
 
 export class ManageAfterschoolDto {
   @ApiProperty()
@@ -18,7 +18,7 @@ export class ManageAfterschoolDto {
 
   @ApiProperty()
   @IsIn(GradeValues, { each: true })
-  grade: (typeof GradeValues)[number][];
+  grade: Grade;
 
   @ApiProperty()
   @IsString()
@@ -34,5 +34,5 @@ export class ManageAfterschoolDto {
 
   @ApiProperty()
   @IsString()
-  weekday: string;
+  day: string;
 }

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Seats } from "src/common";
+import { SeatValues, Seat } from "src/common";
 
 export type StayDocument = Stay & Document;
 
@@ -54,9 +54,23 @@ export class Stay {
 
   @Prop({
     required: true,
-    type: Object,
+    type: {
+      M1: { required: true, type: [String], enum: SeatValues },
+      M2: { required: true, type: [String], enum: SeatValues },
+      M3: { required: true, type: [String], enum: SeatValues },
+      F1: { required: true, type: [String], enum: SeatValues },
+      F2: { required: true, type: [String], enum: SeatValues },
+      F3: { required: true, type: [String], enum: SeatValues },
+    },
   })
-  seat: Seats;
+  seat: {
+    M1: Seat;
+    M2: Seat;
+    M3: Seat;
+    F1: Seat;
+    F2: Seat;
+    F3: Seat;
+  };
 }
 
 export const StaySchema = SchemaFactory.createForClass(Stay);

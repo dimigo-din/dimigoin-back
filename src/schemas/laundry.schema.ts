@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { GenderValues, PositionValues } from "src/common";
+import { GenderValues, PositionValues, Gender, Position } from "src/common";
 export type LaundryDocument = Laundry & Document;
 
 const options: SchemaOptions = {
@@ -16,7 +16,7 @@ export class Laundry {
     type: String,
     enum: GenderValues,
   })
-  gender: (typeof GenderValues)[number];
+  gender: Gender;
 
   @Prop({
     required: true,
@@ -29,7 +29,7 @@ export class Laundry {
     type: String,
     enum: PositionValues,
   })
-  position: (typeof PositionValues)[number];
+  position: Position;
 }
 
 export const LaundrySchema = SchemaFactory.createForClass(Laundry);

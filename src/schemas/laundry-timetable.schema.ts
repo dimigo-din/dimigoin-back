@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { GradeValues, GenderValues } from "src/common";
+import { GradeValues, GenderValues, Grade, Gender } from "src/common";
 
 export type LaundryTimetableDocument = LaundryTimetable & Document;
 
@@ -30,14 +30,14 @@ export class LaundryTimetable {
     type: [Number],
     enum: GradeValues,
   })
-  grade: (typeof GradeValues)[number][];
+  grade: Grade;
 
   @Prop({
     required: true,
     type: String,
     enum: GenderValues,
   })
-  gender: (typeof GenderValues)[number];
+  gender: Gender;
 
   @Prop({
     required: true,

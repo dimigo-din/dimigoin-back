@@ -1,23 +1,23 @@
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 
-import { GradeValues, ClassValues, GenderValues } from "src/common/types";
+import { Grade, Class, Gender } from "src/common/types";
 
 export interface DIMIJwtPayload {
-  _id: ObjectId; // 유저의 ObjectID
+  _id: Types.ObjectId;
   name: string;
   email: string;
-  grade: (typeof GradeValues)[number];
-  class: (typeof ClassValues)[number];
+  grade: Grade;
+  class: Class;
   number: number;
-  gender: (typeof GenderValues)[number];
+  gender: Gender;
   permissions: object;
   groups: string[];
   created_at: Date;
   updated_at: Date;
-  refresh: boolean; // 유저의 Refresh Token
+  refresh: boolean;
 }
 
 export interface DIMIRefreshPayload {
-  _id: ObjectId; // 유저의 ObjectID
-  refresh: boolean; // 유저의 Refresh Token
+  _id: Types.ObjectId;
+  refresh: boolean;
 }

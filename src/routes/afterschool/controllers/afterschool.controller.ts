@@ -1,139 +1,100 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
   Param,
-  Patch,
   Post,
-  UploadedFile,
-  UseInterceptors,
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
+import { Types } from "mongoose";
 
-import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
+import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { ResponseDto } from "src/common/dto";
+import { createOpertation } from "src/common/utils";
 
 import {
   AfterschoolApplicationDocument,
-  AfterschoolApplicationResponse,
   AfterschoolDocument,
   StudentDocument,
 } from "src/schemas";
 
-import { ManageAfterschoolDto } from "../dto";
 import { AfterschoolService } from "../providers";
 
+@ApiTags("Afterschool")
 @Controller("afterschool")
 export class AfterschoolController {
   constructor(private readonly afterschoolService: AfterschoolService) {}
 
-  @UseGuards(DIMIJwtAuthGuard)
+  @ApiOperation(
+    createOpertation({
+      name: "방과후 리스트",
+      description: "신청가능한 방과후 리스트를 가져옵니다.",
+      studentOnly: true,
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
-  async getAllAfterschool(): Promise<AfterschoolDocument[]> {
-    return await this.afterschoolService.getAllAfterschool();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("/user")
-  async getAfterschoolByUser(
-    @Req() req: Request,
-  ): Promise<AfterschoolDocument[]> {
-    return await this.afterschoolService.getAfterschoolByUser(
+  async getAfterschools(@Req() req: Request): Promise<AfterschoolDocument[]> {
+    return await this.afterschoolService.getAfterschools(
       req.user as StudentDocument,
     );
   }
 
-  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Post("upload")
-  @UseInterceptors(FileInterceptor("file"))
-  async uploadEvent(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<ResponseDto> {
-    return await this.afterschoolService.uploadAfterschool(file);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, DIMIJwtAuthGuard)
-  @Get(":id")
-  async getAfterschoolById(
-    @Param("id") id: string,
-  ): Promise<AfterschoolDocument> {
-    return await this.afterschoolService.getAfterschoolById(id);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Post()
-  async createAfterschoolById(
-    @Body() data: ManageAfterschoolDto,
-  ): Promise<AfterschoolDocument> {
-    return await this.afterschoolService.createAfterschoolById(data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Patch(":id")
-  async manageAfterschoolById(
-    @Param("id") id: string,
-    @Body() data: ManageAfterschoolDto,
-  ): Promise<AfterschoolDocument> {
-    return await this.afterschoolService.manageAfterschoolById(id, data);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Delete(":id")
-  async deleteAfterschoolById(
-    @Param("id") id: string,
-  ): Promise<AfterschoolDocument> {
-    return await this.afterschoolService.deleteAfterschoolById(id);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("application")
-  async getAllApplication(): Promise<AfterschoolApplicationDocument[]> {
-    return await this.afterschoolService.getAllApplication();
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("application/my")
-  async getMyApplication(
+  @ApiOperation(
+    createOpertation({
+      name: "방과후 신청 리스트",
+      description: "학생이 신청한 방과후 리스트를 가져옵니다.",
+      studentOnly: true,
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  @Get("/application")
+  async getAfterschoolApplications(
     @Req() req: Request,
   ): Promise<AfterschoolApplicationDocument[]> {
-    return await this.afterschoolService.getMyApplication(
+    return await this.afterschoolService.getAfterschoolApplications(
       req.user as StudentDocument,
     );
   }
 
-  @UseGuards(DIMIJwtAuthGuard)
-  @Get("application/:id")
-  async getApplicationById(
-    @Param("id") id: string,
-  ): Promise<AfterschoolApplicationResponse> {
-    return await this.afterschoolService.getApplicationById(id);
-  }
-
-  @UseGuards(DIMIJwtAuthGuard)
-  @Post("application/:id")
-  async createApplication(
-    @Param("id") id: string,
+  @ApiOperation(
+    createOpertation({
+      name: "방과후 신청",
+      description: "학생이 방과후를 신청합니다.",
+      studentOnly: true,
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  @Post("/:afterschoolId")
+  async applyAfterschool(
+    @Param("afterschoolId") afterschoolId: Types.ObjectId,
     @Req() req: Request,
   ): Promise<AfterschoolApplicationDocument> {
-    return await this.afterschoolService.createApplication(
-      id,
+    return await this.afterschoolService.applyAfterschool(
       req.user as StudentDocument,
+      afterschoolId,
     );
   }
 
-  @UseGuards(DIMIJwtAuthGuard)
-  @Delete("application/:id")
-  async cancelApplication(
-    @Param("id") id: string,
+  @ApiOperation(
+    createOpertation({
+      name: "방과후 신청 취소",
+      description: "학생이 방과후 신청을 취소합니다.",
+      studentOnly: true,
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, StudentGuard)
+  @Delete("/:afterschoolId")
+  async cancelAfterschool(
+    @Param("afterschoolId") afterschoolId: Types.ObjectId,
     @Req() req: Request,
   ): Promise<ResponseDto> {
-    return await this.afterschoolService.cancelApplication(
-      id,
+    return await this.afterschoolService.cancelAfterschool(
       req.user as StudentDocument,
+      afterschoolId,
     );
   }
 }

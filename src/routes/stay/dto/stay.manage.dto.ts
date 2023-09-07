@@ -2,18 +2,15 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   IsBoolean,
-  IsMongoId,
   IsObject,
   IsString,
-  IsIn,
   IsArray,
   ValidateNested,
   ArrayMinSize,
   ArrayMaxSize,
 } from "class-validator";
-import { Types } from "mongoose";
 
-import { Seats, SeatValues, StatusValues } from "src/common/types";
+import { Seat } from "src/common/types";
 import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
 
 export class StayDateDto {
@@ -66,47 +63,12 @@ export class CreateStayDto {
 
   @ApiProperty()
   @IsObject()
-  seat: Seats;
-}
-
-export class ManageStayDto {
-  @ApiProperty()
-  @IsMongoId()
-  stay: Types.ObjectId;
-
-  @ApiProperty()
-  @IsBoolean()
-  current: boolean;
-}
-
-export class ApplyStayForceDto {
-  @ApiProperty()
-  @IsMongoId()
-  user: Types.ObjectId;
-
-  @ApiProperty()
-  @IsString()
-  @IsIn(SeatValues)
-  seat: string;
-
-  @ApiProperty()
-  @IsString()
-  reason: string;
-}
-
-export class RejectStayDto {
-  @ApiProperty()
-  @IsMongoId()
-  user: string;
-}
-
-export class ManageStayOutgoDto {
-  @ApiProperty()
-  @IsMongoId()
-  outgo: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsIn(StatusValues)
-  status: string;
+  seat: {
+    M1: Seat;
+    M2: Seat;
+    M3: Seat;
+    F1: Seat;
+    F2: Seat;
+    F3: Seat;
+  };
 }

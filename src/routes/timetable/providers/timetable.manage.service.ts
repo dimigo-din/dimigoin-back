@@ -10,7 +10,7 @@ import { momentToStringDate } from "src/common/utils";
 
 import { Timetable, TimetableDocument } from "src/schemas";
 
-import aliases from "../aliases.json";
+import aliases from "../resources/aliases.json";
 
 @Injectable()
 export class TimetableManageService {

@@ -1,0 +1,7 @@
+{
+  "test": "https://api.band.us/ical?token=aAAxADI3NmFiODBlY2MwNDMyYzg0NGY0NWU5ODIyODI5MGVjNjBmMjNhZTk",
+  "event": "https://api.band.us/ical?token=aAAxAGMyOWRmYjBjYWIxMzQyMDdkM2ZmZTlmNWM5ZWQyMjVkZGI4Y2M0OTQ",
+  "home": "https://api.band.us/ical?token=aAAxAGY2ZDk2MmI2M2YxNGViOTg5YzYwYmMxODM3MTQ2MmY5YzgxY2VjMzc",
+  "stay": "https://api.band.us/ical?token=aAAxADNiN2E3YWRhYTZkOGYzM2I0OGE2YTA1MWU0OWYxMjA0OTIwOWZlYWQ",
+  "vacation": "https://api.band.us/ical?token=aAAxADUyNmRhODdjNjg3M2Y2YWQ3ZTFlNmRhN2MyNzIzZjEwZjMzYzIyYmI"
+}

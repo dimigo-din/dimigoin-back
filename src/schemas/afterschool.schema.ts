@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { GradeValues, AfterschoolTimeValues } from "src/common/types";
+import {
+  GradeValues,
+  AfterschoolTimeValues,
+  Grade,
+  AfterschoolTime,
+} from "src/common/types";
 
 export type AfterschoolDocument = Afterschool & Document;
 
@@ -35,7 +40,7 @@ export class Afterschool {
     type: [Number],
     enum: GradeValues,
   })
-  grade: (typeof GradeValues)[number][];
+  grade: Grade[];
 
   @Prop({
     required: true,
@@ -54,13 +59,13 @@ export class Afterschool {
     type: [String],
     enum: AfterschoolTimeValues,
   })
-  time: string[];
+  time: AfterschoolTime[];
 
   @Prop({
     required: true,
     type: String,
   })
-  weekday: string;
+  day: string;
 }
 
 export const AfterschoolSchema = SchemaFactory.createForClass(Afterschool);

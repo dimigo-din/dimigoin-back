@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-import { StatusValues } from "src/common";
+import { StatusValues, Status } from "src/common";
 
 export type StayOutgoDocument = StayOutgo & Document;
 
@@ -68,7 +68,7 @@ export class StayOutgo {
     type: String,
     enum: StatusValues,
   })
-  status: (typeof StatusValues)[number];
+  status: Status;
 }
 
 export const StayOutgoSchema = SchemaFactory.createForClass(StayOutgo);

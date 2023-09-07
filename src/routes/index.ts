@@ -5,6 +5,7 @@ export * from "./group";
 export * from "./journal";
 export * from "./laundry";
 export * from "./meal";
+export * from "./schedule";
 export * from "./stay";
 export * from "./timetable";
 export * from "./user";

@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types, ObjectId } from "mongoose";
+import { Model, Types } from "mongoose";
 import XLSX from "xlsx";
 
 import {
@@ -26,7 +26,7 @@ export class UserManageService {
   ) {}
 
   async getUserByObjectId(
-    id: ObjectId,
+    id: Types.ObjectId,
   ): Promise<StudentDocument | TeacherDocument> {
     const student = await this.studentModel.findOne({ _id: id }).lean();
     if (student) return student;
