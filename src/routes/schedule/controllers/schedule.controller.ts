@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "src/auth/guards";
@@ -20,8 +20,11 @@ export class ScheduleController {
     }),
   )
   @UseGuards(DIMIJwtAuthGuard)
-  @Get()
-  async getSchedules(): Promise<Schedule[]> {
-    return await this.mealService.getSchedules();
+  @Get("/:year/:month")
+  async getSchedules(
+    @Param("year") year: number,
+    @Param("month") month: number,
+  ): Promise<Schedule[]> {
+    return await this.mealService.getSchedules(year, month);
   }
 }
