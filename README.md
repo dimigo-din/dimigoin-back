@@ -1,6 +1,8 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-  <p align="center"><b>DIMIGOin Backend v4 - 디미고인 백엔드<b></p>
+  <img src="https://raw.githubusercontent.com/dimigoin/.github/main/profile/dimigoinlogo.svg" width="200" alt="DIMIGOin" />
+  <p align="center">
+    <b>DIMIGOin Backend v4 for all</b>
+  </p>
 </p>
 
 ## Installation
