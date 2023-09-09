@@ -5,11 +5,13 @@
 
 ## Installation
 
+> Only **yarn** is allowed
+
 ```bash
 yarn install
 ```
 
-## Runnning Development Server
+## Running Development Server
 
 - 팀 노션에 있는 개발 서버용 `.env.dev` 를 프로젝트 최상단에 추가하셔야 합니다.
 
