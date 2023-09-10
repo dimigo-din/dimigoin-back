@@ -32,6 +32,18 @@ export class AuthController {
 
   @ApiOperation(
     createOpertation({
+      name: "웹 로그인",
+      description: "구글 토큰을 이용해 로그인합니다.",
+    }),
+  )
+  @Post("/login/web")
+  async loginWeb(@Body() data: LoginDto): Promise<object> {
+    const user = await this.authService.googleLogin(data);
+    return await this.authService.createToken(user);
+  }
+
+  @ApiOperation(
+    createOpertation({
       name: "리프레시",
       description: "토큰을 갱신합니다.",
     }),

@@ -31,6 +31,11 @@ export class AuthService {
   googleOAuthClient = new OAuth2Client(
     this.configService.get<string>("GOOGLE_CLIENT_ID"),
     this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
+  );
+
+  googleOAuthClientWeb = new OAuth2Client(
+    this.configService.get<string>("GOOGLE_CLIENT_ID"),
+    this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
     "postmessage",
   );
 
@@ -44,7 +49,25 @@ export class AuthService {
         idToken: tokens.id_token,
       });
       const payload = ticket.getPayload();
-      console.log(payload);
+      return await this.userManageService.getUserByEmail(payload.email);
+    } catch (error) {
+      throw new HttpException(
+        "인증되지 않은 토큰입니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+  }
+
+  async googleWebLogin(
+    data: LoginDto,
+  ): Promise<StudentDocument | TeacherDocument> {
+    try {
+      const { tokens } = await this.googleOAuthClientWeb.getToken(data.token);
+
+      const ticket = await this.googleOAuthClient.verifyIdToken({
+        idToken: tokens.id_token,
+      });
+      const payload = ticket.getPayload();
       return await this.userManageService.getUserByEmail(payload.email);
     } catch (error) {
       throw new HttpException(
