@@ -31,6 +31,7 @@ export class AuthService {
   googleOAuthClient = new OAuth2Client(
     this.configService.get<string>("GOOGLE_CLIENT_ID"),
     this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
+    "postmessage",
   );
 
   async googleLogin(
@@ -43,6 +44,7 @@ export class AuthService {
         idToken: tokens.id_token,
       });
       const payload = ticket.getPayload();
+      console.log(payload);
       return await this.userManageService.getUserByEmail(payload.email);
     } catch (error) {
       throw new HttpException(

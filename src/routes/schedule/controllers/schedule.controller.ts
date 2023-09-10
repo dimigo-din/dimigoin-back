@@ -16,7 +16,7 @@ export class ScheduleController {
   @ApiOperation(
     createOpertation({
       name: "학사일정",
-      description: "모든 학사일정을 가져옵니다.",
+      description: "해당하는 학사일정을 가져옵니다.",
     }),
   )
   @UseGuards(DIMIJwtAuthGuard)
