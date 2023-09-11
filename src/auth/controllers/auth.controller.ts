@@ -38,7 +38,7 @@ export class AuthController {
   )
   @Post("/login/web")
   async loginWeb(@Body() data: LoginDto): Promise<object> {
-    const user = await this.authService.googleLogin(data);
+    const user = await this.authService.googleWebLogin(data);
     return await this.authService.createToken(user);
   }
 
