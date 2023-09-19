@@ -7,7 +7,7 @@ import {
   UseGuards,
   Controller,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -53,6 +53,12 @@ export class GroupManageController {
       description: "그룹을 수정합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "groupId",
+    description: "그룹의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put(":groupId")
   async editGroup(

@@ -8,16 +8,26 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 import { Types } from "mongoose";
 
 import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
-import { Stay, StayApplication, StayOutgo, StudentDocument } from "src/schemas";
+import {
+  StayDocument,
+  StayApplication,
+  StayApplicationDocument,
+  StayOutgo,
+  StudentDocument,
+} from "src/schemas";
 
-import { ApplyStayDto, ApplyStayOutgoDto } from "../dto";
+import {
+  GetCurrentStayResponse,
+  ApplyStayDto,
+  ApplyStayOutgoDto,
+} from "../dto";
 import { StayService } from "../providers";
 
 @ApiTags("Stay")
@@ -32,11 +42,15 @@ export class StayController {
         "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록을 반환합니다.",
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: GetCurrentStayResponse,
+  })
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
   async getCurrentStay(): Promise<{
-    stay: Stay;
-    applications: StayApplication[];
+    stay: StayDocument;
+    applications: StayApplicationDocument[];
   }> {
     const currentStay = await this.stayService.getCurrentStay();
     const currentApplications =
@@ -102,11 +116,17 @@ export class StayController {
       studentOnly: true,
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayOutgoId",
+    description: "잔류외출 신청의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
-  @Delete("outgo/:id")
+  @Delete("outgo/:stayOutgoId")
   async cancelStayOutgo(
     @Req() req: Request,
-    @Param("id") stayOutgoId: Types.ObjectId,
+    @Param("stayOutgoId") stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgo> {
     return await this.stayService.cancelStayOutgo(
       req.user as StudentDocument,

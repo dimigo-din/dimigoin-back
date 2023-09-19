@@ -8,7 +8,7 @@ import {
   Put,
   Controller,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -31,6 +31,12 @@ export class JournalManageController {
       description: "해당하는 학생의 지도일지를 가져옵니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:studentId")
   async getStudentJournals(
@@ -45,6 +51,12 @@ export class JournalManageController {
       description: "해당하는 학생의 지도일지를 생성합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/:studentId")
   async createStudentJournal(
@@ -63,6 +75,12 @@ export class JournalManageController {
       description: "해당하는 지도일지를 수정합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "journalId",
+    description: "지도일지의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put("/:journalId")
   async editStudentJournal(
@@ -78,6 +96,12 @@ export class JournalManageController {
       description: "해당하는 지도일지를 삭제합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "journalId",
+    description: "지도일지의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:journalId")
   async deleteStudentJournal(

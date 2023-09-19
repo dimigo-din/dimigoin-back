@@ -1,76 +1,157 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import { SeatValues, Seat } from "src/common";
 
-export type StayDocument = Stay & Document;
+export type StayDocument = HydratedDocument<Stay>;
 
 const options: SchemaOptions = {
   timestamps: false,
   versionKey: false,
+  virtuals: true,
 };
 
 @Schema(options)
-export class Stay {
-  @Prop({
-    required: true,
-    type: [
-      {
-        start: { type: String, required: true },
-        end: { type: String, required: true },
-      },
-    ],
-  })
-  duration: { start: string; end: string }[];
-
+class StayDuration {
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   start: string;
 
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+  })
+  end: string;
+}
+const StayDurationSchema = SchemaFactory.createForClass(StayDuration);
+
+@Schema(options)
+class StayDates {
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+  })
+  date: string;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: Boolean,
+  })
+  free: boolean;
+}
+const StayDatesSchema = SchemaFactory.createForClass(StayDates);
+
+@Schema(options)
+class StaySeat {
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  M1: Seat;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  M2: Seat;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  M3: Seat;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  F1: Seat;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  F2: Seat;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: [String],
+    enum: SeatValues,
+  })
+  F3: Seat;
+}
+const StaySeatSchema = SchemaFactory.createForClass(StaySeat);
+
+@Schema(options)
+export class Stay {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty({
+    type: [StayDuration],
+  })
+  @Prop({
+    required: true,
+    type: [StayDurationSchema],
+  })
+  duration: StayDuration[];
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+  })
+  start: string;
+
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   end: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Boolean,
   })
   current: boolean;
 
+  @ApiProperty({
+    type: [StayDates],
+  })
   @Prop({
     required: true,
-    type: [
-      {
-        date: { type: String, required: true },
-        free: { type: Boolean, required: true },
-      },
-    ],
+    type: [StayDatesSchema],
   })
-  dates: { date: string; free: boolean }[];
+  dates: StayDates[];
 
+  @ApiProperty({
+    type: StaySeat,
+  })
   @Prop({
     required: true,
-    type: {
-      M1: { required: true, type: [String], enum: SeatValues },
-      M2: { required: true, type: [String], enum: SeatValues },
-      M3: { required: true, type: [String], enum: SeatValues },
-      F1: { required: true, type: [String], enum: SeatValues },
-      F2: { required: true, type: [String], enum: SeatValues },
-      F3: { required: true, type: [String], enum: SeatValues },
-    },
+    type: StaySeatSchema,
   })
-  seat: {
-    M1: Seat;
-    M2: Seat;
-    M3: Seat;
-    F1: Seat;
-    F2: Seat;
-    F3: Seat;
-  };
+  seat: StaySeat;
 }
 
 export const StaySchema = SchemaFactory.createForClass(Stay);

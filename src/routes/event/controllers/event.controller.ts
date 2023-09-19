@@ -1,22 +1,19 @@
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
-import { StayService } from "src/routes/stay/providers";
 
 import { EventDocument, StudentDocument } from "src/schemas";
 
+import { GetEventResponse } from "../dto";
 import { EventService } from "../providers";
 
 @ApiTags("Event")
 @Controller("event")
 export class EventController {
-  constructor(
-    private readonly eventService: EventService,
-    private readonly stayService: StayService,
-  ) {}
+  constructor(private readonly eventService: EventService) {}
 
   @ApiOperation(
     createOpertation({
@@ -25,6 +22,10 @@ export class EventController {
       studentOnly: true,
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: GetEventResponse,
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getEvent(@Req() req: Request): Promise<{

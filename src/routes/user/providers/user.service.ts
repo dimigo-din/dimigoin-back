@@ -29,7 +29,7 @@ export class UserService {
 
   async getApplication(student: StudentDocument): Promise<{
     laundry: LaundryApplicationDocument | null;
-    frigo: any;
+    frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;
   }> {

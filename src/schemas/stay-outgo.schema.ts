@@ -1,17 +1,27 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import { StatusValues, Status } from "src/common";
 
-export type StayOutgoDocument = StayOutgo & Document;
+import { Stay, Student } from "src/schemas";
+
+export type StayOutgoDocument = HydratedDocument<StayOutgo>;
 
 const options: SchemaOptions = {
   timestamps: false,
   versionKey: false,
 };
 
+@ApiExtraModels(Stay, Student)
 @Schema(options)
 export class StayOutgo {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Stay) }],
+  })
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -19,6 +29,10 @@ export class StayOutgo {
   })
   stay: Types.ObjectId;
 
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Student) }],
+  })
+  @ApiProperty()
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -26,18 +40,21 @@ export class StayOutgo {
   })
   student: Types.ObjectId;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Boolean,
   })
   free: boolean;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   date: string;
 
+  @ApiProperty()
   @Prop({
     required: false,
     type: {
@@ -47,6 +64,7 @@ export class StayOutgo {
   })
   duration: { start: string; end: string };
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: {
@@ -57,12 +75,14 @@ export class StayOutgo {
   })
   meal: { breakfast: boolean; lunch: boolean; dinner: boolean };
 
+  @ApiProperty()
   @Prop({
     required: false,
     type: String,
   })
   reason: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,

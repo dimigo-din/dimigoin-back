@@ -15,6 +15,7 @@ import {
   TokenDocument,
 } from "src/schemas";
 
+import { TokensResponse } from "../dto";
 import { DIMIJwtPayload, DIMIRefreshPayload } from "../interface";
 
 @Injectable()
@@ -87,7 +88,7 @@ export class AuthService {
     if (!existingToken)
       throw new HttpException(
         "Refresh 토큰이 올바르지 않습니다. 다시 로그인해주세요.",
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNAUTHORIZED,
       );
   }
 
@@ -118,7 +119,7 @@ export class AuthService {
       | TeacherDocument
       | DIMIJwtPayload
       | DIMIRefreshPayload,
-  ): Promise<object> {
+  ): Promise<TokensResponse> {
     const user = await this.userManageService.getUserByObjectId(payload._id);
 
     const accessToken = await this.jwtService.signAsync(

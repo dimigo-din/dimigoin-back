@@ -1,23 +1,30 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import { GradeValues, ClassValues, Grade, Class } from "src/common";
 
-export type TimetableDocument = Timetable & Document;
+export type TimetableDocument = HydratedDocument<Timetable>;
 
 const options: SchemaOptions = {
   timestamps: false,
   versionKey: false,
+  virtuals: true,
 };
 
 @Schema(options)
 export class Timetable {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   date: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,
@@ -25,6 +32,7 @@ export class Timetable {
   })
   grade: Grade;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,
@@ -32,6 +40,7 @@ export class Timetable {
   })
   class: Class;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: [String],

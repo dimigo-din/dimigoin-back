@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import { HydratedDocument } from "mongoose";
 
-export type FrigoDocument = Frigo & Document;
+export type FrigoDocument = HydratedDocument<Frigo>;
 
 const options: SchemaOptions = {
   timestamps: false,
@@ -10,12 +11,14 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Frigo {
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   date: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Boolean,

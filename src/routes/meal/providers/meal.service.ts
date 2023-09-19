@@ -37,7 +37,9 @@ export class MealService {
     return meals;
   }
 
-  async getMealTimetable(user: StudentDocument): Promise<MealTimetable> {
+  async getMealTimetable(
+    user: StudentDocument,
+  ): Promise<MealTimetableDocument> {
     const timetable = await this.mealTimetableModel.findOne({
       grade: user.grade,
     });

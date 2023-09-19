@@ -1,11 +1,11 @@
 import { Get, UseGuards, Req, Controller } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
 
-import { JournalDocument, StudentDocument } from "src/schemas";
+import { Journal, JournalDocument, StudentDocument } from "src/schemas";
 
 import { JournalService } from "../providers";
 
@@ -21,6 +21,10 @@ export class JournalController {
       studentOnly: true,
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: [Journal],
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getJournals(@Req() req: Request): Promise<JournalDocument[]> {

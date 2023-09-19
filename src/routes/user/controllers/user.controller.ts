@@ -1,5 +1,5 @@
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
@@ -9,8 +9,11 @@ import {
   StudentDocument,
   StayApplicationDocument,
   StayOutgoDocument,
+  FrigoApplicationDocument,
+  LaundryApplicationDocument,
 } from "src/schemas";
 
+import { GetApplicationResponse } from "../dto";
 import { UserService } from "../providers";
 
 @ApiTags("User")
@@ -25,11 +28,15 @@ export class UserController {
       studentOnly: true,
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: GetApplicationResponse,
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getApplication(@Req() req: Request): Promise<{
-    laundry: any;
-    frigo: any;
+    laundry: LaundryApplicationDocument | null;
+    frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;
   }> {

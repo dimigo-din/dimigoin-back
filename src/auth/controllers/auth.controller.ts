@@ -5,11 +5,12 @@ import {
   HttpException,
   HttpStatus,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 import { createOpertation } from "src/common/utils";
 import { LoginDto, RefreshTokenDto } from "src/routes/user/dto";
 
+import { TokensResponse } from "../dto";
 import { DIMIRefreshPayload } from "../interface";
 import { AuthService } from "../providers";
 
@@ -24,8 +25,12 @@ export class AuthController {
       description: "구글 토큰을 이용해 로그인합니다.",
     }),
   )
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: TokensResponse,
+  })
   @Post("/login")
-  async login(@Body() data: LoginDto): Promise<object> {
+  async login(@Body() data: LoginDto): Promise<TokensResponse> {
     const user = await this.authService.googleLogin(data);
     return await this.authService.createToken(user);
   }
@@ -36,8 +41,12 @@ export class AuthController {
       description: "구글 토큰을 이용해 로그인합니다.",
     }),
   )
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: TokensResponse,
+  })
   @Post("/login/web")
-  async loginWeb(@Body() data: LoginDto): Promise<object> {
+  async loginWeb(@Body() data: LoginDto): Promise<TokensResponse> {
     const user = await this.authService.googleWebLogin(data);
     return await this.authService.createToken(user);
   }
@@ -48,8 +57,12 @@ export class AuthController {
       description: "토큰을 갱신합니다.",
     }),
   )
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: TokensResponse,
+  })
   @Post("/refresh")
-  async refresh(@Body() data: RefreshTokenDto): Promise<object> {
+  async refresh(@Body() data: RefreshTokenDto): Promise<TokensResponse> {
     const payload: DIMIRefreshPayload = await this.authService.verify(
       data.token,
     );

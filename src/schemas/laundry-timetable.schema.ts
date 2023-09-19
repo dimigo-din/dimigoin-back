@@ -1,17 +1,28 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import { GradeValues, GenderValues, Grade, Gender } from "src/common";
 
-export type LaundryTimetableDocument = LaundryTimetable & Document;
+import { Laundry } from "src/schemas";
+
+export type LaundryTimetableDocument = HydratedDocument<LaundryTimetable>;
 
 const options: SchemaOptions = {
   timestamps: false,
   versionKey: false,
+  virtuals: true,
 };
 
+@ApiExtraModels(Laundry)
 @Schema(options)
 export class LaundryTimetable {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Laundry) }],
+  })
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -19,12 +30,14 @@ export class LaundryTimetable {
   })
   laundry: Types.ObjectId;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: [String],
   })
   sequence: string[];
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: [Number],
@@ -32,6 +45,7 @@ export class LaundryTimetable {
   })
   grade: Grade;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
@@ -39,6 +53,7 @@ export class LaundryTimetable {
   })
   gender: Gender;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,

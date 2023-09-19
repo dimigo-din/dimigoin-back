@@ -10,7 +10,12 @@ export const DIMISwaggerSetup = async (app: INestApplication) => {
     .setDescription(cluster.description)
     .setVersion(cluster.version)
     .addBearerAuth(
-      { type: "http", scheme: "bearer", bearerFormat: "JWT", in: "header" },
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        in: "header",
+      },
       "access-token",
     )
     .build();

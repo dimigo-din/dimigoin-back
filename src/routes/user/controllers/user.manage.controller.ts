@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -57,6 +57,12 @@ export class UserManageController {
       description: "해당하는 학생의 정보를 반환합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/student/:studentId")
   async getStudent(
@@ -98,6 +104,12 @@ export class UserManageController {
       description: "해당하는 선생님의 정보를 반환합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "teacherId",
+    description: "선생님의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/teacher/:teacherId")
   async getTeacher(

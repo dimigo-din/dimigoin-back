@@ -5,6 +5,18 @@ import { IsBoolean, IsObject, IsString, IsIn } from "class-validator";
 import { SeatValues } from "src/common/types";
 import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
 
+import { Stay, StayApplication } from "src/schemas";
+
+export class GetCurrentStayResponse {
+  @ApiProperty()
+  stay: Stay;
+
+  @ApiProperty({
+    type: [StayApplication],
+  })
+  applications: StayApplication[];
+}
+
 export class ApplyStayDto {
   @ApiProperty()
   @IsString()

@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 import { GenderValues, Gender } from "src/common/types";
 
-export type TeacherDocument = Teacher & Document;
+export type TeacherDocument = HydratedDocument<Teacher>;
 
 const options: SchemaOptions = {
   timestamps: false,

@@ -25,8 +25,6 @@ export class JournalManageService {
       .find({ student: student._id })
       .sort({ date: -1 });
 
-    console.log(student, journals);
-
     return journals;
   }
 

@@ -1,11 +1,11 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "src/auth/guards";
 import { Grade, Class } from "src/common/types";
 import { createOpertation } from "src/common/utils";
 
-import { TimetableDocument } from "src/schemas";
+import { Timetable, TimetableDocument } from "src/schemas";
 
 import { TimetableService } from "../providers";
 
@@ -20,6 +20,22 @@ export class TimetableController {
       description: "해당하는 학년 반의 시간표를 반환합니다.",
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: [Timetable],
+  })
+  @ApiParam({
+    required: true,
+    name: "grade",
+    description: "학년",
+    type: Number,
+  })
+  @ApiParam({
+    required: true,
+    name: "class",
+    description: "반",
+    type: Number,
+  })
   @UseGuards(DIMIJwtAuthGuard)
   @Get("/:grade/:class")
   async getTimetable(

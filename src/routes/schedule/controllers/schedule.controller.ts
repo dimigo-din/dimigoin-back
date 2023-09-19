@@ -1,5 +1,5 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "src/auth/guards";
 import { createOpertation } from "src/common/utils";
@@ -19,6 +19,22 @@ export class ScheduleController {
       description: "해당하는 학사일정을 가져옵니다.",
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: [Schedule],
+  })
+  @ApiParam({
+    required: true,
+    name: "year",
+    description: "년",
+    type: Number,
+  })
+  @ApiParam({
+    required: true,
+    name: "month",
+    description: "월",
+    type: Number,
+  })
   @UseGuards(DIMIJwtAuthGuard)
   @Get("/:year/:month")
   async getSchedules(

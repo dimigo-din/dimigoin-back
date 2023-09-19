@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import {
   GradeValues,
@@ -10,7 +11,7 @@ import {
   Gender,
 } from "src/common";
 
-export type StudentDocument = Student & Document;
+export type StudentDocument = HydratedDocument<Student>;
 
 const options: SchemaOptions = {
   timestamps: false,
@@ -19,18 +20,21 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Student {
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   name: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   email: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,
@@ -38,6 +42,7 @@ export class Student {
   })
   grade: Grade;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,
@@ -45,12 +50,14 @@ export class Student {
   })
   class: Class;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: Number,
   })
   number: number;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
@@ -58,6 +65,7 @@ export class Student {
   })
   gender: Gender;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: [String],
@@ -65,6 +73,7 @@ export class Student {
   })
   permissions: string[];
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: [Types.ObjectId],

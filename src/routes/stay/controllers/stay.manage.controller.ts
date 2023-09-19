@@ -9,7 +9,7 @@ import {
   Param,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -80,6 +80,12 @@ export class StayManageController {
       description: "해당 잔류를 활성화 합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Patch("/current/:stayId")
   async setCurrentStay(
@@ -94,6 +100,12 @@ export class StayManageController {
       description: "해당 잔류를 비활성화 합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/current/:stayId")
   async deleteCurrentStay(
@@ -108,6 +120,11 @@ export class StayManageController {
       description: "해당 잔류 정보와 잔류 신청자 목록을 반환합니다.",
     }),
   )
+  @ApiParam({
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:stayId")
   async getStay(
@@ -132,6 +149,12 @@ export class StayManageController {
       description: "해당 잔류 정보를 수정합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put("/:stayId")
   async editStay(
@@ -147,6 +170,12 @@ export class StayManageController {
       description: "해당 잔류를 삭제합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:stayId")
   async deleteStay(
@@ -161,6 +190,18 @@ export class StayManageController {
       description: "학생 잔류 신청을 추가합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/:stayId/:studentId")
   async applyStudentStay(
@@ -181,6 +222,18 @@ export class StayManageController {
       description: "학생 잔류 신청을 삭제합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:stayId/:studentId")
   async cancelStudentStay(
@@ -196,6 +249,18 @@ export class StayManageController {
       description: "학생 잔류외출 신청을 추가합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post("/outgo/:stayId/:studentId")
   async applyStudentStayOutgo(
@@ -216,6 +281,24 @@ export class StayManageController {
       description: "학생 잔류외출 신청을 삭제합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "stayOutgoId",
+    description: "잔류외출 신청의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/outgo/:stayId/:studentId/:stayOutgoId")
   async cancelStudentStayOutgo(

@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 import { Types } from "mongoose";
 
@@ -16,6 +16,7 @@ import { ResponseDto } from "src/common/dto";
 import { createOpertation } from "src/common/utils";
 
 import {
+  AfterschoolApplication,
   AfterschoolApplicationDocument,
   AfterschoolDocument,
   StudentDocument,
@@ -50,6 +51,10 @@ export class AfterschoolController {
       studentOnly: true,
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: [AfterschoolApplication],
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get("/application")
   async getAfterschoolApplications(
@@ -67,6 +72,12 @@ export class AfterschoolController {
       studentOnly: true,
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "afterschoolId",
+    description: "방과후의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post("/:afterschoolId")
   async applyAfterschool(
@@ -86,6 +97,12 @@ export class AfterschoolController {
       studentOnly: true,
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "afterschoolId",
+    description: "방과후의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Delete("/:afterschoolId")
   async cancelAfterschool(

@@ -9,7 +9,7 @@ import {
   UseGuards,
   Patch,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -79,6 +79,12 @@ export class FrigoManageController {
       description: "해당 금요귀가를 활성화 합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Patch("/current/:frigoId")
   async setCurrentFrigo(
@@ -93,6 +99,12 @@ export class FrigoManageController {
       description: "해당 금요귀가를 비활성화 합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/current/:frigoId")
   async deleteCurrentFrigo(
@@ -107,6 +119,12 @@ export class FrigoManageController {
       description: "해당 금요귀가 정보와 금요귀가 신청자 목록을 반환합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:frigoId")
   async getFrigo(
@@ -131,6 +149,12 @@ export class FrigoManageController {
       description: "해당 금요귀가를 수정합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put("/:frigoId")
   async editFrigo(
@@ -146,6 +170,12 @@ export class FrigoManageController {
       description: "해당 금요귀가를 삭제합니다.",
     }),
   )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete("/:frigoId")
   async deleteFrigo(

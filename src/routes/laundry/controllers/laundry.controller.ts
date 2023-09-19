@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
@@ -19,7 +19,7 @@ import {
   LaundryApplicationDocument,
 } from "src/schemas";
 
-import { ApplyLaundryDto } from "../dto";
+import { GetLaundriesResponse, ApplyLaundryDto } from "../dto";
 import { LaundryService } from "../providers";
 
 @ApiTags("Laundry")
@@ -34,6 +34,10 @@ export class LaundryController {
       studentOnly: true,
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: GetLaundriesResponse,
+  })
   @Get()
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   async getLaundries(@Req() req: Request): Promise<{

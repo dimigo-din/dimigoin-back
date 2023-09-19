@@ -35,7 +35,6 @@ export class AfterschoolService {
   async getAfterschoolApplications(
     student: StudentDocument,
   ): Promise<AfterschoolApplicationDocument[]> {
-    console.log(student._id);
     const afterschoolApplications = await this.afterschoolApplicationModel
       .find({
         student: student._id,

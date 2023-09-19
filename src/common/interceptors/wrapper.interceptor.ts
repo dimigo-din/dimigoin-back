@@ -14,7 +14,6 @@ export class DIMIWrapperInterceptor implements NestInterceptor {
   private readonly logger = new Logger(DIMIWrapperInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const pipe = map((data: any) => ({ statusCode: 200, data: data }));
     context.switchToHttp().getResponse().status(200);
     const errorPipe = catchError((err) => {
       if (err.name !== "HttpException") {
@@ -25,6 +24,6 @@ export class DIMIWrapperInterceptor implements NestInterceptor {
       return throwError(() => err);
     });
 
-    return next.handle().pipe(errorPipe).pipe(pipe);
+    return next.handle().pipe(errorPipe);
   }
 }

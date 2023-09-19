@@ -1,17 +1,28 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { HydratedDocument, Types } from "mongoose";
 
 import { StatusValues, Status } from "src/common";
 
-export type FrigoApplicationDocument = FrigoApplication & Document;
+import { Frigo, Student } from "src/schemas";
+
+export type FrigoApplicationDocument = HydratedDocument<FrigoApplication>;
 
 const options: SchemaOptions = {
   timestamps: false,
   versionKey: false,
+  virtuals: true,
 };
 
+@ApiExtraModels(Frigo, Student)
 @Schema(options)
 export class FrigoApplication {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Frigo) }],
+  })
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -19,6 +30,9 @@ export class FrigoApplication {
   })
   frigo: string;
 
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Student) }],
+  })
   @Prop({
     required: true,
     type: Types.ObjectId,
@@ -26,12 +40,14 @@ export class FrigoApplication {
   })
   student: Types.ObjectId;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,
   })
   reason: string;
 
+  @ApiProperty()
   @Prop({
     required: true,
     type: String,

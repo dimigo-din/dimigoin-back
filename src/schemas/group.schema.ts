@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { HydratedDocument } from "mongoose";
 
-export type GroupDocument = Group & Document;
+export type GroupDocument = HydratedDocument<Group>;
 
 const options: SchemaOptions = {
   timestamps: false,
