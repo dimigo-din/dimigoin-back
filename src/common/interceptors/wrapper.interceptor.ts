@@ -7,8 +7,8 @@ import {
 } from "@nestjs/common";
 import { Observable, catchError, throwError } from "rxjs";
 
-import target from "src/../target.json";
 import { globalOpcode } from "src/common/opcode";
+import target from "src/resources/target.json";
 
 @Injectable()
 export class DIMIWrapperInterceptor implements NestInterceptor {
