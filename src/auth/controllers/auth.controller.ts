@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   HttpException,
   HttpStatus,
@@ -18,6 +19,21 @@ import { AuthService } from "../providers";
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @ApiOperation(
+    createOpertation({
+      name: "테스트",
+      description: "서버가 살아있는지 확인합니다.",
+    }),
+  )
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: String,
+  })
+  @Get("/ping")
+  async ping(): Promise<string> {
+    return "pong";
+  }
 
   @ApiOperation(
     createOpertation({
