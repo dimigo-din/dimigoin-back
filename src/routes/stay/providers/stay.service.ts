@@ -122,15 +122,4 @@ export class StayService {
 
     return appliers;
   }
-
-  async isStay(): Promise<number> {
-    const stay = await this.stayModel.findOne({ current: true });
-    if (!stay) return 0;
-
-    const start = moment(stay.start).startOf("day");
-    const end = moment(stay.end).endOf("day");
-    const target = moment();
-
-    return target.isBetween(start, end, undefined, "[)") ? 1 : 0;
-  }
 }

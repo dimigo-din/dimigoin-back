@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { GradeValues } from "src/common/types";
-import { StayService } from "src/routes/stay/providers";
+import { StayManageService } from "src/routes/stay/providers";
 
 import { Event, EventDocument } from "src/schemas";
 
@@ -13,14 +13,14 @@ export class EventService {
     @InjectModel(Event.name)
     private eventModel: Model<EventDocument>,
 
-    private stayService: StayService,
+    private stayManageService: StayManageService,
   ) {}
 
   async getEvents(grade: keyof typeof GradeValues): Promise<{
     events: EventDocument[];
     type: number;
   }> {
-    const isStay = await this.stayService.isStay();
+    const isStay = await this.stayManageService.isStay();
 
     const events = await this.eventModel.find({
       type: isStay,
