@@ -9,7 +9,11 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 import { createOpertation } from "src/common/utils";
-import { LoginDto, RefreshTokenDto } from "src/routes/user/dto";
+import {
+  LoginDto,
+  PasswordLoginDto,
+  RefreshTokenDto,
+} from "src/routes/user/dto";
 
 import { TokensResponse } from "../dto";
 import { DIMIRefreshPayload } from "../interface";
@@ -64,6 +68,22 @@ export class AuthController {
   @Post("/login/web")
   async loginWeb(@Body() data: LoginDto): Promise<TokensResponse> {
     const user = await this.authService.googleWebLogin(data);
+    return await this.authService.createToken(user);
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "로그인",
+      description: "비밀번호를 이용해 로그인합니다.",
+    }),
+  )
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: TokensResponse,
+  })
+  @Post("/login/password")
+  async passwordLogin(@Body() data: PasswordLoginDto): Promise<TokensResponse> {
+    const user = await this.authService.passwordLogin(data);
     return await this.authService.createToken(user);
   }
 

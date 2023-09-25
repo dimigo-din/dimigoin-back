@@ -1,3 +1,5 @@
+export * from "./student-password.schema";
+export * from "./teacher-password.schema";
 export * from "./group.schema";
 export * from "./student.schema";
 export * from "./teacher.schema";

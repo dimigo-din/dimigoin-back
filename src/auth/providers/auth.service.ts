@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { OAuth2Client } from "google-auth-library";
 import { Model } from "mongoose";
 
-import { LoginDto } from "src/routes/user/dto";
+import { LoginDto, PasswordLoginDto } from "src/routes/user/dto";
 import { UserManageService } from "src/routes/user/providers";
 
 import {
@@ -28,6 +28,12 @@ export class AuthService {
     @InjectModel(Token.name)
     private tokenModule: Model<TokenDocument>,
   ) {}
+
+  async passwordLogin(
+    data: PasswordLoginDto,
+  ): Promise<StudentDocument | TeacherDocument> {
+    return await this.userManageService.passwordLogin(data);
+  }
 
   googleOAuthClient = new OAuth2Client(
     this.configService.get<string>("GOOGLE_CLIENT_ID"),

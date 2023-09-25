@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -15,8 +16,15 @@ import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ObjectIdPipe } from "src/common/pipes";
 import { createOpertation } from "src/common/utils";
 
-import { Student, StudentDocument, Teacher } from "src/schemas";
+import {
+  Student,
+  StudentDocument,
+  Teacher,
+  StudentPasswordDocument,
+  TeacherPasswordDocument,
+} from "src/schemas";
 
+import { CreatePasswordDto } from "../dto";
 import { UserManageService } from "../providers";
 
 @ApiTags("User Manage")
@@ -73,6 +81,27 @@ export class UserManageController {
 
   @ApiOperation(
     createOpertation({
+      name: "학생 비밀번호 생성",
+      description: "해당하는 학생의 비밀번호를 생성합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Post("/student/:studentId/password")
+  async createStudentPassword(
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+    @Body() data: CreatePasswordDto,
+  ): Promise<StudentPasswordDocument> {
+    return await this.userManageService.createStudentPassword(studentId, data);
+  }
+
+  @ApiOperation(
+    createOpertation({
       name: "선생님 목록",
       description: "모든 선생님의 목록을 반환합니다.",
     }),
@@ -116,5 +145,26 @@ export class UserManageController {
     @Param("teacherId", ObjectIdPipe) teacherId: Types.ObjectId,
   ): Promise<Teacher> {
     return await this.userManageService.getTeacher(teacherId);
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "선생님 비밀번호 생성",
+      description: "해당하는 선생님의 비밀번호를 생성합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "teacherId",
+    description: "선생님의 ObjectId",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Post("/teacher/:teacherId/password")
+  async createTeacherPassword(
+    @Param("teacherId", ObjectIdPipe) teacherId: Types.ObjectId,
+    @Body() data: CreatePasswordDto,
+  ): Promise<TeacherPasswordDocument> {
+    return await this.userManageService.createTeacherPassword(teacherId, data);
   }
 }

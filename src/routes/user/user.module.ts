@@ -13,6 +13,10 @@ import {
   StudentSchema,
   Teacher,
   TeacherSchema,
+  StudentPassword,
+  StudentPasswordSchema,
+  TeacherPassword,
+  TeacherPasswordSchema,
 } from "src/schemas";
 
 import * as userControllers from "./controllers";
@@ -25,6 +29,8 @@ import * as userServices from "./providers";
       { name: Student.name, schema: StudentSchema },
       { name: Teacher.name, schema: TeacherSchema },
       { name: Group.name, schema: GroupSchema },
+      { name: StudentPassword.name, schema: StudentPasswordSchema },
+      { name: TeacherPassword.name, schema: TeacherPasswordSchema },
     ]),
     forwardRef(() => StayModule),
     forwardRef(() => FrigoModule),

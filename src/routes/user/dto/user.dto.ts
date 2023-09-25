@@ -30,6 +30,16 @@ export class GetApplicationResponse {
   stayOutgos: StayOutgo[];
 }
 
+export class PasswordLoginDto {
+  @ApiProperty()
+  @IsString()
+  readonly id: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly password: string;
+}
+
 export class LoginDto {
   @ApiProperty()
   @IsString()
