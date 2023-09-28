@@ -18,20 +18,7 @@ export class Token {
   @Prop({
     required: true,
   })
-  userId: string;
-
-  @Prop({ default: Date.now })
-  created_at: Date;
-
-  @Prop({ default: Date.now })
-  updated_at: Date;
+  user: string;
 }
 
 export const TokenSchema = SchemaFactory.createForClass(Token);
-
-TokenSchema.pre<Token>("save", function (next) {
-  if (!this.created_at) {
-    this.created_at = new Date();
-  }
-  next();
-});

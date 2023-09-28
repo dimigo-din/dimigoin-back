@@ -26,7 +26,7 @@ export class AuthService {
     private readonly userManageService: UserManageService,
 
     @InjectModel(Token.name)
-    private tokenModule: Model<TokenDocument>,
+    private tokenModel: Model<TokenDocument>,
   ) {}
 
   async passwordLogin(
@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   async removeExistingToken(token: string): Promise<void> {
-    const existingToken = await this.tokenModule
+    const existingToken = await this.tokenModel
       .findOneAndDelete({
         refreshToken: token,
       })
@@ -146,7 +146,7 @@ export class AuthService {
       },
     );
 
-    await new this.tokenModule({ refreshToken, userId: user._id }).save();
+    await new this.tokenModel({ refreshToken, user: user._id }).save();
 
     return {
       accessToken,

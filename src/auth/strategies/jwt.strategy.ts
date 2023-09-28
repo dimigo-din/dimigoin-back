@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  HttpException,
-  Inject,
-  Injectable,
-  HttpStatus,
-} from "@nestjs/common";
+import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
@@ -16,7 +10,6 @@ import { DIMIJwtPayload } from "../interface";
 @Injectable()
 export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
-    // @Inject(forwardRef(() => UserManageService))
     private readonly userManageService: UserManageService,
     private readonly configService: ConfigService,
   ) {
