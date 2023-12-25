@@ -1,6 +1,7 @@
 export const GradeValues = [1, 2, 3] as const;
 export const ClassValues = [1, 2, 3, 4, 5, 6] as const;
 export const GenderValues = ["M", "F"] as const;
+export const UserTypeValues = ["student", "teacher"] as const;
 export const PositionValues = ["L", "M", "R", "-"] as const;
 export const StatusValues = ["A", "R", "W"] as const;
 export const AfterschoolTimeValues = [
@@ -45,6 +46,7 @@ for (let i = 0; i < SeatNameValues.length; i++) {
 
 export type Grade = (typeof GradeValues)[number];
 export type Class = (typeof ClassValues)[number];
+export type UserType = (typeof UserTypeValues)[number];
 export type Gender = (typeof GenderValues)[number];
 export type Position = (typeof PositionValues)[number];
 export type Status = (typeof StatusValues)[number];

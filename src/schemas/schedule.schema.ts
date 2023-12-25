@@ -1,17 +1,12 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { ScheduleTypeValues, ScheduleType } from "src/common";
 
+import { options } from "./options";
+
 export type ScheduleDocument = HydratedDocument<Schedule>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @Schema(options)
 export class Schedule {
   @ApiProperty()

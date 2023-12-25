@@ -139,14 +139,26 @@ export class UserManageService {
     throw new HttpException("해당 계정이 존재하지 않습니다.", 404);
   }
 
-  async getUserByObjectId(
-    id: Types.ObjectId,
-  ): Promise<StudentDocument | TeacherDocument> {
-    const student = await this.studentModel.findOne({ _id: id }).lean();
-    if (student) return student;
+  async getUserByObjectId(id: Types.ObjectId): Promise<{
+    info: StudentDocument | TeacherDocument;
+    type: "student" | "teacher";
+  }> {
+    const student = await this.studentModel
+      .findById(id)
+      .populate("groups")
+      .lean();
+    if (student)
+      return {
+        info: student,
+        type: "student",
+      };
 
-    const teacher = await this.teacherModel.findOne({ _id: id }).lean();
-    if (teacher) return teacher;
+    const teacher = await this.teacherModel.findById(id).lean();
+    if (teacher)
+      return {
+        info: teacher,
+        type: "teacher",
+      };
 
     throw new HttpException("해당 계정이 없습니다.", 404);
   }

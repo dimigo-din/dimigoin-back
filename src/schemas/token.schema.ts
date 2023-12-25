@@ -1,13 +1,9 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
+import { options } from "./options";
+
 export type TokenDocument = HydratedDocument<Token>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-};
-
 @Schema(options)
 export class Token {
   @Prop({

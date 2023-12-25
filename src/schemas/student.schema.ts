@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { ApiProperty } from "@nestjs/swagger";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import {
@@ -11,13 +11,12 @@ import {
   Gender,
 } from "src/common";
 
+import { Group } from "src/schemas";
+
+import { options } from "./options";
+
 export type StudentDocument = HydratedDocument<Student>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-};
-
+@ApiExtraModels(Group)
 @Schema(options)
 export class Student {
   @ApiProperty()
@@ -34,7 +33,9 @@ export class Student {
   })
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: GradeValues,
+  })
   @Prop({
     required: true,
     type: Number,
@@ -42,6 +43,9 @@ export class Student {
   })
   grade: Grade;
 
+  @ApiProperty({
+    enum: ClassValues,
+  })
   @ApiProperty()
   @Prop({
     required: true,
@@ -73,14 +77,16 @@ export class Student {
   })
   permissions: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Group) }],
+  })
   @Prop({
     required: true,
     type: [Types.ObjectId],
     ref: "Group",
     default: [],
   })
-  groups: Types.ObjectId[];
+  groups: Group[];
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

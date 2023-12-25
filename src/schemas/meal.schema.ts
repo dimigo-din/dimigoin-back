@@ -1,15 +1,10 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
+import { options } from "./options";
+
 export type MealDocument = HydratedDocument<Meal>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @Schema(options)
 export class Meal {
   @ApiProperty()

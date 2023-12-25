@@ -27,7 +27,10 @@ export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
     if (!payload.refresh) {
       const user = await this.userManageService.getUserByObjectId(payload._id);
       if (user) {
-        return done(null, user);
+        return done(null, {
+          ...user.info,
+          type: user.type,
+        });
       }
     } else {
       throw new HttpException(

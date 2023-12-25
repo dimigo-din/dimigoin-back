@@ -9,7 +9,7 @@ import {
   Param,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -18,7 +18,12 @@ import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
-import { ApplyStayDto, CreateStayDto, ApplyStayOutgoDto } from "../dto";
+import {
+  ApplyStayDto,
+  CreateStayDto,
+  ApplyStayOutgoDto,
+  GetStayResponse,
+} from "../dto";
 import { StayManageService } from "../providers";
 
 @ApiTags("Stay Manage")
@@ -32,6 +37,10 @@ export class StayManageController {
       description: "모든 잔류를 반환합니다.",
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: [Stay],
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async getStays(): Promise<Stay[]> {
@@ -57,6 +66,10 @@ export class StayManageController {
         "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록을 반환합니다.",
     }),
   )
+  @ApiResponse({
+    status: 200,
+    type: GetStayResponse,
+  })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/current")
   async getCurrentStay(): Promise<{
@@ -124,6 +137,10 @@ export class StayManageController {
     name: "stayId",
     description: "잔류의 ObjectId",
     type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    type: GetStayResponse,
   })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:stayId")

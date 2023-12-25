@@ -1,10 +1,11 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { Afterschool, Student } from "src/schemas";
 
 import { AfterschoolDocument } from "./afterschool.schema";
+import { options } from "./options";
 
 export type AfterschoolApplicationDocument =
   HydratedDocument<AfterschoolApplication>;
@@ -14,13 +15,6 @@ export type AfterschoolApplicationResponse = AfterschoolApplication &
   Document & {
     afterschoolInfo: AfterschoolDocument;
   };
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @ApiExtraModels(Afterschool, Student)
 @Schema(options)
 export class AfterschoolApplication {

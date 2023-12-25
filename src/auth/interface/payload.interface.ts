@@ -1,17 +1,21 @@
 import { Types } from "mongoose";
 
-import { Grade, Class, Gender } from "src/common/types";
+import { UserType, Grade, Class, Gender } from "src/common/types";
 
 export interface DIMIJwtPayload {
   _id: Types.ObjectId;
+  type: UserType;
   name: string;
   email: string;
   grade: Grade;
   class: Class;
   number: number;
   gender: Gender;
-  permissions: object;
-  groups: string[];
+  permissions: string[];
+  groups: {
+    _id: Types.ObjectId;
+    permissions: string[];
+  }[];
   created_at: Date;
   updated_at: Date;
   refresh: boolean;

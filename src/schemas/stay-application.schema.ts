@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
@@ -6,14 +6,9 @@ import { SeatValues, Seat } from "src/common/types";
 
 import { Stay, Student } from "src/schemas";
 
+import { options } from "./options";
+
 export type StayApplicationDocument = HydratedDocument<StayApplication>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @ApiExtraModels(Stay, Student)
 @Schema(options)
 export class StayApplication {
@@ -38,7 +33,7 @@ export class StayApplication {
     type: Types.ObjectId,
     ref: "Student",
   })
-  student: Types.ObjectId;
+  student: Student;
 
   @ApiProperty()
   @Prop({

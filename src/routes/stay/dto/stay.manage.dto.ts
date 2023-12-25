@@ -13,6 +13,8 @@ import {
 import { Seat } from "src/common/types";
 import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
 
+import { Stay, StayApplication } from "src/schemas";
+
 export class StayDateDto {
   @ApiProperty()
   @IsString()
@@ -71,4 +73,14 @@ export class CreateStayDto {
     F2: Seat;
     F3: Seat;
   };
+}
+
+export class GetStayResponse {
+  @ApiProperty()
+  stay: Stay;
+
+  @ApiProperty({
+    type: [StayApplication],
+  })
+  applications: StayApplication[];
 }

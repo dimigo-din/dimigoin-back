@@ -1,17 +1,12 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { LaundryTimetable, Student } from "src/schemas";
 
+import { options } from "./options";
+
 export type LaundryApplicationDocument = HydratedDocument<LaundryApplication>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @ApiExtraModels(LaundryTimetable, Student)
 @Schema(options)
 export class LaundryApplication {

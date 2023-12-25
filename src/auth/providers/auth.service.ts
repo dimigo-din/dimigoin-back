@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { OAuth2Client } from "google-auth-library";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 import { LoginDto, PasswordLoginDto } from "src/routes/user/dto";
 import { UserManageService } from "src/routes/user/providers";
@@ -119,17 +119,11 @@ export class AuthService {
     }
   }
 
-  async createToken(
-    payload:
-      | StudentDocument
-      | TeacherDocument
-      | DIMIJwtPayload
-      | DIMIRefreshPayload,
-  ): Promise<TokensResponse> {
-    const user = await this.userManageService.getUserByObjectId(payload._id);
+  async createToken(userId: Types.ObjectId): Promise<TokensResponse> {
+    const user = await this.userManageService.getUserByObjectId(userId);
 
     const accessToken = await this.jwtService.signAsync(
-      { ...user, refresh: false },
+      { ...user.info, type: user.type, refresh: false },
       {
         algorithm: "HS512",
         secret: this.configService.get<string>("JWT_SECRET_KEY"),
@@ -138,7 +132,7 @@ export class AuthService {
     );
 
     const refreshToken = await this.jwtService.signAsync(
-      { _id: user._id, refresh: true },
+      { _id: user.info._id, refresh: true },
       {
         algorithm: "HS512",
         secret: this.configService.get<string>("JWT_SECRET_KEY"),
@@ -146,7 +140,7 @@ export class AuthService {
       },
     );
 
-    await new this.tokenModel({ refreshToken, user: user._id }).save();
+    await new this.tokenModel({ refreshToken, user: user.info._id }).save();
 
     return {
       accessToken,

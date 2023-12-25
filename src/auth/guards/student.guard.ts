@@ -14,7 +14,7 @@ export class StudentGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const user = req.user;
 
-    if (!user.hasOwnProperty("grade")) {
+    if (user.type !== "student") {
       throw new HttpException("학생만 접근가능한 라우터입니다.", 404);
     }
 

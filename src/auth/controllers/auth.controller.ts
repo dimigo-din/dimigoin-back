@@ -52,7 +52,7 @@ export class AuthController {
   @Post("/login")
   async login(@Body() data: LoginDto): Promise<TokensResponse> {
     const user = await this.authService.googleLogin(data);
-    return await this.authService.createToken(user);
+    return await this.authService.createToken(user._id);
   }
 
   @ApiOperation(
@@ -68,7 +68,7 @@ export class AuthController {
   @Post("/login/web")
   async loginWeb(@Body() data: LoginDto): Promise<TokensResponse> {
     const user = await this.authService.googleWebLogin(data);
-    return await this.authService.createToken(user);
+    return await this.authService.createToken(user._id);
   }
 
   @ApiOperation(
@@ -84,7 +84,7 @@ export class AuthController {
   @Post("/login/password")
   async passwordLogin(@Body() data: PasswordLoginDto): Promise<TokensResponse> {
     const user = await this.authService.passwordLogin(data);
-    return await this.authService.createToken(user);
+    return await this.authService.createToken(user._id);
   }
 
   @ApiOperation(
@@ -108,7 +108,7 @@ export class AuthController {
         HttpStatus.BAD_REQUEST,
       );
     await this.authService.removeExistingToken(data.token);
-    return await this.authService.createToken(payload);
+    return await this.authService.createToken(payload._id);
   }
 
   @ApiOperation(

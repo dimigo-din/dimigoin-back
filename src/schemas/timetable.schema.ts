@@ -1,17 +1,12 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { GradeValues, ClassValues, Grade, Class } from "src/common";
 
+import { options } from "./options";
+
 export type TimetableDocument = HydratedDocument<Timetable>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-  virtuals: true,
-};
-
 @Schema(options)
 export class Timetable {
   @ApiProperty()

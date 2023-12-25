@@ -1,14 +1,10 @@
-import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument } from "mongoose";
 
+import { options } from "./options";
+
 export type FrigoDocument = HydratedDocument<Frigo>;
-
-const options: SchemaOptions = {
-  timestamps: false,
-  versionKey: false,
-};
-
 @Schema(options)
 export class Frigo {
   @ApiProperty()

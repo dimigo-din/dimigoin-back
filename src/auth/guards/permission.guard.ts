@@ -21,10 +21,8 @@ export class PermissionGuard implements CanActivate {
       });
 
     const permissions = user.permissions;
-    for (const groupId of user.groups) {
-      permissions.push(
-        ...(await this.userManageService.getGroupPermissions(groupId)),
-      );
+    for (const group of user.groups) {
+      permissions.push(...group.permissions);
     }
 
     for (const permission of permissions) {
