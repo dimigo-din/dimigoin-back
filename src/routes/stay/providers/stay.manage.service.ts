@@ -163,7 +163,8 @@ export class StayManageService {
       stay: stay._id,
       seat: data.seat,
     });
-    if (existingSeat) throw new HttpException("이미 신청된 좌석입니다.", 403);
+    if (existingSeat && existingSeat.seat !== "NONE")
+      throw new HttpException("이미 신청된 좌석입니다.", 403);
 
     if (data.seat === "NONE" && !data.reason)
       throw new HttpException("미선택 사유를 입력해주세요.", 403);

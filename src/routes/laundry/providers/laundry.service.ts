@@ -103,11 +103,30 @@ export class LaundryService {
       throw new HttpException("이미 신청된 시간입니다.", 403);
 
     const existingStudentLaundryApplication =
-      await this.laundryApplicationModel.findOne({
+      await this.laundryApplicationModel.find({
         student: student._id,
       });
-    if (existingStudentLaundryApplication)
+    if (existingStudentLaundryApplication.length === 1) {
+      const timetable = await this.laundryTimetableModel.findById(
+        existingStudentLaundryApplication[0].timetable,
+      );
+      const userTimetable = await this.laundryTimetableModel.findById(
+        laundryTimetable._id,
+      );
+      if (timetable) {
+        const laundry = await this.laundryModel.findById(timetable.laundry);
+        const userLaundry = await this.laundryModel.findById(
+          userTimetable.laundry,
+        );
+        if (laundry) {
+          if (String(laundry.floor).length === String(userLaundry.floor).length)
+            throw new HttpException("이미 신청한 세탁이 있습니다.", 403);
+        }
+      }
+    }
+    if (existingStudentLaundryApplication.length === 2) {
       throw new HttpException("이미 신청한 세탁이 있습니다.", 403);
+    }
 
     const laundryApplication = new this.laundryApplicationModel({
       timetable: laundryTimetable._id,
