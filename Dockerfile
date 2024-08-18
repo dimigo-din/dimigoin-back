@@ -13,3 +13,5 @@ COPY . .
 RUN yarn build
 
 CMD [ "yarn", "start:prod" ]
+
+LABEL org.opencontainers.image.source=https://github.com/dimigo-din/dimigoin-back
