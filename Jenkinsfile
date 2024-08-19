@@ -53,6 +53,7 @@ pipeline {
                         --restart always \
                         --network proxy \
                         --volume /mnt/docker/services/dimigoin/back/.env:/app/.env \
+                        --label io.portainer.accesscontrol.teams=din \
                         ${env.IMAGE_URL}"
                     sh "docker network connect dimigoin ${env.CONTAINER_NAME}"
                     sh "docker start ${env.CONTAINER_NAME}"
