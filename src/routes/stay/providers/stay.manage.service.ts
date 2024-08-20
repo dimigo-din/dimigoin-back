@@ -1,7 +1,10 @@
 import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
+import { callAppShutdownHook } from "@nestjs/core/hooks";
 import { InjectModel } from "@nestjs/mongoose";
+import * as Excel from "exceljs";
 import moment from "moment";
 import { Model, Types } from "mongoose";
+import { WorkSheet } from "xlsx";
 
 import {
   stringDateToMoment,
@@ -91,6 +94,48 @@ export class StayManageService {
       .populate("student");
 
     return applications;
+  }
+
+  async downloadStayApplicationsExcel(
+    stayId: Types.ObjectId,
+    res,
+  ): Promise<void> {
+    const stay = await this.getStay(stayId);
+    const applications = await this.stayApplicationModel
+      .find({
+        stay: stay._id,
+      })
+      .populate("student");
+    const outgos = await this.stayOutgoModel
+      .find({
+        stay: stay._id,
+      })
+      .sort({ date: 1 })
+      .populate("stay")
+      .populate("student");
+
+    const outgosByDate: { [key: string]: StayOutgo[] } = {};
+    outgos.forEach((outgo) => {
+      if (!outgosByDate.hasOwnProperty(outgo.date))
+        outgosByDate[outgo.date] = [];
+      outgosByDate[outgo.date].push(outgo);
+    });
+
+    const wb = new Excel.Workbook();
+    Object.keys(outgosByDate).forEach((key) => {
+      this.addSheet(wb, applications, outgosByDate[key], key);
+    });
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" +
+        encodeURI(
+          `${moment().year()}년도 ${moment().week()}주차 잔류 명단.xlsx`,
+        ),
+    );
+
+    await wb.xlsx.write(res);
   }
 
   async getCurrentStay(): Promise<StayDocument> {
@@ -335,5 +380,118 @@ export class StayManageService {
     });
 
     return stay ? 1 : 0;
+  }
+
+  addSheet(wb: WorkSheet, applications: any[], outgos: any[], day) {
+    const stayDay = moment(day);
+    const sheet = wb.addWorksheet(
+      `${stayDay.format("yyyy년도 MM월 DD일")} 잔류자 명단`,
+    );
+
+    sheet.addRow([
+      "학년",
+      "반",
+      "인원",
+      "학번",
+      "잔류자",
+      "조식",
+      "중식",
+      "석식",
+      "외출",
+    ]);
+
+    let lastStart = 2;
+    let lastSplit = "";
+    let studentCount = 0;
+    applications
+      .sort(
+        (a1, a2) =>
+          parseInt(
+            `${a1.student.grade}${a1.student.class}${this.pad(
+              a1.student.number,
+              2,
+            )}`,
+          ) -
+          parseInt(
+            `${a2.student.grade}${a2.student.class}${this.pad(
+              a2.student.number,
+              2,
+            )}`,
+          ),
+      )
+      .forEach((application, i) => {
+        if (
+          lastSplit !==
+            `${application.student.grade}${application.student.class}` &&
+          lastSplit !== ""
+        ) {
+          sheet.mergeCells(`C${lastStart}:C${i + 1}`);
+          sheet.getCell(`C${i + 1}`).value = studentCount;
+          lastStart = i + 2;
+          studentCount = 0;
+        }
+
+        const outgo = outgos.filter((outgo) =>
+          outgo.student._id.equals(application.student._id),
+        );
+
+        const meal = { breakfast: true, lunch: true, dinner: true };
+        let outgoMessage = "";
+        outgo.forEach((out) => {
+          meal.breakfast = out.meal.breakfast ? false : meal.breakfast;
+          meal.lunch = out.meal.lunch ? false : meal.lunch;
+          meal.dinner = out.meal.dinner ? false : meal.dinner;
+          outgoMessage += out.free
+            ? "자기개발외출(10:20~14:00)"
+            : `${out.reason}(${moment(
+                out.duration.start,
+                "yyyy-MM-DD hh:mm:ss",
+              ).format("hh:mm")}~${moment(
+                out.duration.end,
+                "yyyy-MM-DD hh:mm:ss",
+              ).format("hh:mm")})`;
+        });
+
+        sheet.getCell(`A${i + 2}`).value = application.student.grade;
+        sheet.getCell(`B${i + 2}`).value = application.student.class;
+        sheet.getCell(`D${i + 2}`).value = `${application.student.grade}${
+          application.student.class
+        }${this.pad(application.student.number, 2)}`;
+        sheet.getCell(`E${i + 2}`).value = application.student.name;
+        sheet.getCell(`F${i + 2}`).value = meal.breakfast ? "O" : "X";
+        sheet.getCell(`G${i + 2}`).value = meal.lunch ? "O" : "X";
+        sheet.getCell(`H${i + 2}`).value = meal.dinner ? "O" : "X";
+        sheet.getCell(`I${i + 2}`).value = outgoMessage;
+
+        lastSplit = `${application.student.grade}${application.student.class}`;
+        studentCount++;
+      });
+
+    // 가운데 정렬
+    sheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+      });
+    });
+
+    // 셀 넓이 자동
+    sheet.columns.forEach(function (column) {
+      let maxLength = 0;
+      column["eachCell"]!({ includeEmpty: true }, function (cell) {
+        const columnLength = cell.value ? cell.value.toString().length : 10;
+        if (columnLength > maxLength) {
+          maxLength = columnLength;
+        }
+      });
+      column.width = maxLength < 10 ? 10 : maxLength;
+    });
+  }
+
+  pad(num, size) {
+    const s = "000000000" + num;
+    return s.substring(s.length - size);
   }
 }
