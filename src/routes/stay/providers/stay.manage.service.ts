@@ -394,6 +394,7 @@ export class StayManageService {
       "인원",
       "학번",
       "잔류자",
+      "성별",
       "조식",
       "중식",
       "석식",
@@ -404,7 +405,8 @@ export class StayManageService {
     let lastStart2 = 2; // for class
     let lastGrade = "";
     let lastClass = "";
-    let studentCount = 0;
+    let studentCountGrade = 0;
+    let studentCountClass = 0;
     applications
       .sort(
         (a1, a2) =>
@@ -449,21 +451,30 @@ export class StayManageService {
           application.student.class
         }${this.pad(application.student.number, 2)}`;
         sheet.getCell(`E${i + 2}`).value = application.student.name;
-        sheet.getCell(`F${i + 2}`).value = meal.breakfast ? "O" : "X";
-        sheet.getCell(`G${i + 2}`).value = meal.lunch ? "O" : "X";
-        sheet.getCell(`H${i + 2}`).value = meal.dinner ? "O" : "X";
-        sheet.getCell(`I${i + 2}`).value = outgoMessage;
+        sheet.getCell(`F${i + 2}`).value = application.student.gender;
+        sheet.getCell(`G${i + 2}`).value = meal.breakfast ? "O" : "X";
+        sheet.getCell(`H${i + 2}`).value = meal.lunch ? "O" : "X";
+        sheet.getCell(`I${i + 2}`).value = meal.dinner ? "O" : "X";
+        sheet.getCell(`J${i + 2}`).value = outgoMessage;
 
-        studentCount++;
+        studentCountClass++;
+        studentCountGrade++;
 
+        let gradeEnd = false;
         if (
           (lastGrade !== `${application.student.grade}` && lastGrade !== "") ||
           i === applications.length - 1
         ) {
+          sheet.getCell(`C${i + 1}`).value = "총원";
+          sheet.getCell(`D${i + 1}`).value = studentCountGrade;
+          studentCountGrade = 0;
+          i++;
+
           sheet.mergeCells(
             `A${lastStart1}:A${i === applications.length - 1 ? i + 2 : i + 1}`,
           );
           lastStart1 = i + 2;
+          gradeEnd = true;
         }
 
         if (
@@ -473,14 +484,20 @@ export class StayManageService {
           i === applications.length - 1
         ) {
           sheet.mergeCells(
-            `B${lastStart2}:B${i === applications.length - 1 ? i + 2 : i + 1}`,
+            `B${lastStart2}:B${
+              (i === applications.length - 1 ? i + 2 : i + 1) -
+              (gradeEnd ? 1 : 0)
+            }`,
           );
           sheet.mergeCells(
-            `C${lastStart2}:C${i === applications.length - 1 ? i + 2 : i + 1}`,
+            `C${lastStart2}:C${
+              (i === applications.length - 1 ? i + 2 : i + 1) -
+              (gradeEnd ? 1 : 0)
+            }`,
           );
-          sheet.getCell(`C${i + 1}`).value = studentCount;
+          sheet.getCell(`C${i + 1}`).value = studentCountClass;
           lastStart2 = i + 2;
-          studentCount = 0;
+          studentCountClass = 0;
         }
 
         lastGrade = `${application.student.grade}`;
