@@ -400,8 +400,10 @@ export class StayManageService {
       "외출",
     ]);
 
-    let lastStart = 2;
-    let lastSplit = "";
+    let lastStart1 = 2; // for grade
+    let lastStart2 = 2; // for class
+    let lastGrade = "";
+    let lastClass = "";
     let studentCount = 0;
     applications
       .sort(
@@ -420,17 +422,6 @@ export class StayManageService {
           ),
       )
       .forEach((application, i) => {
-        if (
-          lastSplit !==
-            `${application.student.grade}${application.student.class}` &&
-          lastSplit !== ""
-        ) {
-          sheet.mergeCells(`C${lastStart}:C${i + 1}`);
-          sheet.getCell(`C${i + 1}`).value = studentCount;
-          lastStart = i + 2;
-          studentCount = 0;
-        }
-
         const outgo = outgos.filter((outgo) =>
           outgo.student._id.equals(application.student._id),
         );
@@ -445,11 +436,11 @@ export class StayManageService {
             ? "자기개발외출(10:20~14:00)"
             : `${out.reason}(${moment(
                 out.duration.start,
-                "yyyy-MM-DD hh:mm:ss",
-              ).format("hh:mm")}~${moment(
+                "yyyy-MM-DD HH:mm:ss",
+              ).format("HH:mm")}~${moment(
                 out.duration.end,
-                "yyyy-MM-DD hh:mm:ss",
-              ).format("hh:mm")})`;
+                "yyyy-MM-DD HH:mm:ss",
+              ).format("HH:mm")})`;
         });
 
         sheet.getCell(`A${i + 2}`).value = application.student.grade;
@@ -463,8 +454,37 @@ export class StayManageService {
         sheet.getCell(`H${i + 2}`).value = meal.dinner ? "O" : "X";
         sheet.getCell(`I${i + 2}`).value = outgoMessage;
 
-        lastSplit = `${application.student.grade}${application.student.class}`;
         studentCount++;
+
+        if (
+          (lastGrade !== `${application.student.grade}` && lastGrade !== "") ||
+          i === applications.length - 1
+        ) {
+          sheet.mergeCells(
+            `A${lastStart1}:A${i === applications.length - 1 ? i + 2 : i + 1}`,
+          );
+          lastStart1 = i + 2;
+        }
+
+        if (
+          (lastClass !==
+            `${application.student.grade}${application.student.class}` &&
+            lastClass !== "") ||
+          i === applications.length - 1
+        ) {
+          sheet.mergeCells(
+            `B${lastStart2}:B${i === applications.length - 1 ? i + 2 : i + 1}`,
+          );
+          sheet.mergeCells(
+            `C${lastStart2}:C${i === applications.length - 1 ? i + 2 : i + 1}`,
+          );
+          sheet.getCell(`C${i + 1}`).value = studentCount;
+          lastStart2 = i + 2;
+          studentCount = 0;
+        }
+
+        lastGrade = `${application.student.grade}`;
+        lastClass = `${application.student.grade}${application.student.class}`;
       });
 
     // 가운데 정렬
