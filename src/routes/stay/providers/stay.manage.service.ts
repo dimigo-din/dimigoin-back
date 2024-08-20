@@ -451,7 +451,8 @@ export class StayManageService {
           application.student.class
         }${this.pad(application.student.number, 2)}`;
         sheet.getCell(`E${i + 2}`).value = application.student.name;
-        sheet.getCell(`F${i + 2}`).value = application.student.gender;
+        sheet.getCell(`F${i + 2}`).value =
+          application.student.gender === "M" ? "남" : "여";
         sheet.getCell(`G${i + 2}`).value = meal.breakfast ? "O" : "X";
         sheet.getCell(`H${i + 2}`).value = meal.lunch ? "O" : "X";
         sheet.getCell(`I${i + 2}`).value = meal.dinner ? "O" : "X";
