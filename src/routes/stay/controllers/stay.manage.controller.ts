@@ -8,6 +8,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  Response,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
@@ -72,6 +73,20 @@ export class StayManageController {
       stay,
       applications,
     };
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "현재 잔류 정보 다운로드",
+      description:
+        "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록, 그리고 외출 정보를 다운로드합니다.",
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Get("/current/excel")
+  async downloadStayApplicationsExcel(@Response() res): Promise<void> {
+    const stay = await this.stayManageService.getCurrentStay();
+    await this.stayManageService.downloadStayApplicationsExcel(stay._id, res);
   }
 
   @ApiOperation(
