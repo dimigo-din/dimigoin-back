@@ -465,10 +465,10 @@ export class StayManageService {
           (lastGrade !== `${application.student.grade}` && lastGrade !== "") ||
           i === applications.length - 1
         ) {
-          sheet.getCell(`C${i + 1}`).value = "총원";
-          sheet.getCell(`D${i + 1}`).value = studentCountGrade;
-          studentCountGrade = 0;
-          i++;
+          // sheet.getCell(`C${i + 1}`).value = "총원";
+          // sheet.getCell(`D${i + 1}`).value = studentCountGrade;
+          // studentCountGrade = 0;
+          // i++;
 
           sheet.mergeCells(
             `A${lastStart1}:A${i === applications.length - 1 ? i + 2 : i + 1}`,
@@ -484,16 +484,10 @@ export class StayManageService {
           i === applications.length - 1
         ) {
           sheet.mergeCells(
-            `B${lastStart2}:B${
-              (i === applications.length - 1 ? i + 2 : i + 1) -
-              (gradeEnd ? 1 : 0)
-            }`,
+            `B${lastStart2}:B${i === applications.length - 1 ? i + 2 : i + 1}`,
           );
           sheet.mergeCells(
-            `C${lastStart2}:C${
-              (i === applications.length - 1 ? i + 2 : i + 1) -
-              (gradeEnd ? 1 : 0)
-            }`,
+            `C${lastStart2}:C${i === applications.length - 1 ? i + 2 : i + 1}`,
           );
           sheet.getCell(`C${i + 1}`).value = studentCountClass;
           lastStart2 = i + 2;
