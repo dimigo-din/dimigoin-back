@@ -22,6 +22,7 @@ import {
   StayOutgoDocument,
 } from "src/schemas";
 
+import { Grade } from "../../../common";
 import { ApplyStayDto, ApplyStayOutgoDto, CreateStayDto } from "../dto";
 
 @Injectable()
@@ -99,13 +100,16 @@ export class StayManageService {
   async downloadStayApplicationsExcel(
     stayId: Types.ObjectId,
     res,
+    grade: Grade,
   ): Promise<void> {
     const stay = await this.getStay(stayId);
-    const applications = await this.stayApplicationModel
-      .find({
-        stay: stay._id,
-      })
-      .populate("student");
+    const applications = (
+      await this.stayApplicationModel
+        .find({
+          stay: stay._id,
+        })
+        .populate("student")
+    ).filter((application: any) => application.student.grade === grade);
     const outgos = await this.stayOutgoModel
       .find({
         stay: stay._id,
@@ -123,7 +127,7 @@ export class StayManageService {
 
     const wb = new Excel.Workbook();
     Object.keys(outgosByDate).forEach((key) => {
-      this.addSheet(wb, applications, outgosByDate[key], key);
+      this.addSheet(wb, grade, applications, outgosByDate[key], key);
     });
 
     res.setHeader("Content-Type", "application/vnd.openxmlformats");
@@ -131,7 +135,7 @@ export class StayManageService {
       "Content-Disposition",
       "attachment; filename=" +
         encodeURI(
-          `${moment().year()}년도 ${moment().week()}주차 잔류 명단.xlsx`,
+          `${moment().year()}년도 ${moment().week()}주차 ${grade}학년 잔류 명단.xlsx`,
         ),
     );
 
@@ -382,12 +386,13 @@ export class StayManageService {
     return stay ? 1 : 0;
   }
 
-  addSheet(wb: WorkSheet, applications: any[], outgos: any[], day) {
+  addSheet(wb: WorkSheet, grade, applications: any[], outgos: any[], day) {
     const stayDay = moment(day);
     const sheet = wb.addWorksheet(
       `${stayDay.format("yyyy년도 MM월 DD일")} 잔류자 명단`,
     );
 
+    sheet.addRow([`${stayDay.format("yyyy년도 MM월 DD일")}`]);
     sheet.addRow([
       "학년",
       "반",
@@ -401,12 +406,10 @@ export class StayManageService {
       "외출",
     ]);
 
-    let lastStart1 = 2; // for grade
-    let lastStart2 = 2; // for class
-    let lastGrade = "";
+    const startLine = 3;
+    let lastStart = startLine; // for class
     let lastClass = "";
-    let studentCountGrade = 0;
-    let studentCountClass = 0;
+    let studentCount = 0;
     applications
       .sort(
         (a1, a2) =>
@@ -424,6 +427,8 @@ export class StayManageService {
           ),
       )
       .forEach((application, i) => {
+        const currentLine = i + startLine;
+
         const outgo = outgos.filter((outgo) =>
           outgo.student._id.equals(application.student._id),
         );
@@ -445,59 +450,44 @@ export class StayManageService {
               ).format("HH:mm")})`;
         });
 
-        sheet.getCell(`A${i + 2}`).value = application.student.grade;
-        sheet.getCell(`B${i + 2}`).value = application.student.class;
-        sheet.getCell(`D${i + 2}`).value = `${application.student.grade}${
+        sheet.getCell(`A${currentLine}`).value = application.student.grade;
+        sheet.getCell(`B${currentLine}`).value = application.student.class;
+        sheet.getCell(`D${currentLine}`).value = `${application.student.grade}${
           application.student.class
         }${this.pad(application.student.number, 2)}`;
-        sheet.getCell(`E${i + 2}`).value = application.student.name;
-        sheet.getCell(`F${i + 2}`).value =
+        sheet.getCell(`E${currentLine}`).value = application.student.name;
+        sheet.getCell(`F${currentLine}`).value =
           application.student.gender === "M" ? "남" : "여";
-        sheet.getCell(`G${i + 2}`).value = meal.breakfast ? "O" : "X";
-        sheet.getCell(`H${i + 2}`).value = meal.lunch ? "O" : "X";
-        sheet.getCell(`I${i + 2}`).value = meal.dinner ? "O" : "X";
-        sheet.getCell(`J${i + 2}`).value = outgoMessage;
+        sheet.getCell(`G${currentLine}`).value = meal.breakfast ? "O" : "X";
+        sheet.getCell(`H${currentLine}`).value = meal.lunch ? "O" : "X";
+        sheet.getCell(`I${currentLine}`).value = meal.dinner ? "O" : "X";
+        sheet.getCell(`J${currentLine}`).value = outgoMessage;
 
-        studentCountClass++;
-        studentCountGrade++;
-
-        let gradeEnd = false;
+        studentCount++;
         if (
-          (lastGrade !== `${application.student.grade}` && lastGrade !== "") ||
-          i === applications.length - 1
-        ) {
-          // sheet.getCell(`C${i + 1}`).value = "총원";
-          // sheet.getCell(`D${i + 1}`).value = studentCountGrade;
-          // studentCountGrade = 0;
-          // i++;
-
-          sheet.mergeCells(
-            `A${lastStart1}:A${i === applications.length - 1 ? i + 2 : i + 1}`,
-          );
-          lastStart1 = i + 2;
-          gradeEnd = true;
-        }
-
-        if (
-          (lastClass !==
-            `${application.student.grade}${application.student.class}` &&
-            lastClass !== "") ||
+          (lastClass !== `${application.student.class}` && lastClass !== "") ||
           i === applications.length - 1
         ) {
           sheet.mergeCells(
-            `B${lastStart2}:B${i === applications.length - 1 ? i + 2 : i + 1}`,
+            `B${lastStart}:B${
+              i === applications.length - 1 ? currentLine : currentLine - 1
+            }`,
           );
           sheet.mergeCells(
-            `C${lastStart2}:C${i === applications.length - 1 ? i + 2 : i + 1}`,
+            `C${lastStart}:C${
+              i === applications.length - 1 ? currentLine : currentLine - 1
+            }`,
           );
-          sheet.getCell(`C${i + 1}`).value = studentCountClass;
-          lastStart2 = i + 2;
-          studentCountClass = 0;
+          sheet.getCell(`C${i + 1}`).value = studentCount;
+          lastStart = currentLine;
+          studentCount = 0;
         }
 
-        lastGrade = `${application.student.grade}`;
-        lastClass = `${application.student.grade}${application.student.class}`;
+        lastClass = `${application.student.class}`;
       });
+
+    sheet.mergeCells(`A${startLine}:A${applications.length + 2}`);
+    sheet.getCell(`A${startLine}`).value = grade;
 
     // 가운데 정렬
     sheet.eachRow((row) => {

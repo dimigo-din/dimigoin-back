@@ -8,9 +8,10 @@ import {
   ValidateNested,
   ArrayMinSize,
   ArrayMaxSize,
+  IsNumber,
 } from "class-validator";
 
-import { Seat } from "src/common/types";
+import { Grade, Seat } from "src/common/types";
 import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
 
 export class StayDateDto {
@@ -71,4 +72,10 @@ export class CreateStayDto {
     F2: Seat;
     F3: Seat;
   };
+}
+
+export class DownloadStayExcelDTO {
+  @ApiProperty()
+  @IsNumber()
+  grade: Grade;
 }

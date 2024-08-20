@@ -19,7 +19,12 @@ import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
-import { ApplyStayDto, CreateStayDto, ApplyStayOutgoDto } from "../dto";
+import {
+  ApplyStayDto,
+  CreateStayDto,
+  ApplyStayOutgoDto,
+  DownloadStayExcelDTO,
+} from "../dto";
 import { StayManageService } from "../providers";
 
 @ApiTags("Stay Manage")
@@ -84,9 +89,16 @@ export class StayManageController {
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/current/excel")
-  async downloadStayApplicationsExcel(@Response() res): Promise<void> {
+  async downloadStayApplicationsExcel(
+    @Response() res,
+    @Body() data: DownloadStayExcelDTO,
+  ): Promise<void> {
     const stay = await this.stayManageService.getCurrentStay();
-    await this.stayManageService.downloadStayApplicationsExcel(stay._id, res);
+    await this.stayManageService.downloadStayApplicationsExcel(
+      stay._id,
+      res,
+      data.grade,
+    );
   }
 
   @ApiOperation(
