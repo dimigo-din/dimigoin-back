@@ -22,7 +22,7 @@ import {
   StayOutgoDocument,
 } from "src/schemas";
 
-import { Grade } from "../../../common";
+import { Grade, KorWeekDayValues } from "../../../common";
 import { ApplyStayDto, ApplyStayOutgoDto, CreateStayDto } from "../dto";
 
 @Injectable()
@@ -386,14 +386,15 @@ export class StayManageService {
     return stay ? 1 : 0;
   }
 
-  addSheet(wb: WorkSheet, grade, applications: any[], outgos: any[], day) {
+  addSheet(wb: WorkSheet, grade, applicationsRaw: any[], outgos: any[], day) {
     const stayDay = moment(day);
-    const sheet = wb.addWorksheet(
-      `${stayDay.format("yyyy년도 MM월 DD일")} 잔류자 명단`,
-    );
+    const sheet = wb.addWorksheet(`${stayDay.format("yyyy년도 MM월 DD일")}`);
 
-    sheet.addRow([`${stayDay.format("yyyy년도 MM월 DD일")}`]);
-    sheet.addRow([
+    const columnsStyle = {
+      alignment: { horizontal: "center", vertical: "middle" },
+    };
+
+    sheet.getRow(2).values = [
       "학년",
       "반",
       "인원",
@@ -404,13 +405,23 @@ export class StayManageService {
       "중식",
       "석식",
       "외출",
-    ]);
+      "비고",
+    ];
+    sheet.columns = [
+      { header: "학년", key: "grade", width: 10, style: columnsStyle },
+      { header: "반", key: "class", width: 10, style: columnsStyle },
+      { header: "인원", key: "count", width: 10, style: columnsStyle },
+      { header: "학번", key: "number", width: 10, style: columnsStyle },
+      { header: "잔류자", key: "name", width: 20, style: columnsStyle },
+      { header: "성별", key: "gender", width: 10, style: columnsStyle },
+      { header: "조식", key: "breakfast", width: 10, style: columnsStyle },
+      { header: "중식", key: "lunch", width: 10, style: columnsStyle },
+      { header: "석식", key: "dinner", width: 10, style: columnsStyle },
+      { header: "외출", key: "outgo", width: 50, style: columnsStyle },
+      { header: "비고", key: "etc", width: 10, style: columnsStyle },
+    ];
 
-    const startLine = 3;
-    let lastStart = startLine; // for class
-    let lastClass = "";
-    let studentCount = 0;
-    applications
+    const applications = applicationsRaw
       .sort(
         (a1, a2) =>
           parseInt(
@@ -426,9 +437,7 @@ export class StayManageService {
             )}`,
           ),
       )
-      .forEach((application, i) => {
-        const currentLine = i + startLine;
-
+      .map((application) => {
         const outgo = outgos.filter((outgo) =>
           outgo.student._id.equals(application.student._id),
         );
@@ -450,66 +459,105 @@ export class StayManageService {
               ).format("HH:mm")})`;
         });
 
-        sheet.getCell(`A${currentLine}`).value = application.student.grade;
-        sheet.getCell(`B${currentLine}`).value = application.student.class;
-        sheet.getCell(`D${currentLine}`).value = `${application.student.grade}${
+        const count = applicationsRaw.filter(
+          (a) => a.student.class === application.student.class,
+        ).length;
+        const number = `${application.student.grade}${
           application.student.class
         }${this.pad(application.student.number, 2)}`;
-        sheet.getCell(`E${currentLine}`).value = application.student.name;
-        sheet.getCell(`F${currentLine}`).value =
-          application.student.gender === "M" ? "남" : "여";
-        sheet.getCell(`G${currentLine}`).value = meal.breakfast ? "O" : "X";
-        sheet.getCell(`H${currentLine}`).value = meal.lunch ? "O" : "X";
-        sheet.getCell(`I${currentLine}`).value = meal.dinner ? "O" : "X";
-        sheet.getCell(`J${currentLine}`).value = outgoMessage;
-
-        studentCount++;
-        if (
-          (lastClass !== `${application.student.class}` && lastClass !== "") ||
-          i === applications.length - 1
-        ) {
-          sheet.mergeCells(
-            `B${lastStart}:B${
-              i === applications.length - 1 ? currentLine : currentLine - 1
-            }`,
-          );
-          sheet.mergeCells(
-            `C${lastStart}:C${
-              i === applications.length - 1 ? currentLine : currentLine - 1
-            }`,
-          );
-          sheet.getCell(`C${i + 1}`).value = studentCount;
-          lastStart = currentLine;
-          studentCount = 0;
-        }
-
-        lastClass = `${application.student.class}`;
+        const gender = application.student.gender === "M" ? "남" : "여";
+        return {
+          grade: `${application.student.grade}학년`,
+          class: `${application.student.class}반`,
+          count,
+          number,
+          name: application.student.name,
+          gender,
+          breakfast: meal.breakfast ? "O" : "X",
+          lunch: meal.lunch ? "O" : "X",
+          dinner: meal.dinner ? "O" : "X",
+          outgo: outgoMessage,
+          etc: "",
+        };
       });
+    sheet.addRows(applications.flat());
+    sheet.getCell(
+      `A${applications.length + 3}`,
+    ).value = `총원  ( ${applications.length}명 )`;
 
-    sheet.mergeCells(`A${startLine}:A${applications.length + 2}`);
-    sheet.getCell(`A${startLine}`).value = grade;
+    // ================ Merge Cells ================ //
+    sheet.mergeCells("A1:K1");
+    sheet.mergeCells(`A3:A${applications.length + 2}`);
+    sheet.mergeCells(`A${applications.length + 3}:C${applications.length + 3}`);
+    sheet.mergeCells(`D${applications.length + 3}:K${applications.length + 3}`);
 
-    // 가운데 정렬
+    let lastClass = "0";
+    let lastPosition = 3;
+    applications.forEach((application, i) => {
+      if (lastClass === "0") lastClass = application.class;
+      if (lastClass !== application.class || i === applications.length - 1) {
+        if (i === applications.length - 1) i++;
+        sheet.mergeCells(`B${lastPosition}:B${i + 2}`);
+        sheet.mergeCells(`C${lastPosition}:C${i + 2}`);
+        lastPosition = i + 2 + 1;
+      }
+      lastClass = application.class;
+    });
+
+    // ================ Header Cells ================ //
+    sheet.getCell("A1").value = `${stayDay.format("yyyy년도 MM월 DD일")} ${
+      KorWeekDayValues[stayDay.weekday()]
+    }요일 ${grade}학년 잔류자 명단`;
+
+    // ================ Style Cells ================ //
     sheet.eachRow((row) => {
       row.eachCell((cell) => {
         cell.alignment = {
           vertical: "middle",
           horizontal: "center",
         };
+        cell.font = {
+          name: "맑은고딕",
+          size: 12,
+        };
       });
     });
 
-    // 셀 넓이 자동
-    sheet.columns.forEach(function (column) {
-      let maxLength = 0;
-      column["eachCell"]!({ includeEmpty: true }, function (cell) {
-        const columnLength = cell.value ? cell.value.toString().length : 10;
-        if (columnLength > maxLength) {
-          maxLength = columnLength;
-        }
-      });
-      column.width = maxLength < 10 ? 10 : maxLength;
-    });
+    sheet.getCell("A1").font = {
+      name: "맑은고딕",
+      size: 16,
+      bold: true,
+    };
+    const border = {
+      top: {
+        style: "thin",
+        color: { argb: "FFED7D32" },
+      },
+      left: {
+        style: "thin",
+        color: { argb: "FFED7D32" },
+      },
+      bottom: {
+        style: "thin",
+        color: { argb: "FFED7D32" },
+      },
+      right: {
+        style: "thin",
+        color: { argb: "FFED7D32" },
+      },
+    };
+    const fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFFFE6D8" },
+    };
+    sheet.getCell("A1").border = border;
+    sheet.getCell("A1").fill = fill;
+    sheet.getRow(1).height = 25;
+    sheet.getRow(2).border = border;
+    sheet.getRow(2).fill = fill;
+    sheet.getRow(applications.length + 3).border = border;
+    sheet.getRow(applications.length + 3).fill = fill;
   }
 
   pad(num, size) {

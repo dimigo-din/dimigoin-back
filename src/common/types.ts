@@ -42,6 +42,7 @@ for (let i = 0; i < SeatNameValues.length; i++) {
     SeatValues.push(SeatNameValues[i] + (j + 1));
   }
 }
+export const KorWeekDayValues = ["일", "월", "화", "수", "목", "금", "토"];
 
 export type Grade = (typeof GradeValues)[number];
 export type Class = (typeof ClassValues)[number];
