@@ -19,6 +19,7 @@ import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
+import { Grade } from "../../../common";
 import {
   ApplyStayDto,
   CreateStayDto,
@@ -88,16 +89,17 @@ export class StayManageController {
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Get("/current/excel")
+  @Get("/current/excel/:grade")
   async downloadStayApplicationsExcel(
     @Response() res,
-    @Body() data: DownloadStayExcelDTO,
+    @Param("grade") grade: Grade,
   ): Promise<void> {
+    console.log(grade);
     const stay = await this.stayManageService.getCurrentStay();
     await this.stayManageService.downloadStayApplicationsExcel(
       stay._id,
       res,
-      data.grade,
+      grade,
     );
   }
 
