@@ -401,7 +401,7 @@ export class StayManageService {
     if (!stayOutgo)
       throw new HttpException("해당 잔류외출 신청이 없습니다.", 404);
 
-    return this.stayOutgoModel.findById(stayOutgoId);
+    return this.stayOutgoModel.findById(stayOutgoId).populate("student");
   }
 
   async isStay(): Promise<number> {
