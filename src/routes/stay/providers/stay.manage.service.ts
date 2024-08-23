@@ -88,11 +88,22 @@ export class StayManageService {
     stayId: Types.ObjectId,
   ): Promise<StayApplicationDocument[]> {
     const stay = await this.getStay(stayId);
-    const applications = await this.stayApplicationModel
-      .find({
-        stay: stay._id,
-      })
-      .populate("student");
+    const outgos = await this.stayOutgoModel.find().populate("student");
+    const applications = (
+      await this.stayApplicationModel
+        .find({
+          stay: stay._id,
+        })
+        .populate("student")
+    ).map((application) => {
+      const userOutgos = outgos.filter((outgo) =>
+        outgo.student._id.equals(application.student._id),
+      );
+      return {
+        ...application.toJSON(),
+        outgo: userOutgos,
+      };
+    });
 
     return applications;
   }
@@ -553,7 +564,7 @@ export class StayManageService {
     };
     sheet.getCell("A1").border = border;
     sheet.getCell("A1").fill = fill;
-    sheet.getRow(1).height = 25;
+    sheet.getCell.height = 25;
     sheet.getRow(2).border = border;
     sheet.getRow(2).fill = fill;
     sheet.getRow(applications.length + 3).border = border;
