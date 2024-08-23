@@ -565,10 +565,36 @@ export class StayManageService {
     sheet.getCell("A1").border = border;
     sheet.getCell("A1").fill = fill;
     sheet.getCell.height = 25;
-    sheet.getRow(2).border = border;
-    sheet.getRow(2).fill = fill;
-    sheet.getRow(applications.length + 3).border = border;
-    sheet.getRow(applications.length + 3).fill = fill;
+    const header = [
+      "A2",
+      "B2",
+      "C2",
+      "D2",
+      "E2",
+      "F2",
+      "G2",
+      "H2",
+      "I2",
+      "J2",
+      "K2",
+    ];
+    const footer = [
+      `A${applications.length + 3}`,
+      `B${applications.length + 3}`,
+      `C${applications.length + 3}`,
+      `D${applications.length + 3}`,
+      `E${applications.length + 3}`,
+      `F${applications.length + 3}`,
+      `G${applications.length + 3}`,
+      `H${applications.length + 3}`,
+      `I${applications.length + 3}`,
+      `J${applications.length + 3}`,
+      `K${applications.length + 3}`,
+    ];
+    header.forEach((h) => (sheet.getCell(h).border = border));
+    header.forEach((h) => (sheet.getCell(h).fill = fill));
+    footer.forEach((f) => (sheet.getCell(f).fill = fill));
+    footer.forEach((f) => (sheet.getCell(f).fill = fill));
   }
 
   pad(num, size) {
