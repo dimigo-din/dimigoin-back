@@ -9,8 +9,10 @@ import {
   Param,
   UseGuards,
   Response,
+  ParseBoolPipe,
+  Query,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -301,6 +303,36 @@ export class StayManageController {
       studentId,
       stayId,
       data,
+    );
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "잔류외출 허가 설정",
+      description: "학생 잔류외출 신청을 수리하거나 반려합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "stayOutgoId",
+    description: "잔류외출 신청의 ObjectId",
+    type: String,
+  })
+  @ApiQuery({
+    required: true,
+    name: "isApprove",
+    description: "수리 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Patch("/outgo/:stayOutgoId")
+  async setStudentStayOutgoApprove(
+    @Param("stayOutgoId", ObjectIdPipe) stayOutgoId: Types.ObjectId,
+    @Query("isApprove", ParseBoolPipe) approve: boolean,
+  ): Promise<StayOutgoDocument> {
+    return await this.stayManageService.setStudentStayOutgoApprove(
+      stayOutgoId,
+      approve,
     );
   }
 

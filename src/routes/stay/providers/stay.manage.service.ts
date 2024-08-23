@@ -384,6 +384,26 @@ export class StayManageService {
     return stayOutgo;
   }
 
+  async setStudentStayOutgoApprove(
+    stayOutgoId: Types.ObjectId,
+    approve: boolean,
+  ): Promise<StayOutgoDocument> {
+    const stayOutgo = await this.stayOutgoModel.findOneAndUpdate(
+      {
+        _id: stayOutgoId,
+      },
+      {
+        $set: {
+          status: approve ? "A" : "R",
+        },
+      },
+    );
+    if (!stayOutgo)
+      throw new HttpException("해당 잔류외출 신청이 없습니다.", 404);
+
+    return this.stayOutgoModel.findById(stayOutgoId);
+  }
+
   async isStay(): Promise<number> {
     const today = momentToStringDate(moment());
     const stay = await this.stayModel.findOne({
