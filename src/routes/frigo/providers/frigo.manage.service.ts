@@ -122,6 +122,29 @@ export class FrigoManageService {
     return application;
   }
 
+  async setStudentFrigoApprove(
+    applicationId: Types.ObjectId,
+    approve: boolean,
+  ) {
+    const frigoApplication = this.frigoApplicationModel.findOneAndUpdate(
+      {
+        _id: applicationId,
+      },
+      {
+        $set: {
+          status: approve ? "A" : "R",
+        },
+      },
+    );
+    if (!frigoApplication)
+      throw new HttpException("해당 금요귀가 신청이 없습니다.", 404);
+
+    return this.frigoApplicationModel
+      .findById(applicationId)
+      .populate("frigo")
+      .populate("student");
+  }
+
   async getStudentFrigoApplications(
     frigoId: Types.ObjectId,
   ): Promise<FrigoApplicationDocument[]> {
