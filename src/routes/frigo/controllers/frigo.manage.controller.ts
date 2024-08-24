@@ -259,7 +259,7 @@ export class FrigoManageController {
   )
   @ApiParam({
     required: true,
-    name: "frigoId",
+    name: "frigoApplicationId",
     description: "금요귀가의 ObjectId",
     type: String,
   })
@@ -276,14 +276,15 @@ export class FrigoManageController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Patch("/:frigoId/:studentId")
+  @Patch("/:frigoApplicationId/:studentId")
   async setStudentFrigoApprove(
-    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
+    @Param("frigoApplicationId", ObjectIdPipe)
+    frigoApplicationId: Types.ObjectId,
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
-    @Query("studentId", ParseBoolPipe) approve: boolean,
+    @Query("approve", ParseBoolPipe) approve: boolean,
   ) {
     return this.frigoManageService.setStudentFrigoApprove(
-      frigoId,
+      frigoApplicationId,
       studentId,
       approve,
     );
