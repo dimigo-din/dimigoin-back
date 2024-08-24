@@ -96,9 +96,18 @@ export class StayManageService {
         })
         .populate("student")
     ).map((application) => {
-      const userOutgos = outgos.filter((outgo) =>
-        outgo.student._id.equals(application.student._id),
-      );
+      const userOutgos = outgos
+        .filter((outgo) => outgo.student._id.equals(application.student._id))
+        .map((outgo) => {
+          return {
+            ...outgo,
+            meal: {
+              breakfast: !outgo.meal.breakfast,
+              lunch: !outgo.meal.lunch,
+              dinner: !outgo.meal.dinner,
+            },
+          };
+        });
       return {
         ...application.toJSON(),
         outgo: userOutgos,
