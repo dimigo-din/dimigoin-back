@@ -8,8 +8,10 @@ import {
   Param,
   UseGuards,
   Patch,
+  Query,
+  ParseBoolPipe,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
@@ -182,5 +184,108 @@ export class FrigoManageController {
     @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
   ): Promise<FrigoDocument> {
     return await this.frigoManageService.deleteFrigo(frigoId);
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "금요귀가 신청 등록",
+      description: "학생의 금요귀가 신청을 등록합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "금요귀가 신청할 학생의 Id",
+    type: String,
+  })
+  @ApiQuery({
+    required: true,
+    name: "reason",
+    description: "금요귀가 사유",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Put("/:frigoId/:studentId")
+  async applyStudentFrigo(
+    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+    @Query("reason") reason: string,
+  ) {
+    return this.frigoManageService.applyStudentFrigo(
+      frigoId,
+      studentId,
+      reason,
+    );
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "금요귀가 신청 삭제",
+      description: "학생의 금요귀가 신청을 삭제합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "금요귀가 신청할 학생의 Id",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Delete("/:frigoId/:studentId")
+  async deleteStudentFrigo(
+    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+  ) {
+    return this.frigoManageService.cancelStudentFrigo(frigoId, studentId);
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "금요귀가 신청 수리 여부 설정",
+      description: "학생의 금요귀가 신청을 수리하거나 반려합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "금요귀가 신청할 학생의 Id",
+    type: String,
+  })
+  @ApiQuery({
+    required: true,
+    name: "approve",
+    description: "수리여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Patch("/:frigoId/:studentId")
+  async setStudentFrigoApprove(
+    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+    @Query("studentId", ParseBoolPipe) approve: boolean,
+  ) {
+    return this.frigoManageService.setStudentFrigoApprove(
+      frigoId,
+      studentId,
+      approve,
+    );
   }
 }

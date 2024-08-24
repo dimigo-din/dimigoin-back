@@ -122,29 +122,6 @@ export class FrigoManageService {
     return application;
   }
 
-  async setStudentFrigoApprove(
-    applicationId: Types.ObjectId,
-    approve: boolean,
-  ) {
-    const frigoApplication = this.frigoApplicationModel.findOneAndUpdate(
-      {
-        _id: applicationId,
-      },
-      {
-        $set: {
-          status: approve ? "A" : "R",
-        },
-      },
-    );
-    if (!frigoApplication)
-      throw new HttpException("해당 금요귀가 신청이 없습니다.", 404);
-
-    return this.frigoApplicationModel
-      .findById(applicationId)
-      .populate("frigo")
-      .populate("student");
-  }
-
   async getStudentFrigoApplications(
     frigoId: Types.ObjectId,
   ): Promise<FrigoApplicationDocument[]> {
@@ -157,5 +134,60 @@ export class FrigoManageService {
       .populate("student");
 
     return applications;
+  }
+
+  async applyStudentFrigo(
+    frigo: Types.ObjectId,
+    studentId: Types.ObjectId,
+    reason: string,
+  ) {
+    const existingApplication = await this.frigoApplicationModel.findOne({
+      frigo: frigo,
+      student: studentId,
+    });
+    if (existingApplication)
+      throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
+
+    const application = await new this.frigoApplicationModel({
+      frigo: frigo,
+      student: studentId,
+      reason,
+      status: "A",
+    }).save();
+
+    return application;
+  }
+
+  async cancelStudentFrigo(frigo: Types.ObjectId, student: Types.ObjectId) {
+    const application = await this.frigoApplicationModel.findOneAndDelete({
+      frigo,
+      student,
+    });
+    if (!application)
+      throw new HttpException("해당 금요귀가 신청을 찾을 수 없습니다.", 404);
+
+    return this.frigoApplicationModel.findOne({ frigo, student });
+  }
+
+  async setStudentFrigoApprove(
+    frigo: Types.ObjectId,
+    student: Types.ObjectId,
+    approve: boolean,
+  ) {
+    const frigoApplication = await this.frigoApplicationModel.findOneAndUpdate(
+      { frigo, student },
+      {
+        $set: {
+          status: approve ? "A" : "R",
+        },
+      },
+    );
+    if (!frigoApplication)
+      throw new HttpException("해당 금요귀가 신청이 없습니다.", 404);
+
+    return this.frigoApplicationModel
+      .findById(frigoApplication._id)
+      .populate("frigo")
+      .populate("student");
   }
 }
