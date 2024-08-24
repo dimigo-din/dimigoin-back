@@ -22,12 +22,7 @@ import { createOpertation } from "src/common/utils";
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
 import { Grade } from "../../../common";
-import {
-  ApplyStayDto,
-  CreateStayDto,
-  ApplyStayOutgoDto,
-  DownloadStayExcelDTO,
-} from "../dto";
+import { ApplyStayDto, CreateStayDto, ApplyStayOutgoDto } from "../dto";
 import { StayManageService } from "../providers";
 
 @ApiTags("Stay Manage")
@@ -272,6 +267,33 @@ export class StayManageController {
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
   ): Promise<StayApplication> {
     return await this.stayManageService.cancelStudentStay(studentId, stayId);
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "잔류외출 학생 조회",
+      description: "학생 잔류외출 신청을 조회합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Get("/outgo/:stayId/:studentId")
+  async getStudentStayOutgos(
+    @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+  ): Promise<StayOutgoDocument[]> {
+    return await this.stayManageService.getStudetnStayOutgos(studentId, stayId);
   }
 
   @ApiOperation(
