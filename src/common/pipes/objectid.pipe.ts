@@ -7,6 +7,6 @@ export class ObjectIdPipe implements PipeTransform<Types.ObjectId> {
     if (!Types.ObjectId.isValid(value))
       throw new HttpException("Invalid ObjectId", 400);
 
-    return value;
+    return typeof value === "string" ? new Types.ObjectId(value) : value;
   }
 }
