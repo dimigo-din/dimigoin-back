@@ -278,8 +278,7 @@ export class FrigoManageController {
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Patch("/:frigoId/:studentId")
   async setStudentFrigoApprove(
-    @Param("frigoApplicationId", ObjectIdPipe)
-    frigoId: Types.ObjectId,
+    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
     @Query("approve", ParseBoolPipe) approve: boolean,
   ) {
