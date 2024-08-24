@@ -5,8 +5,8 @@ import {
   UseGuards,
   Param,
   Delete,
-  Put,
   Controller,
+  Patch,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
@@ -82,7 +82,7 @@ export class JournalManageController {
     type: String,
   })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  @Put("/:journalId")
+  @Patch("/:journalId")
   async editStudentJournal(
     @Param("journalId", ObjectIdPipe) journalId: Types.ObjectId,
     @Body() data: CreateJournalDto,
