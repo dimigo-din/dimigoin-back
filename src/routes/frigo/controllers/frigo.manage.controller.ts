@@ -75,7 +75,7 @@ export class FrigoManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "현재 금요위가 설정",
+      name: "현재 금요귀가 설정",
       description: "해당 금요귀가를 활성화 합니다.",
     }),
   )
