@@ -100,7 +100,7 @@ export class StayManageService {
         .filter((outgo) => outgo.student._id.equals(application.student._id))
         .map((outgo) => {
           return {
-            ...outgo,
+            ...outgo.toJSON(),
             meal: {
               breakfast: !outgo.meal.breakfast,
               lunch: !outgo.meal.lunch,
