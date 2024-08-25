@@ -14,6 +14,7 @@ import {
   LaundryApplicationDocument,
 } from "src/schemas";
 
+import { StayManageService } from "../../stay/providers";
 import { CreateLaundryDto, CreateLaundryTimetableDto } from "../dto";
 
 @Injectable()
@@ -30,6 +31,9 @@ export class LaundryManageService {
 
     @Inject(forwardRef(() => UserManageService))
     private userManageService: UserManageService,
+
+    @Inject(forwardRef(() => StayManageService))
+    private stayManageService: StayManageService,
   ) {}
 
   async getLaundries(): Promise<LaundryDocument[]> {
@@ -100,6 +104,36 @@ export class LaundryManageService {
       });
 
     return laundryApplication;
+  }
+
+  async getLaundryTimetables(): Promise<LaundryTimetableDocument[]> {
+    const type = await this.stayManageService.isStay();
+
+    const laundries = await this.laundryTimetableModel
+      .find({ type: type })
+      .populate("laundry");
+
+    return laundries;
+  }
+
+  async getLaundryApplications(): Promise<LaundryApplicationDocument[]> {
+    const laundryTimetableIds = (await this.getLaundryTimetables()).map(
+      (laundry) => laundry._id,
+    );
+
+    const laundryApplications = await this.laundryApplicationModel
+      .find({
+        timetable: { $in: laundryTimetableIds },
+      })
+      .populate({
+        path: "timetable",
+        populate: {
+          path: "laundry",
+        },
+      })
+      .populate({ path: "student", select: "name grade class number" });
+
+    return laundryApplications;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

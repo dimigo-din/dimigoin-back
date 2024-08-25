@@ -73,6 +73,18 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
+      name: "세탁 시간표 불러오기",
+      description: "모든 세탁 시간표를 불러옵니다",
+    }),
+  )
+  @Get("/timetable")
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  async getLaundryTimetable() {
+    return this.laundryManageService.getLaundryTimetables();
+  }
+
+  @ApiOperation(
+    createOpertation({
       name: "세탁 시간표 수정",
       description: "세탁기 시간표를 수정합니다.",
     }),
@@ -86,5 +98,17 @@ export class LaundryManageController {
       await this.laundryManageService.updateLaundryTimetable(data);
 
     return laundryTimetable;
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "세탁 신청 현황 불러오기",
+      description: "모든 세탁기의 신청 현황을 불러옵니다.",
+    }),
+  )
+  @Get("/application")
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  async getLaundryApplications() {
+    return this.laundryManageService.getLaundryApplications();
   }
 }
