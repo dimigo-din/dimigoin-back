@@ -10,6 +10,7 @@ import {
   Patch,
   Query,
   ParseBoolPipe,
+  Response,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { Types } from "mongoose";
@@ -143,6 +144,31 @@ export class FrigoManageController {
       frigo,
       applications,
     };
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "금요귀가 신청 현황 다운로드",
+      description: "해당 금요귀가의 신청자 목록을 다운로드합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "frigoId",
+    description: "금요귀가의 ObjectId",
+    type: String,
+  })
+  // @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Get("/:frigoId/excel")
+  async downloadFrigo(
+    @Response() res,
+    @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
+  ): Promise<void> {
+    const frigo = await this.frigoManageService.getFrigo(frigoId);
+    await this.frigoManageService.downloadStudentFrigoApplications(
+      res,
+      frigo._id,
+    );
   }
 
   @ApiOperation(
