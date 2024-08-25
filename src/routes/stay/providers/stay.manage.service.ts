@@ -150,6 +150,7 @@ export class StayManageService {
       this.addSheet(wb, grade, applications, outgosByDate[key], key);
     });
 
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     res.setHeader("Content-Type", "application/vnd.openxmlformats");
     res.setHeader(
       "Content-Disposition",
