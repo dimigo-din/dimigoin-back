@@ -146,7 +146,7 @@ export class FrigoManageService {
     const frigoList = await this.frigoApplicationModel
       .find({
         frigo: frigoId,
-        status: "W",
+        status: "A",
       })
       .populate("student");
 

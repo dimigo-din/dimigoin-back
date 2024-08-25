@@ -133,6 +133,7 @@ export class StayManageService {
     const outgos = await this.stayOutgoModel
       .find({
         stay: stay._id,
+        status: "A",
       })
       .sort({ date: 1 })
       .populate("stay")
