@@ -43,7 +43,14 @@ export class LaundryManageService {
       .sort({ floor: 1 })
       .sort({ position: 1 });
 
-    return laundries;
+    const timetable = await this.getLaundryTimetables();
+
+    return laundries.map((laundry) => {
+      return {
+        ...laundry,
+        timetable: timetable.filter((time) => time.laundry.equals(laundry._id)),
+      };
+    });
   }
 
   async getLaundry(laundryId: Types.ObjectId): Promise<LaundryDocument> {
