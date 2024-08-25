@@ -107,19 +107,21 @@ export class LaundryManageService {
   }
 
   async getLaundryTimetables(): Promise<LaundryTimetableDocument[]> {
-    const type = await this.stayManageService.isStay();
-
     const laundries = await this.laundryTimetableModel
-      .find({ type: type })
+      .find()
       .populate("laundry");
 
     return laundries;
   }
 
   async getLaundryApplications(): Promise<LaundryApplicationDocument[]> {
-    const laundryTimetableIds = (await this.getLaundryTimetables()).map(
-      (laundry) => laundry._id,
-    );
+    const type = await this.stayManageService.isStay();
+
+    const timetables = await this.laundryTimetableModel
+      .find({ type: type })
+      .populate("laundry");
+
+    const laundryTimetableIds = timetables.map((laundry) => laundry._id);
 
     const laundryApplications = await this.laundryApplicationModel
       .find({
