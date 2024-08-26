@@ -340,7 +340,7 @@ export class StayManageService {
     if (application.free) {
       if (!targetStayOutgo.free)
         throw new HttpException(
-          "해당 날짜는 자기개발 외출이 불가능합니다.",
+          "해당 날짜는 자기계발 외출이 불가능합니다.",
           403,
         );
 
@@ -351,7 +351,7 @@ export class StayManageService {
         free: true,
       });
       if (existingStayOutgoFree)
-        throw new HttpException("이미 자기개발 외출을 신청했습니다.", 403);
+        throw new HttpException("이미 자기계발 외출을 신청했습니다.", 403);
 
       const mealLunch = application.meal.lunch;
       delete application["duration"];
@@ -514,7 +514,7 @@ export class StayManageService {
           meal.lunch = out.meal.lunch ? false : meal.lunch;
           meal.dinner = out.meal.dinner ? false : meal.dinner;
           outgoMessage += out.free
-            ? "자기개발외출(10:20~14:00)"
+            ? "자기계발외출(10:20~14:00)"
             : `${out.reason}(${moment(
                 out.duration.start,
                 "yyyy-MM-DD HH:mm:ss",
