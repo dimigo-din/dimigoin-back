@@ -238,7 +238,11 @@ export class FrigoManageService {
 
   addSheet(wb: WorkSheet, grade, applicationsRaw: any[], day) {
     const frigoDay = moment(day);
-    const sheet = wb.addWorksheet(`${frigoDay.format("yyyy년도 MM월 DD일")}`);
+    const sheet = wb.addWorksheet(
+      `${frigoDay.format(
+        "yyyy년도 MM월 DD일",
+      )} ${grade}학년 금요귀가 신청 현황`,
+    );
 
     const columnsStyle = {
       alignment: { horizontal: "center", vertical: "middle" },
