@@ -655,4 +655,21 @@ export class StayManageService {
     const s = "000000000" + num;
     return s.substring(s.length - size);
   }
+
+  getDateRange(firstDate, lastDate) {
+    if (
+      moment(firstDate, "YYYY-MM-DD").isSame(
+        moment(lastDate, "YYYY-MM-DD"),
+        "day",
+      )
+    )
+      return [lastDate];
+    let date = firstDate;
+    const dates = [date];
+    do {
+      date = moment(date).add(1, "day");
+      dates.push(date.format("YYYY-MM-DD"));
+    } while (moment(date).isBefore(lastDate));
+    return dates;
+  }
 }
