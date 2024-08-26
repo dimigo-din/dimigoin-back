@@ -36,7 +36,7 @@ export class LaundryManageService {
     private stayManageService: StayManageService,
   ) {}
 
-  async getLaundries(): Promise<LaundryDocument[]> {
+  async getLaundries(): Promise<any[]> {
     const laundries = await this.laundryModel
       .find()
       .sort({ gender: -1 })
