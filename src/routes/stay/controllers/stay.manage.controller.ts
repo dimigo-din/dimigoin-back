@@ -91,7 +91,6 @@ export class StayManageController {
     @Response() res,
     @Param("grade") grade: Grade,
   ): Promise<void> {
-    console.log(grade);
     const stay = await this.stayManageService.getCurrentStay();
     await this.stayManageService.downloadStayApplicationsExcel(
       stay._id,

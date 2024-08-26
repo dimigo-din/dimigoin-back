@@ -45,7 +45,6 @@ export class LaundryManageService {
 
     const timetable = await this.getLaundryTimetables();
 
-    console.log(timetable);
     return laundries.map((laundry) => {
       return {
         ...laundry,
