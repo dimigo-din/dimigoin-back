@@ -42,10 +42,7 @@ export class FrigoService {
       throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
 
     if (data.reason.indexOf("/") === -1) {
-      throw new HttpException(
-        "사유는 [사유/귀가시간] 형식으로 대괄호 없이 기입해주세요.",
-        400,
-      );
+      throw new HttpException("사유는 [사유/귀가시간] 형식입니다.", 400);
     }
 
     const application = new this.frigoApplicationModel({
