@@ -62,7 +62,7 @@ export class UserService {
 
     if (stayApplicationStatus)
       try {
-        stayOutgos = await this.stayManageService.getStudetnStayOutgos(
+        stayOutgos = await this.stayManageService.getStudentStayOutgos(
           student._id,
           currentStay._id,
         );

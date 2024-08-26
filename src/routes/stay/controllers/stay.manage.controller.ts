@@ -293,7 +293,7 @@ export class StayManageController {
     @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
     @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
   ): Promise<StayOutgoDocument[]> {
-    return await this.stayManageService.getStudetnStayOutgos(studentId, stayId);
+    return await this.stayManageService.getStudentStayOutgos(studentId, stayId);
   }
 
   @ApiOperation(

@@ -270,7 +270,7 @@ export class StayManageService {
     return application;
   }
 
-  async getStudetnStayOutgos(
+  async getStudentStayOutgos(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,
   ): Promise<StayOutgoDocument[]> {
