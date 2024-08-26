@@ -15,7 +15,7 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { KorWeekDayValues } from "../../../common";
+import { GradeValues, KorWeekDayValues } from "../../../common";
 import { CreateFrigoDto } from "../dto";
 
 @Injectable()
@@ -151,7 +151,15 @@ export class FrigoManageService {
       .populate("student");
 
     const wb = new Excel.Workbook();
-    this.addSheet(wb, 3, frigoList, frigo.date);
+    GradeValues.forEach((grade) => {
+      if (
+        frigoList.find(
+          (frigo) =>
+            (frigo.student as unknown as StudentDocument).grade === grade,
+        )
+      )
+        this.addSheet(wb, grade, frigoList, frigo.date);
+    });
 
     res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     res.setHeader("Content-Type", "application/vnd.openxmlformats");
@@ -177,6 +185,13 @@ export class FrigoManageService {
     });
     if (existingApplication)
       throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
+
+    if (reason.indexOf("/") === -1) {
+      throw new HttpException(
+        "사유는 [사유/귀가시간] 형식으로 대괄호 없이 기입해주세요.",
+        400,
+      );
+    }
 
     const application = await new this.frigoApplicationModel({
       frigo: frigo,
