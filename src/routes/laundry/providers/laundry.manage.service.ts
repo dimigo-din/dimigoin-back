@@ -48,7 +48,7 @@ export class LaundryManageService {
     return laundries.map((laundry) => {
       return {
         ...laundry,
-        timetable: timetable.filter((time) => time.laundry.equals(laundry._id)),
+        timetable: timetable.filter((time) => laundry._id.equals(time.laundry)),
       };
     });
   }
