@@ -45,11 +45,12 @@ export class LaundryManageService {
 
     const timetable = await this.getLaundryTimetables();
 
+    console.log(timetable);
     return laundries.map((laundry) => {
       return {
         ...laundry,
-        timetable: timetable.filter((time) =>
-          laundry._id.equals(time.laundry._id),
+        timetable: timetable.filter(
+          (time) => time.laundry && laundry._id.equals(time.laundry._id),
         ),
       };
     });
