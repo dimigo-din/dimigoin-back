@@ -385,7 +385,7 @@ export class StayManageService {
         !applicationEnd.isBetween(targetStayOutgoStart, targetStayOutgoEnd) ||
         applicationEnd.isBefore(applicationStart)
       )
-        throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 404);
+        throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 400);
 
       const stayOutgo = new this.stayOutgoModel({
         stay: stay._id,
