@@ -40,7 +40,7 @@ export class DIMILoggerMiddleware implements NestMiddleware {
       const endTimestamp = Date.now() - startTimestamp;
 
       this.logger.log(
-        `${ipAddress} (${userAgent}) - "${requestMethod} ${originURL} ${httpVersion}" ${statusCode} +${endTimestamp}ms by ${authorization}`,
+        `${ipAddress} (${userAgent}) - "${requestMethod} ${originURL} ${httpVersion}" ${statusCode} by ${authorization} +${endTimestamp}ms `,
       );
 
       if (Object.keys(req.body).length > 0)
