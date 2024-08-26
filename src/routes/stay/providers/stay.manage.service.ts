@@ -251,6 +251,29 @@ export class StayManageService {
     return application;
   }
 
+  async updateStudentStay(
+    studentId: Types.ObjectId,
+    stayId: Types.ObjectId,
+    data: ApplyStayDto,
+  ): Promise<StayApplicationDocument> {
+    await this.stayApplicationModel.findOneAndUpdate(
+      {
+        stay: stayId,
+        student: studentId,
+      },
+      {
+        $set: {
+          ...data,
+        },
+      },
+    );
+
+    return this.stayApplicationModel.findOne({
+      stay: stayId,
+      student: studentId,
+    });
+  }
+
   async cancelStudentStay(
     studentId: Types.ObjectId,
     stayId: Types.ObjectId,

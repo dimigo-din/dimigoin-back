@@ -244,6 +244,38 @@ export class StayManageController {
 
   @ApiOperation(
     createOpertation({
+      name: "잔류 학생 수정",
+      description: "학생 잔류 신청을 수정합니다.",
+    }),
+  )
+  @ApiParam({
+    required: true,
+    name: "stayId",
+    description: "잔류의 ObjectId",
+    type: String,
+  })
+  @ApiParam({
+    required: true,
+    name: "studentId",
+    description: "학생의 ObjectId",
+    type: String,
+  })
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Patch("/:stayId/:studentId")
+  async updateStudentStay(
+    @Param("stayId", ObjectIdPipe) stayId: Types.ObjectId,
+    @Param("studentId", ObjectIdPipe) studentId: Types.ObjectId,
+    @Body() data: ApplyStayDto,
+  ): Promise<StayApplication> {
+    return await this.stayManageService.updateStudentStay(
+      studentId,
+      stayId,
+      data,
+    );
+  }
+
+  @ApiOperation(
+    createOpertation({
       name: "잔류 학생 삭제",
       description: "학생 잔류 신청을 삭제합니다.",
     }),
