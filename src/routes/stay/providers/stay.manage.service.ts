@@ -147,8 +147,8 @@ export class StayManageService {
     });
 
     const wb = new Excel.Workbook();
-    Object.keys(outgosByDate).forEach((key) => {
-      this.addSheet(wb, grade, applications, outgosByDate[key], key);
+    this.getDateRange(stay.start, stay.end).forEach((key) => {
+      this.addSheet(wb, grade, applications, outgosByDate[key] || [], key);
     });
 
     res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
