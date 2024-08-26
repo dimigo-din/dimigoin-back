@@ -150,6 +150,9 @@ export class FrigoManageService {
       })
       .populate("student");
 
+    if (frigoList.length === 0)
+      throw new HttpException("승인된 금요귀가 목록이 없습니다.", 404);
+
     const wb = new Excel.Workbook();
     GradeValues.forEach((grade) => {
       if (
@@ -158,7 +161,15 @@ export class FrigoManageService {
             (frigo.student as unknown as StudentDocument).grade === grade,
         )
       )
-        this.addSheet(wb, grade, frigoList, frigo.date);
+        this.addSheet(
+          wb,
+          grade,
+          frigoList.filter(
+            (frigo) =>
+              (frigo.student as unknown as StudentDocument).grade === grade,
+          ),
+          frigo.date,
+        );
     });
 
     res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
@@ -238,11 +249,7 @@ export class FrigoManageService {
 
   addSheet(wb: WorkSheet, grade, applicationsRaw: any[], day) {
     const frigoDay = moment(day);
-    const sheet = wb.addWorksheet(
-      `${frigoDay.format(
-        "yyyy년도 MM월 DD일",
-      )} ${grade}학년 금요귀가 신청 현황`,
-    );
+    const sheet = wb.addWorksheet(`${grade}학년`);
 
     const columnsStyle = {
       alignment: { horizontal: "center", vertical: "middle" },
