@@ -21,7 +21,7 @@ import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
-import { Grade } from "../../../common";
+import { Gender, Grade } from "../../../common";
 import { ApplyStayDto, CreateStayDto, ApplyStayOutgoDto } from "../dto";
 import { StayManageService } from "../providers";
 
@@ -96,6 +96,30 @@ export class StayManageController {
       stay._id,
       res,
       grade,
+      "A",
+    );
+  }
+
+  @ApiOperation(
+    createOpertation({
+      name: "현재 잔류 정보 다운로드 - 성별별",
+      description:
+        "현재 활성화 되어있는 잔류 정보와 잔류 신청자 목록, 그리고 외출 정보를 성별별로 다운로드합니다.",
+    }),
+  )
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @Get("/current/excel/:grade/:gender")
+  async downloadStayApplicationsExcelEachGender(
+    @Response() res,
+    @Param("grade") grade: Grade,
+    @Param("gender") gender: Gender,
+  ): Promise<void> {
+    const stay = await this.stayManageService.getCurrentStay();
+    await this.stayManageService.downloadStayApplicationsExcel(
+      stay._id,
+      res,
+      grade,
+      gender,
     );
   }
 

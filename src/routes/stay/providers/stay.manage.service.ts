@@ -2,6 +2,7 @@ import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
 import { callAppShutdownHook } from "@nestjs/core/hooks";
 import { InjectModel } from "@nestjs/mongoose";
 import * as Excel from "exceljs";
+import { application } from "express";
 import moment from "moment";
 import { Model, Types } from "mongoose";
 import { WorkSheet } from "xlsx";
@@ -20,6 +21,7 @@ import {
   StayApplicationDocument,
   StayOutgo,
   StayOutgoDocument,
+  StudentDocument,
 } from "src/schemas";
 
 import { Grade, KorWeekDayValues } from "../../../common";
@@ -121,6 +123,7 @@ export class StayManageService {
     stayId: Types.ObjectId,
     res,
     grade: Grade,
+    gender: "A" | "M" | "F",
   ): Promise<void> {
     const stay = await this.getStay(stayId);
     const applications = (
@@ -148,7 +151,22 @@ export class StayManageService {
 
     const wb = new Excel.Workbook();
     this.getDateRange(stay.start, stay.end).forEach((key) => {
-      this.addSheet(wb, grade, applications, outgosByDate[key] || [], key);
+      if (gender === "A")
+        this.addSheet(wb, grade, applications, outgosByDate[key] || [], key);
+      else if (
+        applications.find(
+          (a) => (a.student as unknown as StudentDocument).gender === gender,
+        )
+      )
+        this.addSheet(
+          wb,
+          grade,
+          applications.filter(
+            (a) => (a.student as unknown as StudentDocument).gender === gender,
+          ),
+          outgosByDate[key] || [],
+          key,
+        );
     });
 
     res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
