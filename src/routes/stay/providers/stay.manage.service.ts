@@ -99,7 +99,11 @@ export class StayManageService {
         .populate("student")
     ).map((application) => {
       const userOutgos = outgos
-        .filter((outgo) => outgo.student._id.equals(application.student._id))
+        .filter(
+          (outgo) =>
+            outgo.student._id.equals(application.student._id) &&
+            outgo.stay.equals(stay._id),
+        )
         .map((outgo) => {
           return {
             ...outgo.toJSON(),
