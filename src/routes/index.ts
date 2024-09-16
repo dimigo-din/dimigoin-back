@@ -9,3 +9,4 @@ export * from "./schedule";
 export * from "./stay";
 export * from "./timetable";
 export * from "./user";
+export * from "./music";

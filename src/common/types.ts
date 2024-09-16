@@ -43,6 +43,7 @@ for (let i = 0; i < SeatNameValues.length; i++) {
   }
 }
 export const KorWeekDayValues = ["일", "월", "화", "수", "목", "금", "토"];
+export const RateLimitTypeValues = ["YoutubeSearch"] as const;
 
 export type Grade = (typeof GradeValues)[number];
 export type Class = (typeof ClassValues)[number];
@@ -53,3 +54,4 @@ export type AfterschoolTime = (typeof AfterschoolTimeValues)[number];
 export type Type = (typeof TypeValues)[number];
 export type ScheduleType = (typeof ScheduleTypeValues)[number];
 export type Seat = (typeof SeatValues)[number];
+export type RateLimitType = (typeof RateLimitTypeValues)[number];
