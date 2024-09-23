@@ -14,8 +14,6 @@ export * from "./meal.schema";
 export * from "./schedule.schema";
 export * from "./timetable.schema";
 export * from "./journal.schema";
-export * from "./afterschool.schema";
-export * from "./afterschool-application.schema";
 export * from "./meal-timetable.schema";
 export * from "./laundry.schema";
 export * from "./laundry-timetable.schema";

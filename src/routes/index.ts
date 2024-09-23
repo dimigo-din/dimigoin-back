@@ -1,4 +1,3 @@
-export * from "./afterschool";
 export * from "./event";
 export * from "./frigo";
 export * from "./group";
