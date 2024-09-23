@@ -230,11 +230,15 @@ export class FrigoManageService {
     student: Types.ObjectId,
     approve: boolean,
   ) {
+    const currentStatus = (
+      await this.frigoApplicationModel.findOne({ frigo, student })
+    ).status;
     const frigoApplication = await this.frigoApplicationModel.findOneAndUpdate(
       { frigo, student },
       {
         $set: {
-          status: approve ? "A" : "R",
+          status:
+            (approve ? "A" : "R") === currentStatus ? "W" : approve ? "A" : "R",
         },
       },
     );
