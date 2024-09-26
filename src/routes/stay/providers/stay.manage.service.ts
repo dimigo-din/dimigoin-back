@@ -44,7 +44,7 @@ export class StayManageService {
   ) {}
 
   async getStays(): Promise<StayDocument[]> {
-    const stays = await this.stayModel.find();
+    const stays = await this.stayModel.find({ deleted: false });
 
     return stays;
   }
@@ -74,8 +74,9 @@ export class StayManageService {
 
   async deleteStay(stayId: Types.ObjectId): Promise<StayDocument> {
     const stay = await this.getStay(stayId);
-    await this.stayModel.findByIdAndDelete(stay._id);
-
+    stay.current = false;
+    stay.deleted = true;
+    await stay.save();
     return stay;
   }
 
@@ -187,7 +188,10 @@ export class StayManageService {
   }
 
   async getCurrentStay(): Promise<StayDocument> {
-    const stay = await this.stayModel.findOne({ current: true });
+    const stay = await this.stayModel.findOne({
+      current: true,
+      deleted: false,
+    });
     if (!stay) throw new HttpException("활성화된 잔류가 없습니다.", 404);
 
     return stay;

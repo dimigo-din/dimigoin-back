@@ -24,6 +24,13 @@ export class Frigo {
     type: Boolean,
   })
   current: boolean;
+
+  @Prop({
+    required: true,
+    type: Boolean,
+    default: false,
+  })
+  deleted: boolean;
 }
 
 export const FrigoSchema = SchemaFactory.createForClass(Frigo);

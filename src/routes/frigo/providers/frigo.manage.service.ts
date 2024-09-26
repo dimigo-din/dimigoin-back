@@ -48,7 +48,7 @@ export class FrigoManageService {
   }
 
   async getFrigos(): Promise<FrigoDocument[]> {
-    return await this.frigoModel.find();
+    return await this.frigoModel.find({ deleted: false });
   }
 
   async getFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
@@ -73,13 +73,18 @@ export class FrigoManageService {
 
   async deleteFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
     const frigo = await this.getFrigo(frigoId);
-    await this.frigoModel.findByIdAndDelete(frigo._id);
+    frigo.current = false;
+    frigo.deleted = true;
+    await frigo.save();
 
     return frigo;
   }
 
   async getCurrentFrigo(): Promise<FrigoDocument> {
-    const frigo = await this.frigoModel.findOne({ current: true });
+    const frigo = await this.frigoModel.findOne({
+      current: true,
+      deleted: false,
+    });
     if (!frigo) throw new HttpException("활성화된 금요귀가가 없습니다.", 404);
 
     return frigo;

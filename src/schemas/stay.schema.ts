@@ -152,6 +152,13 @@ export class Stay {
     type: StaySeatSchema,
   })
   seat: StaySeat;
+
+  @Prop({
+    required: true,
+    type: Boolean,
+    default: false,
+  })
+  deleted: boolean;
 }
 
 export const StaySchema = SchemaFactory.createForClass(Stay);
