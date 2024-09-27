@@ -2,7 +2,13 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument } from "mongoose";
 
-import { GenderValues, PositionValues, Gender, Position } from "src/common";
+import {
+  GenderValues,
+  PositionValues,
+  Gender,
+  Position,
+  LaundryValues,
+} from "src/common";
 export type LaundryDocument = HydratedDocument<Laundry>;
 
 const options: SchemaOptions = {
@@ -13,6 +19,14 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Laundry {
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+    enum: LaundryValues,
+  })
+  deviceType: Washer;
+
   @ApiProperty()
   @Prop({
     required: true,

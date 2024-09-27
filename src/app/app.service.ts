@@ -1,7 +1,6 @@
 import os from "os";
 
 import { Injectable, Logger } from "@nestjs/common";
-import { SchedulerRegistry } from "@nestjs/schedule";
 import _ from "lodash";
 
 import { ClusterDto, Deployment } from "src/common";
@@ -9,7 +8,6 @@ import { ClusterDto, Deployment } from "src/common";
 @Injectable()
 export class AppService {
   private cluster: ClusterDto;
-  private schedulerRegistry = new SchedulerRegistry();
   private readonly logger = new Logger(AppService.name);
 
   private DisplayMode = {

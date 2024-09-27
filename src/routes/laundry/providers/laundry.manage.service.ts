@@ -83,7 +83,7 @@ export class LaundryManageService {
     const laundryTimetable = this.laundryTimetableModel.findOneAndUpdate(
       {
         laundry: laundry._id,
-        type: data.type,
+        isStaySchedule: data.isStaySchedule,
       },
       {
         $set: data,

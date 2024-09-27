@@ -1,5 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsIn, IsNumber, IsMongoId, IsArray } from "class-validator";
+import {
+  IsString,
+  IsIn,
+  IsNumber,
+  IsMongoId,
+  IsArray,
+  IsBoolean,
+} from "class-validator";
 import { Types } from "mongoose";
 
 import {
@@ -9,9 +16,16 @@ import {
   Grade,
   Gender,
   Position,
+  WasherValues,
+  Washer,
 } from "src/common/types";
 
 export class CreateLaundryDto {
+  @ApiProperty()
+  @IsString()
+  @IsIn(WasherValues)
+  deviceType: Washer;
+
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
@@ -47,7 +61,6 @@ export class CreateLaundryTimetableDto {
   gender: Gender;
 
   @ApiProperty()
-  @IsNumber()
-  @IsIn([0, 1])
-  type: number;
+  @IsBoolean()
+  isStaySchedule: boolean;
 }

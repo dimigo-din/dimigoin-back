@@ -56,10 +56,9 @@ export class LaundryTimetable {
   @ApiProperty()
   @Prop({
     required: true,
-    type: Number,
-    enum: [0, 1],
+    type: Boolean,
   })
-  type: 0 | 1;
+  isStaySchedule: boolean;
 }
 
 export const LaundryTimetableSchema =
