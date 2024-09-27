@@ -17,11 +17,11 @@ import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { ObjectIdPipe } from "src/common/pipes";
+import { GenderType, GradeType } from "src/common/types";
 import { createOpertation } from "src/common/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 
-import { Gender, Grade } from "../../../common";
 import { ApplyStayDto, CreateStayDto, ApplyStayOutgoDto } from "../dto";
 import { StayManageService } from "../providers";
 
@@ -89,7 +89,7 @@ export class StayManageController {
   @Get("/current/excel/:grade")
   async downloadStayApplicationsExcel(
     @Response() res,
-    @Param("grade") grade: Grade,
+    @Param("grade") grade: GradeType,
   ): Promise<void> {
     const stay = await this.stayManageService.getCurrentStay();
     await this.stayManageService.downloadStayApplicationsExcel(
@@ -111,8 +111,8 @@ export class StayManageController {
   @Get("/current/excel/:grade/:gender")
   async downloadStayApplicationsExcelEachGender(
     @Response() res,
-    @Param("grade") grade: Grade,
-    @Param("gender") gender: Gender,
+    @Param("grade") grade: GradeType,
+    @Param("gender") gender: GenderType,
   ): Promise<void> {
     const stay = await this.stayManageService.getCurrentStay();
     await this.stayManageService.downloadStayApplicationsExcel(

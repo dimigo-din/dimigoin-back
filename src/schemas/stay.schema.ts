@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { SeatValues, Seat } from "src/common";
+import { SeatValues, SeatType } from "src/common";
 
 export type StayDocument = HydratedDocument<Stay>;
 
@@ -56,7 +56,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  M1: Seat;
+  M1: SeatType;
 
   @ApiProperty()
   @Prop({
@@ -64,7 +64,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  M2: Seat;
+  M2: SeatType;
 
   @ApiProperty()
   @Prop({
@@ -72,7 +72,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  M3: Seat;
+  M3: SeatType;
 
   @ApiProperty()
   @Prop({
@@ -80,7 +80,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  F1: Seat;
+  F1: SeatType;
 
   @ApiProperty()
   @Prop({
@@ -88,7 +88,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  F2: Seat;
+  F2: SeatType;
 
   @ApiProperty()
   @Prop({
@@ -96,7 +96,7 @@ class StaySeat {
     type: [String],
     enum: SeatValues,
   })
-  F3: Seat;
+  F3: SeatType;
 }
 const StaySeatSchema = SchemaFactory.createForClass(StaySeat);
 

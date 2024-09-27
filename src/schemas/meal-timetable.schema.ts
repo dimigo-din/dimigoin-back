@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, Grade } from "src/common";
+import { GradeValues, GradeType } from "src/common";
 
 export type MealTimetableDocument = HydratedDocument<MealTimetable>;
 
@@ -23,7 +23,7 @@ export class MealTimetable {
     type: Number,
     enum: GradeValues,
   })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @Prop({

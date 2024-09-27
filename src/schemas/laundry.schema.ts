@@ -5,9 +5,10 @@ import { HydratedDocument } from "mongoose";
 import {
   GenderValues,
   PositionValues,
-  Gender,
-  Position,
+  GenderType,
+  PositionType,
   LaundryValues,
+  LaundryType,
 } from "src/common";
 export type LaundryDocument = HydratedDocument<Laundry>;
 
@@ -25,7 +26,7 @@ export class Laundry {
     type: String,
     enum: LaundryValues,
   })
-  deviceType: Washer;
+  deviceType: LaundryType;
 
   @ApiProperty()
   @Prop({
@@ -33,7 +34,7 @@ export class Laundry {
     type: String,
     enum: GenderValues,
   })
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @Prop({
@@ -48,7 +49,7 @@ export class Laundry {
     type: String,
     enum: PositionValues,
   })
-  position: Position;
+  position: PositionType;
 }
 
 export const LaundrySchema = SchemaFactory.createForClass(Laundry);

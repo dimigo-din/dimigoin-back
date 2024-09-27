@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, GenderValues, Grade, Gender } from "src/common";
+import { GradeValues, GenderValues, GradeType, GenderType } from "src/common";
 
 import { Laundry } from "src/schemas";
 
@@ -43,7 +43,7 @@ export class LaundryTimetable {
     type: [Number],
     enum: GradeValues,
   })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @Prop({
@@ -51,7 +51,7 @@ export class LaundryTimetable {
     type: String,
     enum: GenderValues,
   })
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @Prop({

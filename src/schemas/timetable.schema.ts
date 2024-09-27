@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, ClassValues, Grade, Class } from "src/common";
+import { GradeValues, ClassValues, GradeType, ClassType } from "src/common";
 
 export type TimetableDocument = HydratedDocument<Timetable>;
 
@@ -30,7 +30,7 @@ export class Timetable {
     type: Number,
     enum: GradeValues,
   })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @Prop({
@@ -38,7 +38,7 @@ export class Timetable {
     type: Number,
     enum: ClassValues,
   })
-  class: Class;
+  class: ClassType;
 
   @ApiProperty()
   @Prop({

@@ -13,23 +13,23 @@ import {
   GradeValues,
   GenderValues,
   PositionValues,
-  Grade,
-  Gender,
-  Position,
-  WasherValues,
-  Washer,
+  GradeType,
+  GenderType,
+  PositionType,
+  LaundryValues,
+  LaundryType,
 } from "src/common/types";
 
 export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
-  @IsIn(WasherValues)
-  deviceType: Washer;
+  @IsIn(LaundryValues)
+  deviceType: LaundryType;
 
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @IsNumber()
@@ -38,7 +38,7 @@ export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
   @IsIn(PositionValues)
-  position: Position;
+  position: PositionType;
 }
 
 export class CreateLaundryTimetableDto {
@@ -53,12 +53,12 @@ export class CreateLaundryTimetableDto {
   @ApiProperty()
   @IsArray()
   @IsIn(GradeValues, { each: true })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @IsBoolean()

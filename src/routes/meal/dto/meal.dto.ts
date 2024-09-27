@@ -8,13 +8,13 @@ import {
   ArrayMaxSize,
 } from "class-validator";
 
-import { GradeValues, ClassValues, Grade } from "src/common/types";
+import { GradeValues, ClassValues, GradeType } from "src/common/types";
 
 export class CreateMealTimetableDto {
   @ApiProperty()
   @IsNumber()
   @IsIn(GradeValues)
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @IsArray()

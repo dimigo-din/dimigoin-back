@@ -24,7 +24,7 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { Grade, KorWeekDayValues } from "../../../common";
+import { GradeType, KorWeekDayValues } from "../../../common";
 import { ApplyStayDto, ApplyStayOutgoDto, CreateStayDto } from "../dto";
 
 @Injectable()
@@ -127,7 +127,7 @@ export class StayManageService {
   async downloadStayApplicationsExcel(
     stayId: Types.ObjectId,
     res,
-    grade: Grade,
+    grade: GradeType,
     gender: "A" | "M" | "F",
   ): Promise<void> {
     const stay = await this.getStay(stayId);

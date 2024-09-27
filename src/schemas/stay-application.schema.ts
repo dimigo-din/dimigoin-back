@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { SeatValues, Seat } from "src/common/types";
+import { SeatValues, SeatType } from "src/common/types";
 
 import { Stay, Student } from "src/schemas";
 
@@ -46,7 +46,7 @@ export class StayApplication {
     type: String,
     enum: SeatValues,
   })
-  seat: Seat;
+  seat: SeatType;
 
   @ApiProperty()
   @Prop({
