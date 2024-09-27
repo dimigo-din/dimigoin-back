@@ -29,8 +29,8 @@ export class LaundryController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁기",
-      description: "사용가능한 세탁기와 신청정보를 반환합니다.",
+      name: "세탁기 및 건조기 가져오기",
+      description: "현재 사용 가능한 세탁기와 건조기의 신청 정보를 반환합니다.",
       studentOnly: true,
     }),
   )
@@ -61,8 +61,8 @@ export class LaundryController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 신청",
-      description: "세탁을 신청합니다.",
+      name: "세탁기 및 건조기 신청",
+      description: "세탁기 및 건조기를 신청합니다.",
       studentOnly: true,
     }),
   )
@@ -82,8 +82,8 @@ export class LaundryController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 신청 취소",
-      description: "세탁신청을 취소합니다.",
+      name: "세탁기 및 건조기 신청 취소",
+      description: "세탁기 혹은 건조기 신청을 취소합니다.",
       studentOnly: true,
     }),
   )

@@ -28,8 +28,9 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁기 리스트",
-      description: "모든 세탁기를 반환합니다.",
+      name: "세탁기 및 건조기 리스트",
+      description:
+        "기숙사 (학봉관, 우정학사) 내에 존재하는 모든 세탁기 및 건조기를 반환합니다.",
     }),
   )
   @Get()
@@ -42,8 +43,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁기 생성",
-      description: "세탁기를 생성합니다.",
+      name: "세탁기 혹은 건조기 생성",
+      description: "세탁기 혹은 건조기를 생성합니다.",
     }),
   )
   @Post()
@@ -58,8 +59,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 신청 초기화",
-      description: "모든 세탁기의 신청을 초기화합니다.",
+      name: "세탁기 및 건조기 신청 초기화",
+      description: "모든 세탁기 및 건조기의 신청을 초기화합니다.",
     }),
   )
   @Delete()
@@ -73,8 +74,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 시간표 불러오기",
-      description: "모든 세탁 시간표를 불러옵니다",
+      name: "세탁기 및 건조기 시간표 불러오기",
+      description: "모든 세탁기 및 건조기 시간표를 불러옵니다",
     }),
   )
   @Get("/timetable")
@@ -85,8 +86,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 시간표 수정",
-      description: "세탁기 시간표를 수정합니다.",
+      name: "세탁기 및 건조기 시간표 수정",
+      description: "세탁기 및 건조기 시간표를 수정합니다.",
     }),
   )
   @Put("/timetable")
@@ -102,8 +103,8 @@ export class LaundryManageController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁 신청 현황 불러오기",
-      description: "모든 세탁기의 신청 현황을 불러옵니다.",
+      name: "모든 세탁기 및 건조기 신청 현황 불러오기",
+      description: "모든 세탁기 및 건조기의 신청 현황을 불러옵니다.",
     }),
   )
   @Get("/application")
