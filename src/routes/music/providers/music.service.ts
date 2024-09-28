@@ -190,7 +190,7 @@ export class MusicService {
     const isApplied = await this.musicListModel.findOne({ week, videoId });
     if (!isApplied) await this.applyMusic(user, videoId); // 이거 유지할지 고민중입니당.
 
-    const music = (await this.musicListModel.findOne({ week, videoId }))!; // This cannot be null
+    const music = await this.musicListModel.findOne({ week, videoId }); // This cannot be null
 
     const userVote = await this.musicVoteModel.findOne({
       day,
