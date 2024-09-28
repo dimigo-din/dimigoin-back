@@ -13,8 +13,8 @@ import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { ObjectIdPipe } from "src/common/pipes";
-import { createOpertation } from "src/common/utils";
+import { ObjectIdPipe } from "src/lib/pipes";
+import { createOpertation } from "src/lib/utils";
 
 import {
   Student,

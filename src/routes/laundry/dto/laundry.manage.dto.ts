@@ -1,21 +1,35 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsIn, IsNumber, IsMongoId, IsArray } from "class-validator";
+import {
+  IsString,
+  IsIn,
+  IsNumber,
+  IsMongoId,
+  IsArray,
+  IsBoolean,
+} from "class-validator";
 import { Types } from "mongoose";
 
 import {
   GradeValues,
   GenderValues,
   PositionValues,
-  Grade,
-  Gender,
-  Position,
-} from "src/common/types";
+  GradeType,
+  GenderType,
+  PositionType,
+  LaundryValues,
+  LaundryType,
+} from "src/lib/types";
 
 export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
+  @IsIn(LaundryValues)
+  deviceType: LaundryType;
+
+  @ApiProperty()
+  @IsString()
   @IsIn(GenderValues)
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @IsNumber()
@@ -24,7 +38,7 @@ export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
   @IsIn(PositionValues)
-  position: Position;
+  position: PositionType;
 }
 
 export class CreateLaundryTimetableDto {
@@ -39,15 +53,14 @@ export class CreateLaundryTimetableDto {
   @ApiProperty()
   @IsArray()
   @IsIn(GradeValues, { each: true })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @IsString()
   @IsIn(GenderValues)
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
-  @IsNumber()
-  @IsIn([0, 1])
-  type: number;
+  @IsBoolean()
+  isStaySchedule: boolean;
 }

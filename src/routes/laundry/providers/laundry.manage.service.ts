@@ -83,7 +83,7 @@ export class LaundryManageService {
     const laundryTimetable = this.laundryTimetableModel.findOneAndUpdate(
       {
         laundry: laundry._id,
-        type: data.type,
+        isStaySchedule: data.isStaySchedule,
       },
       {
         $set: data,
@@ -99,10 +99,10 @@ export class LaundryManageService {
 
   async getStudentLaundryApplication(
     studentId: Types.ObjectId,
-  ): Promise<LaundryApplicationDocument> {
+  ): Promise<LaundryApplicationDocument[]> {
     const student = await this.userManageService.getStudent(studentId);
     const laundryApplication = await this.laundryApplicationModel
-      .findOne({
+      .find({
         student: student._id,
       })
       .populate({
@@ -136,6 +136,7 @@ export class LaundryManageService {
       .find({
         timetable: { $in: laundryTimetableIds },
       })
+
       .populate({
         path: "timetable",
         populate: {

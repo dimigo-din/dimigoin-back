@@ -7,7 +7,7 @@ import {
   DIMISwaggerSetup,
   DIMIWrapperInterceptor,
   DIMIValidationPipe,
-} from "./common";
+} from "./lib";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

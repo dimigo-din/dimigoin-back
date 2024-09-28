@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GenderValues, Gender } from "src/common/types";
+import { GenderValues, GenderType } from "src/lib/types";
 
 export type TeacherDocument = HydratedDocument<Teacher>;
 
@@ -29,7 +29,7 @@ export class Teacher {
     type: String,
     enum: GenderValues,
   })
-  gender: Gender;
+  gender: GenderType;
 
   @Prop({
     required: true,

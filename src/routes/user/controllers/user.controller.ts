@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import {
   StudentDocument,
@@ -35,7 +35,7 @@ export class UserController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getApplication(@Req() req: Request): Promise<{
-    laundry: LaundryApplicationDocument | null;
+    laundry: LaundryApplicationDocument[] | null;
     frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;

@@ -7,6 +7,8 @@ import { WorkSheet } from "xlsx";
 
 import { UserManageService } from "src/routes/user/providers";
 
+import { GradeValues, KorWeekDayValues } from "src/lib";
+
 import {
   Frigo,
   FrigoDocument,
@@ -15,7 +17,6 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { GradeValues, KorWeekDayValues } from "../../../common";
 import { CreateFrigoDto } from "../dto";
 
 @Injectable()

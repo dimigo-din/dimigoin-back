@@ -1,8 +1,6 @@
 import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
-import { callAppShutdownHook } from "@nestjs/core/hooks";
 import { InjectModel } from "@nestjs/mongoose";
 import * as Excel from "exceljs";
-import { application } from "express";
 import moment from "moment";
 import { Model, Types } from "mongoose";
 import { WorkSheet } from "xlsx";
@@ -11,8 +9,10 @@ import {
   stringDateToMoment,
   stringDateTimeToMoment,
   momentToStringDate,
-} from "src/common/utils";
+} from "src/lib/utils";
 import { UserManageService } from "src/routes/user/providers";
+
+import { GradeType, KorWeekDayValues } from "src/lib";
 
 import {
   Stay,
@@ -24,7 +24,6 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { Grade, KorWeekDayValues } from "../../../common";
 import { ApplyStayDto, ApplyStayOutgoDto, CreateStayDto } from "../dto";
 
 @Injectable()
@@ -127,7 +126,7 @@ export class StayManageService {
   async downloadStayApplicationsExcel(
     stayId: Types.ObjectId,
     res,
-    grade: Grade,
+    grade: GradeType,
     gender: "A" | "M" | "F",
   ): Promise<void> {
     const stay = await this.getStay(stayId);

@@ -6,10 +6,10 @@ import {
   GradeValues,
   ClassValues,
   GenderValues,
-  Grade,
-  Class,
-  Gender,
-} from "src/common";
+  GradeType,
+  ClassType,
+  GenderType,
+} from "src/lib";
 
 export type StudentDocument = HydratedDocument<Student>;
 
@@ -40,7 +40,7 @@ export class Student {
     type: Number,
     enum: GradeValues,
   })
-  grade: Grade;
+  grade: GradeType;
 
   @ApiProperty()
   @Prop({
@@ -48,7 +48,7 @@ export class Student {
     type: Number,
     enum: ClassValues,
   })
-  class: Class;
+  class: ClassType;
 
   @ApiProperty()
   @Prop({
@@ -63,7 +63,7 @@ export class Student {
     type: String,
     enum: GenderValues,
   })
-  gender: Gender;
+  gender: GenderType;
 
   @ApiProperty()
   @Prop({

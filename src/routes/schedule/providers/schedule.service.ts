@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import moment = require("moment");
 import { Model } from "mongoose";
 
-import { momentToStringDateTime } from "src/common/utils";
+import { momentToStringDateTime } from "src/lib/utils";
 
 import { Schedule, ScheduleDocument } from "src/schemas";
 

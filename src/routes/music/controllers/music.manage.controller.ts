@@ -10,8 +10,9 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+import { createOpertation } from "src/lib/utils";
+
 import { DIMIJwtAuthGuard, PermissionGuard } from "../../../auth";
-import { createOpertation } from "../../../common/utils";
 import { DeleteDTO, SelectDTO, TeacherMusicListDTO } from "../dto";
 import { MusicManageService } from "../providers/music.manage.service";
 
