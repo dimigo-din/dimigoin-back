@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { DIMIConfigModule, DIMIJWTModule } from "src/lib";
 import { UserModule } from "src/routes/user/user.module";
-
-import { DIMIConfigModule, DIMIJWTModule } from "src/common";
 
 import {
   Student,

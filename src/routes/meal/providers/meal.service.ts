@@ -4,7 +4,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment";
 import { Model } from "mongoose";
 
-import { momentToStringDate } from "src/common/utils";
+import { momentToStringDate } from "src/lib/utils";
 
 import {
   Meal,

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import { Meal, MealTimetableDocument, MealTimetable } from "src/schemas";
 

@@ -3,7 +3,7 @@ import os from "os";
 import { Injectable, Logger } from "@nestjs/common";
 import _ from "lodash";
 
-import { ClusterDto, Deployment } from "src/common";
+import { ClusterDto, Deployment } from "src/lib";
 
 @Injectable()
 export class AppService {

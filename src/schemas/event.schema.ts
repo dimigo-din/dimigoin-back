@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, TypeValues, GradeType, Type } from "src/common/types";
+import { GradeValues, TypeValues, GradeType, Type } from "src/lib/types";
 
 export type EventDocument = HydratedDocument<Event>;
 

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument, Types } from "mongoose";
 
-import { RateLimitTypeValues } from "../common";
+import { RateLimitTypeValues } from "src/lib";
 
 import { Student } from "./student.schema";
 

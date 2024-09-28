@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { StatusValues, StatusType } from "src/common";
+import { StatusValues, StatusType } from "src/lib";
 
 import { Stay, Student } from "src/schemas";
 

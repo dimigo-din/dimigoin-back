@@ -2,9 +2,9 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import importToArray from "import-to-array";
 import * as moment from "moment-timezone";
 
-import { AuthModule } from "src/auth";
+import { DIMIEssentialModules, DIMILoggerMiddleware } from "src/lib";
 
-import { DIMIEssentialModules, DIMILoggerMiddleware } from "src/common";
+import { AuthModule } from "src/auth";
 
 import * as routes from "src/routes";
 

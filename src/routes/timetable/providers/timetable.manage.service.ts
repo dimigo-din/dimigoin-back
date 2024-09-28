@@ -5,8 +5,8 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import moment from "moment";
 import { Model } from "mongoose";
 
-import { GradeValues, ClassValues } from "src/common/types";
-import { momentToStringDate } from "src/common/utils";
+import { GradeValues, ClassValues } from "src/lib/types";
+import { momentToStringDate } from "src/lib/utils";
 
 import { Timetable, TimetableDocument } from "src/schemas";
 

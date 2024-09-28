@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, GenderValues, GradeType, GenderType } from "src/common";
+import { GradeValues, GenderValues, GradeType, GenderType } from "src/lib";
 
 import { Laundry } from "src/schemas";
 

@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import { GroupDocument } from "src/schemas";
 

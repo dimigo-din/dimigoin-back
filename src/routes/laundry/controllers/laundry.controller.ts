@@ -5,13 +5,14 @@ import {
   Post,
   Delete,
   Req,
+  Param,
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import {
   StudentDocument,
@@ -87,15 +88,14 @@ export class LaundryController {
       studentOnly: true,
     }),
   )
-  @Delete()
+  @Delete("/:laundryId")
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   async cancelLaundry(
     @Req() req: Request,
+    @Param("laundryId") laundryId: string,
   ): Promise<LaundryApplicationDocument> {
-    const laundryApplication = await this.laundryService.cancelLaundry(
+    const allLaundryApplication = await this.laundryService.cancelLaundry(
       req.user as StudentDocument,
     );
-
-    return laundryApplication;
   }
 }

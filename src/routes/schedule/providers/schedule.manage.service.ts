@@ -6,7 +6,7 @@ import moment from "moment";
 import { Model } from "mongoose";
 import ical from "node-ical";
 
-import { momentToStringDateTime } from "src/common/utils";
+import { momentToStringDateTime } from "src/lib/utils";
 
 import { Schedule, ScheduleDocument } from "src/schemas";
 

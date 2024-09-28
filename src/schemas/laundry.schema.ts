@@ -9,7 +9,7 @@ import {
   PositionType,
   LaundryValues,
   LaundryType,
-} from "src/common";
+} from "src/lib";
 export type LaundryDocument = HydratedDocument<Laundry>;
 
 const options: SchemaOptions = {

@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { Observable, catchError, throwError } from "rxjs";
 
-import { globalOpcode } from "src/common/opcode";
+import { globalOpcode } from "src/lib/opcode";
 import target from "src/resources/target.json";
 
 @Injectable()

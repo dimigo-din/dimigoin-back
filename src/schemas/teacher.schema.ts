@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GenderValues, GenderType } from "src/common/types";
+import { GenderValues, GenderType } from "src/lib/types";
 
 export type TeacherDocument = HydratedDocument<Teacher>;
 

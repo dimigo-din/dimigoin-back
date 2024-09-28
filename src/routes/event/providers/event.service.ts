@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { GradeValues } from "src/common/types";
+import { GradeValues } from "src/lib/types";
 import { StayManageService } from "src/routes/stay/providers";
 
 import { Event, EventDocument } from "src/schemas";

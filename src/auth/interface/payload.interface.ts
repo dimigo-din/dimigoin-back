@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-import { GradeType, ClassType, GenderType } from "src/common/types";
+import { GradeType, ClassType, GenderType } from "src/lib/types";
 
 export interface DIMIJwtPayload {
   _id: Types.ObjectId;

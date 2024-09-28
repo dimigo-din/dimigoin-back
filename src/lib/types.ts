@@ -1,7 +1,7 @@
 export const GradeValues = [1, 2, 3] as const;
 export const ClassValues = [1, 2, 3, 4, 5, 6] as const;
-export const GenderValues = ["M", "F"] as const;
-export const PositionValues = ["L", "M", "R", "-"] as const; //
+export const GenderValues = ["M", "F"] as const; // 남자, 여자
+export const PositionValues = ["L", "M", "R", "-"] as const; // Left, Right, Middle
 export const StatusValues = ["A", "R", "W"] as const; // Approved, Rejected, Waiting
 export const AfterschoolTimeValues = [
   "AS1", // 방과후 1타임
@@ -13,14 +13,15 @@ export const AfterschoolTimeValues = [
 ] as const;
 export const TypeValues = [0, 1] as const;
 export const ScheduleTypeValues = [
-  "exam",
-  "event",
-  "home",
-  "stay",
-  "vacation",
+  // 밴드 iCal 기준
+  "exam", // 각종시험
+  "event", // 각종행사
+  "home", // 전체귀가
+  "stay", // 전체잔류
+  "vacation", // 방학
 ] as const;
 
-export const LaundryValues = ["washer", "dryer"] as const;
+export const LaundryValues = ["washer", "dryer"] as const; // washer는 세탁기, dryer는 건조기
 
 const SeatNameValues = [
   "A",

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, ClassValues, GradeType, ClassType } from "src/common";
+import { GradeValues, ClassValues, GradeType, ClassType } from "src/lib";
 
 export type TimetableDocument = HydratedDocument<Timetable>;
 

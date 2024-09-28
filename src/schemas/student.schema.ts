@@ -9,7 +9,7 @@ import {
   GradeType,
   ClassType,
   GenderType,
-} from "src/common";
+} from "src/lib";
 
 export type StudentDocument = HydratedDocument<Student>;
 

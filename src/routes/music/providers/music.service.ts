@@ -5,7 +5,8 @@ import moment from "moment-timezone";
 import { Model } from "mongoose";
 import youtubeSearch from "youtube-search";
 
-import { RateLimitType } from "../../../common";
+import { RateLimitType } from "src/lib";
+
 import {
   MusicList,
   MusicListDocument,

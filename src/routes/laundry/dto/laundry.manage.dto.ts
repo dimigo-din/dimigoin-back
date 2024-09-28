@@ -18,7 +18,7 @@ import {
   PositionType,
   LaundryValues,
   LaundryType,
-} from "src/common/types";
+} from "src/lib/types";
 
 export class CreateLaundryDto {
   @ApiProperty()

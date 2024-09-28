@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { ScheduleTypeValues, ScheduleType } from "src/common";
+import { ScheduleTypeValues, ScheduleType } from "src/lib";
 
 export type ScheduleDocument = HydratedDocument<Schedule>;
 

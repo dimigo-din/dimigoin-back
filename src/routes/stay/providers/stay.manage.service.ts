@@ -9,8 +9,10 @@ import {
   stringDateToMoment,
   stringDateTimeToMoment,
   momentToStringDate,
-} from "src/common/utils";
+} from "src/lib/utils";
 import { UserManageService } from "src/routes/user/providers";
+
+import { GradeType, KorWeekDayValues } from "src/lib";
 
 import {
   Stay,
@@ -22,7 +24,6 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { GradeType, KorWeekDayValues } from "../../../common";
 import { ApplyStayDto, ApplyStayOutgoDto, CreateStayDto } from "../dto";
 
 @Injectable()

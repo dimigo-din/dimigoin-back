@@ -13,7 +13,7 @@ import { Request } from "express";
 import { Types } from "mongoose";
 
 import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import {
   StayDocument,

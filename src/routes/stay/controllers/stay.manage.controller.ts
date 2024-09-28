@@ -16,9 +16,9 @@ import { ApiTags, ApiOperation, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { ObjectIdPipe } from "src/common/pipes";
-import { GenderType, GradeType } from "src/common/types";
-import { createOpertation } from "src/common/utils";
+import { ObjectIdPipe } from "src/lib/pipes";
+import { GenderType, GradeType } from "src/lib/types";
+import { createOpertation } from "src/lib/utils";
 
 import { Stay, StayApplication, StayOutgoDocument } from "src/schemas";
 

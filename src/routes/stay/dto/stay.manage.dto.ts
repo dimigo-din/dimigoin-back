@@ -11,8 +11,8 @@ import {
   IsNumber,
 } from "class-validator";
 
-import { GradeType, SeatType } from "src/common/types";
-import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
+import { GradeType, SeatType } from "src/lib/types";
+import { IsCustomDate, IsCustomDateTime } from "src/lib/validators";
 
 export class StayDateDto {
   @ApiProperty()

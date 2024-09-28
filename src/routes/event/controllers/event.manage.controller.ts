@@ -10,7 +10,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import { Event } from "src/schemas";
 

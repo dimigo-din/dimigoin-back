@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { SeatValues, SeatType } from "src/common";
+import { SeatValues, SeatType } from "src/lib";
 
 export type StayDocument = HydratedDocument<Stay>;
 
