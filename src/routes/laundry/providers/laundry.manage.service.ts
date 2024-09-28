@@ -53,7 +53,7 @@ export class LaundryManageService {
   async updateLaundryTimetable(
     data: CreateLaundryTimetableDto,
   ): Promise<LaundryTimetableDocument> {
-    const laundryTimetable = this.laundryTimetableModel.findOneAndUpdate(
+    return this.laundryTimetableModel.findOneAndUpdate(
       {
         laundry: data.laundryId,
         isStaySchedule: data.isStaySchedule,
@@ -66,8 +66,6 @@ export class LaundryManageService {
         new: true,
       },
     );
-
-    return laundryTimetable;
   }
 
   async getAllLaundryTimetables(): Promise<LaundryTimetableDocument[]> {
@@ -75,15 +73,15 @@ export class LaundryManageService {
 
     return await this.laundryTimetableModel
       .find({ isStaySchedule: isTodayStay })
-      .populate("laundry")
-      .populate("student");
+      .populate({ path: "laundry" })
+      .populate({ path: "sequence.student" });
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async deleteLaundryApplications() {
     return await this.laundryTimetableModel.updateMany(
       {},
-      { $set: { "sequence.$[].student": null } },
+      { $set: { "sequence.$[].applicant": null } },
     );
   }
 }

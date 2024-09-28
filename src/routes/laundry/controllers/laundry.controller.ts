@@ -8,15 +8,16 @@ import {
   Param,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger";
 import { Request } from "express";
+import { Types } from "mongoose";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/lib/utils";
 
 import { StudentDocument, LaundryTimetableDocument } from "src/schemas";
 
-import { GetLaundriesResponse, ApplyLaundryDto } from "../dto";
+import { ApplyLaundryDto } from "../dto";
 import { LaundryService } from "../providers";
 
 @ApiTags("Laundry")
@@ -26,34 +27,18 @@ export class LaundryController {
 
   @ApiOperation(
     createOpertation({
-      name: "세탁기 및 건조기 가져오기",
-      description: "현재 사용 가능한 세탁기와 건조기의 신청 정보를 반환합니다.",
+      name: "세탁기 및 건조기 시간표 가져오기",
+      description:
+        "현재 사용 가능한 세탁기와 건조기의 시간표 (신청 정보 포함) 을 반환합니다.",
       studentOnly: true,
     }),
   )
-  @ApiResponse({
-    status: 200,
-    type: GetLaundriesResponse,
-  })
   @Get()
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
-  async getLaundries(@Req() req: Request): Promise<{
-    timetables: LaundryTimetableDocument[];
-    applications: LaundryApplicationDocument[];
-  }> {
-    const laundryTimetables = await this.laundryService.getLaundryTimetables(
+  async getLaundries(@Req() req: Request): Promise<LaundryTimetableDocument[]> {
+    return await this.laundryService.getAllLaundryTimetable(
       req.user as StudentDocument,
     );
-
-    const laundryApplications =
-      await this.laundryService.getLaundryApplications(
-        req.user as StudentDocument,
-      );
-
-    return {
-      timetables: laundryTimetables,
-      applications: laundryApplications,
-    };
   }
 
   @ApiOperation(
@@ -65,13 +50,10 @@ export class LaundryController {
   )
   @Post()
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
-  async applyLaundry(
-    @Req() req: Request,
-    @Body() data: ApplyLaundryDto,
-  ): Promise<LaundryApplicationDocument> {
+  async applyLaundry(@Req() req: Request, @Body() body: ApplyLaundryDto) {
     return await this.laundryService.applyLaundry(
       req.user as StudentDocument,
-      data,
+      body,
     );
   }
 
@@ -79,7 +61,7 @@ export class LaundryController {
     createOpertation({
       name: "세탁기 및 건조기 신청 취소",
       description:
-        "세탁기 혹은 건조기 신청을 취소합니다. 취소하려는 신청 Application의 ObjectId를 필요로 합니다.",
+        "세탁기 혹은 건조기 신청을 취소합니다. 취소하려는 신청 Application의 ObjectId (sequence.$[]._id) 를 필요로 합니다.",
       studentOnly: true,
     }),
   )
@@ -94,8 +76,8 @@ export class LaundryController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   async cancelLaundry(
     @Req() req: Request,
-    @Param("laundryApplicationId") laundryApplicationId: string,
-  ): Promise<LaundryApplicationDocument> {
+    @Param("laundryApplicationId") laundryApplicationId: Types.ObjectId,
+  ) {
     return await this.laundryService.cancelLaundry(
       req.user as StudentDocument,
       laundryApplicationId,

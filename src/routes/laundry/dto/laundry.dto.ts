@@ -1,23 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsIn, IsString } from "class-validator";
 import { Types } from "mongoose";
 
-import { LaundryTimetable, LaundryApplication } from "src/schemas";
-
-export class GetLaundriesResponse {
-  @ApiProperty({
-    type: [LaundryTimetable],
-  })
-  timetables: LaundryTimetable[];
-
-  @ApiProperty({
-    type: [LaundryApplication],
-  })
-  applications: LaundryApplication[];
-}
+import { LaundryType, LaundryValues } from "src/lib";
 
 export class ApplyLaundryDto {
   @ApiProperty()
   @IsString()
   laundryTimetableId: Types.ObjectId;
+
+  @ApiProperty()
+  @IsString()
+  @IsIn(LaundryValues)
+  laundryType: LaundryType;
 }

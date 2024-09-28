@@ -4,7 +4,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 import { GradeValues, GenderValues, GradeType, GenderType } from "src/lib";
 
-import { Laundry } from "src/schemas";
+import { Laundry, Student } from "src/schemas";
 
 export type LaundryTimetableDocument = HydratedDocument<LaundryTimetable>;
 
@@ -14,9 +14,15 @@ const options: SchemaOptions = {
   virtuals: true,
 };
 
+@ApiExtraModels(Student)
 @Schema(options)
 class LaundryTimetableSequence {
   @ApiProperty()
+  _id: Types.ObjectId;
+
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(Student) }],
+  })
   @Prop({
     type: Types.ObjectId,
     ref: "Student",

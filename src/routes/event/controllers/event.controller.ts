@@ -30,7 +30,7 @@ export class EventController {
   @Get()
   async getEvent(@Req() req: Request): Promise<{
     events: EventDocument[];
-    type: number;
+    isStaySchedule: boolean;
   }> {
     const student = req.user as StudentDocument;
 

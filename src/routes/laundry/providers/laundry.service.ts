@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 import { StayManageService } from "src/routes/stay/providers";
 
@@ -30,123 +30,103 @@ export class LaundryService {
     private stayManageService: StayManageService,
   ) {}
 
-  async getLaundryTimetables(
+  async getAllLaundryTimetable(
     student: StudentDocument,
   ): Promise<LaundryTimetableDocument[]> {
-    const type = await this.stayManageService.isStay();
+    const isTodayStay = await this.stayManageService.isStay();
 
-    const laundries = await this.laundryTimetableModel
+    return await this.laundryTimetableModel
       .find({
         gender: student.gender,
         grade: student.grade,
-        type: type,
+        isStaySchedule: isTodayStay,
       })
-      .populate("laundry");
-
-    return laundries;
+      .populate({ path: "laundry" })
+      .populate({ path: "sequence.student" });
   }
 
-  async getLaundryApplications(
-    student: StudentDocument,
-  ): Promise<LaundryApplicationDocument[]> {
-    const laundryTimetableIds = (await this.getLaundryTimetables(student)).map(
-      (laundry) => laundry._id,
+  async applyLaundry(student: StudentDocument, body: ApplyLaundryDto) {
+    if (moment().hour() < 8)
+      throw new HttpException("세탁 신청은 오전 8시부터 가능합니다.", 403);
+
+    const isTodayStay = await this.stayManageService.isStay(); // 오늘이 잔류 시간표인가?
+
+    const checkTimetableExists = await this.laundryTimetableModel.findOne(
+      // 일단 시간표가 valid한지 먼저 확인
+      {
+        gender: student.gender,
+        grade: student.grade,
+        isStaySchedule: isTodayStay,
+        sequence: {
+          $elemMatch: { _id: body.laundryTimetableId },
+        },
+      },
+      { "sequence.$": 1 },
     );
 
-    const laundryApplications = await this.laundryApplicationModel
-      .find({
-        timetable: { $in: laundryTimetableIds },
-      })
-      .populate({
-        path: "timetable",
-        populate: {
-          path: "laundry",
+    if (!checkTimetableExists)
+      throw new HttpException("신청 가능한 세탁기 시간표가 아닙니다.", 404); // 없으면 퉤
+
+    const checkStudentAlreadyApplied = await this.laundryTimetableModel // 신청하려는 학생이 이미 건조기 or 세탁기를 신청했는지 확인
+      .findOne({
+        "laundry.laundryType": body.laundryType,
+        gender: student.gender,
+        grade: student.grade,
+        isStaySchedule: isTodayStay,
+        sequence: {
+          student: student._id,
         },
       })
-      .populate({ path: "student", select: "name grade class number" });
+      .populate<{ laundry: Laundry }>({ path: "laundry" });
 
-    return laundryApplications;
-  }
+    if (checkStudentAlreadyApplied)
+      // 있으면 퉤
+      throw new HttpException(
+        `이미 신청한 ${
+          body.laundryType == "washer" ? "세탁기" : "건조기"
+        }가 있습니다.`,
+        403,
+      );
 
-  async applyLaundry(
-    student: StudentDocument,
-    data: ApplyLaundryDto,
-  ): Promise<LaundryApplicationDocument> {
-    if (moment().hour() < 8)
-      throw new HttpException("세탁 신청은 8시부터 가능합니다.", 403);
-
-    const laundry = await this.laundryManageService.getLaundry(data.laundryId);
-    const type = await this.stayManageService.isStay();
-
-    const laundryTimetable = await this.laundryTimetableModel.findOne({
-      laundry: laundry._id,
-      gender: student.gender,
-      grade: student.grade,
-      type: type,
-    });
-    if (!laundryTimetable)
-      throw new HttpException("신청 가능한 세탁기가 아닙니다.", 404);
-    if (data.time > laundryTimetable.sequence.length)
-      throw new HttpException("신청 가능한 시간이 아닙니다.", 404);
-
-    const existingLaundryApplication =
-      await this.laundryApplicationModel.findOne({
-        timetable: laundryTimetable._id,
-        time: data.time,
-      });
-    if (existingLaundryApplication)
+    if (checkTimetableExists.sequence[0].applicant)
+      // valid한 시간표는 맞는데 누가 이미 신청했네? 퉤
       throw new HttpException("이미 신청된 시간입니다.", 403);
 
-    const existingStudentLaundryApplication =
-      await this.laundryApplicationModel.find({
-        student: student._id,
-      });
-    if (existingStudentLaundryApplication.length === 1) {
-      const timetable = await this.laundryTimetableModel.findById(
-        existingStudentLaundryApplication[0].timetable,
-      );
-      const userTimetable = await this.laundryTimetableModel.findById(
-        laundryTimetable._id,
-      );
-      if (timetable) {
-        const laundry = await this.laundryModel.findById(timetable.laundry);
-        const userLaundry = await this.laundryModel.findById(
-          userTimetable.laundry,
-        );
-        if (laundry) {
-          if (String(laundry.floor).length === String(userLaundry.floor).length)
-            throw new HttpException("이미 신청한 세탁이 있습니다.", 403);
-        }
-      }
-    }
-    if (existingStudentLaundryApplication.length === 2) {
-      throw new HttpException("이미 신청한 세탁이 있습니다.", 403);
-    }
-
-    const laundryApplication = new this.laundryApplicationModel({
-      timetable: laundryTimetable._id,
-      student: student._id,
-      time: data.time,
-    });
-
-    await laundryApplication.save();
-
-    return laundryApplication;
+    return await this.laundryTimetableModel.updateOne(
+      // 발뻗잠
+      {
+        sequence: {
+          $elemMatch: {
+            _id: body.laundryTimetableId,
+          },
+        },
+      },
+      {
+        $set: {
+          "sequence.$.applicant": student._id,
+        },
+      },
+    );
   }
 
   async cancelLaundry(
     student: StudentDocument,
-    laundryApplicationId: string,
-  ): Promise<LaundryApplicationDocument> {
-    const laundryApplication =
-      await this.laundryApplicationModel.findOneAndDelete({
-        student: student._id,
-        id: laundryApplicationId,
-      });
-
-    if (!laundryApplication)
-      throw new HttpException("신청한 세탁이 없습니다.", 404);
-
-    return laundryApplication;
+    laundryApplicationId: Types.ObjectId,
+  ) {
+    return await this.laundryTimetableModel.updateOne(
+      {
+        sequence: {
+          $elemMatch: {
+            _id: laundryApplicationId,
+            applicant: student._id,
+          },
+        },
+      },
+      {
+        $set: {
+          "sequence.$.applicant": null,
+        },
+      },
+    );
   }
 }
