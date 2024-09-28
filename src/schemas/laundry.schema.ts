@@ -26,7 +26,7 @@ export class Laundry {
     type: String,
     enum: LaundryValues,
   })
-  deviceType: LaundryType;
+  laundryType: LaundryType;
 
   @ApiProperty()
   @Prop({

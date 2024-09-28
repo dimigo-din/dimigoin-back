@@ -14,6 +14,23 @@ const options: SchemaOptions = {
   virtuals: true,
 };
 
+@Schema(options)
+class LaundryTimetableSequence {
+  @ApiProperty()
+  @Prop({
+    type: Types.ObjectId,
+    ref: "Student",
+  })
+  applicant: Types.ObjectId;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+  })
+  timetable: string;
+}
+
 @ApiExtraModels(Laundry)
 @Schema(options)
 export class LaundryTimetable {
@@ -33,9 +50,9 @@ export class LaundryTimetable {
   @ApiProperty()
   @Prop({
     required: true,
-    type: [String],
+    type: [LaundryTimetableSequence],
   })
-  sequence: string[];
+  sequence: LaundryTimetableSequence[];
 
   @ApiProperty()
   @Prop({

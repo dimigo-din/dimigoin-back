@@ -18,18 +18,18 @@ export class EventService {
 
   async getEvents(grade: keyof typeof GradeValues): Promise<{
     events: EventDocument[];
-    type: number;
+    isStaySchedule: boolean;
   }> {
-    const isStay = await this.stayManageService.isStay();
+    const isTodayStay = await this.stayManageService.isStay();
 
     const events = await this.eventModel.find({
-      type: isStay,
+      isStaySchedule: isTodayStay,
       grade: grade,
     });
 
     return {
       events,
-      type: isStay,
+      isStaySchedule: isTodayStay,
     };
   }
 }

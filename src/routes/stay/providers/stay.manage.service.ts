@@ -463,7 +463,7 @@ export class StayManageService {
     return this.stayOutgoModel.findById(stayOutgoId).populate("student");
   }
 
-  async isStay(): Promise<number> {
+  async isStay(): Promise<boolean> {
     const today = momentToStringDate(moment());
     const stay = await this.stayModel.findOne({
       dates: {
@@ -473,7 +473,7 @@ export class StayManageService {
       },
     });
 
-    return stay ? 1 : 0;
+    return stay ? true : false;
   }
 
   addSheet(wb: WorkSheet, grade, applicationsRaw: any[], outgos: any[], day) {

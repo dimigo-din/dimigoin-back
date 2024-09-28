@@ -11,7 +11,7 @@ export const AfterschoolTimeValues = [
   "WE1", // 주말 1타임
   "WE2", // 주말 2타임
 ] as const;
-export const TypeValues = [0, 1] as const;
+
 export const ScheduleTypeValues = [
   // 밴드 iCal 기준
   "exam", // 각종시험
@@ -54,7 +54,6 @@ export type GenderType = (typeof GenderValues)[number];
 export type PositionType = (typeof PositionValues)[number];
 export type StatusType = (typeof StatusValues)[number];
 export type AfterschooltimeType = (typeof AfterschoolTimeValues)[number];
-export type Type = (typeof TypeValues)[number];
 export type ScheduleType = (typeof ScheduleTypeValues)[number];
 export type SeatType = (typeof SeatValues)[number];
 export type RateLimitType = (typeof RateLimitTypeValues)[number];

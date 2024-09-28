@@ -14,11 +14,7 @@ import { Request } from "express";
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/lib/utils";
 
-import {
-  StudentDocument,
-  LaundryTimetableDocument,
-  LaundryApplicationDocument,
-} from "src/schemas";
+import { StudentDocument, LaundryTimetableDocument } from "src/schemas";
 
 import { GetLaundriesResponse, ApplyLaundryDto } from "../dto";
 import { LaundryService } from "../providers";

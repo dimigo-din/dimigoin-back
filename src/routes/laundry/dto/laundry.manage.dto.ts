@@ -24,7 +24,7 @@ export class CreateLaundryDto {
   @ApiProperty()
   @IsString()
   @IsIn(LaundryValues)
-  deviceType: LaundryType;
+  laundryType: LaundryType;
 
   @ApiProperty()
   @IsString()

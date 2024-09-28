@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, TypeValues, GradeType, Type } from "src/lib/types";
+import { GradeValues, GradeType } from "src/lib/types";
 
 export type EventDocument = HydratedDocument<Event>;
 
@@ -56,10 +56,9 @@ export class Event {
   @ApiProperty()
   @Prop({
     required: true,
-    type: Number,
-    enum: TypeValues,
+    type: Boolean,
   })
-  type: Type;
+  isStaySchedule: boolean;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

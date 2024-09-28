@@ -10,8 +10,6 @@ import {
   LaundryDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
-  LaundryApplication,
-  LaundryApplicationDocument,
   StudentDocument,
 } from "src/schemas";
 
@@ -27,9 +25,6 @@ export class LaundryService {
 
     @InjectModel(LaundryTimetable.name)
     private laundryTimetableModel: Model<LaundryTimetableDocument>,
-
-    @InjectModel(LaundryApplication.name)
-    private laundryApplicationModel: Model<LaundryApplicationDocument>,
 
     private laundryManageService: LaundryManageService,
     private stayManageService: StayManageService,

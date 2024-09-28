@@ -12,11 +12,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { createOpertation } from "src/lib/utils";
 
-import {
-  LaundryDocument,
-  LaundryApplicationDocument,
-  LaundryTimetableDocument,
-} from "src/schemas";
+import { LaundryDocument, LaundryTimetableDocument } from "src/schemas";
 
 import { CreateLaundryDto, CreateLaundryTimetableDto } from "../dto";
 import { LaundryManageService } from "../providers";
@@ -35,10 +31,18 @@ export class LaundryManageController {
   )
   @Get()
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  async getLaundries(): Promise<LaundryDocument[]> {
-    const laundries = await this.laundryManageService.getLaundries();
+  async getLaundries(): Promise<{
+    laundries: LaundryDocument[];
+    timetables: LaundryTimetableDocument[];
+  }> {
+    const laundries = await this.laundryManageService.getAllLaundry();
+    const timetables =
+      await this.laundryManageService.getAllLaundryTimetables();
 
-    return laundries;
+    return {
+      laundries,
+      timetables,
+    };
   }
 
   @ApiOperation(
@@ -65,11 +69,8 @@ export class LaundryManageController {
   )
   @Delete()
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  async deleteLaundryApplications(): Promise<LaundryApplicationDocument[]> {
-    const response =
-      await this.laundryManageService.deleteLaundryApplications();
-
-    return response;
+  async deleteLaundryApplications() {
+    return await this.laundryManageService.deleteLaundryApplications();
   }
 
   @ApiOperation(
@@ -81,7 +82,7 @@ export class LaundryManageController {
   @Get("/timetable")
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   async getLaundryTimetable() {
-    return this.laundryManageService.getLaundryTimetables();
+    return this.laundryManageService.getAllLaundryTimetables();
   }
 
   @ApiOperation(
@@ -99,17 +100,5 @@ export class LaundryManageController {
       await this.laundryManageService.updateLaundryTimetable(data);
 
     return laundryTimetable;
-  }
-
-  @ApiOperation(
-    createOpertation({
-      name: "모든 세탁기 및 건조기 신청 현황 불러오기",
-      description: "모든 세탁기 및 건조기의 신청 현황을 불러옵니다.",
-    }),
-  )
-  @Get("/application")
-  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
-  async getLaundryApplications() {
-    return this.laundryManageService.getLaundryApplications();
   }
 }
