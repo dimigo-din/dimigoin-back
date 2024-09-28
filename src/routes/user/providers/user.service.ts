@@ -28,7 +28,7 @@ export class UserService {
   ) {}
 
   async getApplication(student: StudentDocument): Promise<{
-    laundry: LaundryApplicationDocument | null;
+    laundry: LaundryApplicationDocument[] | null;
     frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;

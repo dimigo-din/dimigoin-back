@@ -8,7 +8,7 @@ import {
   Param,
   UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
@@ -73,29 +73,36 @@ export class LaundryController {
     @Req() req: Request,
     @Body() data: ApplyLaundryDto,
   ): Promise<LaundryApplicationDocument> {
-    const laundryApplication = await this.laundryService.applyLaundry(
+    return await this.laundryService.applyLaundry(
       req.user as StudentDocument,
       data,
     );
-
-    return laundryApplication;
   }
 
   @ApiOperation(
     createOpertation({
       name: "세탁기 및 건조기 신청 취소",
-      description: "세탁기 혹은 건조기 신청을 취소합니다.",
+      description:
+        "세탁기 혹은 건조기 신청을 취소합니다. 취소하려는 신청 Application의 ObjectId를 필요로 합니다.",
       studentOnly: true,
     }),
   )
-  @Delete("/:laundryId")
+  @ApiParam({
+    required: true,
+    name: "laundryApplicationId",
+    description:
+      "세탁 혹은 건조 신청 Application (LaundryApplication) 의 ObjectId",
+    type: String,
+  })
+  @Delete("/:laundryApplicationId")
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   async cancelLaundry(
     @Req() req: Request,
-    @Param("laundryId") laundryId: string,
+    @Param("laundryApplicationId") laundryApplicationId: string,
   ): Promise<LaundryApplicationDocument> {
-    const allLaundryApplication = await this.laundryService.cancelLaundry(
+    return await this.laundryService.cancelLaundry(
       req.user as StudentDocument,
+      laundryApplicationId,
     );
   }
 }

@@ -141,12 +141,14 @@ export class LaundryService {
 
   async cancelLaundry(
     student: StudentDocument,
-  ): Promise<LaundryApplicationDocument[]> {
-    const laundryApplication = await this.laundryApplicationModel
-      .find({
+    laundryApplicationId: string,
+  ): Promise<LaundryApplicationDocument> {
+    const laundryApplication =
+      await this.laundryApplicationModel.findOneAndDelete({
         student: student._id,
-      })
-      .exec();
+        id: laundryApplicationId,
+      });
+
     if (!laundryApplication)
       throw new HttpException("신청한 세탁이 없습니다.", 404);
 
