@@ -19,9 +19,5 @@ export class GetLaundriesResponse {
 export class ApplyLaundryDto {
   @ApiProperty()
   @IsString()
-  laundryId: Types.ObjectId;
-
-  @ApiProperty()
-  @IsNumber()
-  time: number;
+  laundryTimetableId: Types.ObjectId;
 }
