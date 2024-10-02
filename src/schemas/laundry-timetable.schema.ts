@@ -16,7 +16,7 @@ const options: SchemaOptions = {
 
 @ApiExtraModels(Student)
 @Schema(options)
-class LaundryTimetableSequence {
+export class LaundryTimetableSequence {
   @ApiProperty()
   _id: Types.ObjectId;
 

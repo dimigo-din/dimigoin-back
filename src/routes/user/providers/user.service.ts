@@ -9,6 +9,7 @@ import {
   StayApplicationDocument,
   StayOutgoDocument,
   FrigoApplicationDocument,
+  LaundryTimetableSequence,
 } from "src/schemas";
 
 @Injectable()
@@ -25,7 +26,7 @@ export class UserService {
   ) {}
 
   async getApplication(student: StudentDocument): Promise<{
-    laundry: LaundryApplicationDocument[] | null;
+    laundry: LaundryTimetableSequence[] | null;
     frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;
@@ -41,10 +42,12 @@ export class UserService {
         )
       : null;
 
-    if (stayApplication) {
-      const stayOutgos = "송하영 예쁘다";
-      // todo: 대충 외출 가져오는 로직
-    }
+    const stayOutgoApplication = stayApplication
+      ? await this.stayManageService.getStudentStayOutgos(
+          student._id,
+          currentStay._id,
+        )
+      : null;
 
     const currentFrigo = await this.frigoManageService
       .getCurrentFrigo()
@@ -57,10 +60,14 @@ export class UserService {
         )
       : null;
 
+    const laundryApplication =
+      await this.laundryManageService.getStudentLaundryApplication(student._id);
+
     return {
       stay: stayApplication,
+      stayOutgos: stayOutgoApplication,
       frigo: frigoApplication,
-      laundry: laundry ? laundry : null,
+      laundry: laundryApplication ? laundryApplication : null,
     };
   }
 }

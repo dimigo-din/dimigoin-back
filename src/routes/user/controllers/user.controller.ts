@@ -10,6 +10,7 @@ import {
   StayApplicationDocument,
   StayOutgoDocument,
   FrigoApplicationDocument,
+  LaundryTimetableSequence,
 } from "src/schemas";
 
 import { GetApplicationResponse } from "../dto";
@@ -34,7 +35,7 @@ export class UserController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getApplication(@Req() req: Request): Promise<{
-    laundry: LaundryApplicationDocument[] | null;
+    laundry: LaundryTimetableSequence[] | null;
     frigo: FrigoApplicationDocument | null;
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;

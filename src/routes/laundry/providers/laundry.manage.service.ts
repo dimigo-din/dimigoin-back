@@ -8,6 +8,7 @@ import {
   LaundryDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
+  LaundryTimetableSequence,
 } from "src/schemas";
 
 import { StayManageService } from "../../stay/providers";
@@ -31,6 +32,20 @@ export class LaundryManageService {
       .sort({ gender: -1 })
       .sort({ floor: 1 })
       .sort({ position: 1 });
+  }
+
+  async getStudentLaundryApplication(
+    studentId: Types.ObjectId,
+  ): Promise<LaundryTimetableSequence[]> {
+    const applicationsUnfiltered = await this.laundryTimetableModel.find(
+      {
+        sequence: {
+          $elemMatch: { applicant: studentId },
+        },
+      },
+      { "sequence.$": 1 },
+    );
+    return applicationsUnfiltered.map((item) => item.sequence[0]);
   }
 
   async getLaundry(laundryId: Types.ObjectId): Promise<LaundryDocument> {

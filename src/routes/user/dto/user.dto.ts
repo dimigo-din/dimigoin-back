@@ -5,14 +5,14 @@ import {
   StayApplication,
   StayOutgo,
   FrigoApplication,
-  LaundryApplication,
+  LaundryTimetableSequence,
 } from "src/schemas";
 
 export class GetApplicationResponse {
   @ApiProperty({
-    type: LaundryApplication,
+    type: [LaundryTimetableSequence],
   })
-  laundry: LaundryApplication;
+  laundry: LaundryTimetableSequence[];
 
   @ApiProperty({
     type: FrigoApplication,
