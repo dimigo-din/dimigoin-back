@@ -17,7 +17,6 @@ export * from "./journal.schema";
 export * from "./meal-timetable.schema";
 export * from "./laundry.schema";
 export * from "./laundry-timetable.schema";
-export * from "./laundry-application.schema";
 export * from "./musicList.schema";
 export * from "./musicVote.schema";
 export * from "./ratelimit.schema";
