@@ -37,6 +37,10 @@ export class LaundryTimetableSequence {
   timetable: string;
 }
 
+export const LaundryTimetableSequenceSchema = SchemaFactory.createForClass(
+  LaundryTimetableSequence,
+);
+
 @ApiExtraModels(Laundry)
 @Schema(options)
 export class LaundryTimetable {
@@ -56,7 +60,7 @@ export class LaundryTimetable {
   @ApiProperty()
   @Prop({
     required: true,
-    type: [LaundryTimetableSequence],
+    type: [LaundryTimetableSequenceSchema],
   })
   sequence: LaundryTimetableSequence[];
 
