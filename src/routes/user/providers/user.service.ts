@@ -6,12 +6,9 @@ import { StayManageService } from "src/routes/stay/providers";
 
 import {
   StudentDocument,
-  StayDocument,
   StayApplicationDocument,
   StayOutgoDocument,
-  FrigoDocument,
   FrigoApplicationDocument,
-  LaundryApplicationDocument,
 } from "src/schemas";
 
 @Injectable()
@@ -33,80 +30,36 @@ export class UserService {
     stay: StayApplicationDocument | null;
     stayOutgos: StayOutgoDocument[] | null;
   }> {
-    let currentStayStatus = false;
-    let stayApplicationStatus = false;
-    let stayOutgosStatus = false;
+    const currentStay = await this.stayManageService
+      .getCurrentStay()
+      .catch(() => null);
 
-    let currentStay: StayDocument | null;
-    let stayApplication: StayApplicationDocument | null;
-    let stayOutgos: StayOutgoDocument[] | null;
-
-    try {
-      currentStay = await this.stayManageService.getCurrentStay();
-      currentStayStatus = true;
-    } catch {
-      currentStayStatus = false;
-    }
-
-    if (currentStayStatus)
-      try {
-        stayApplication =
-          await this.stayManageService.getStudentStayApplication(
-            student._id,
-            currentStay._id,
-          );
-        stayApplicationStatus = true;
-      } catch {
-        stayApplicationStatus = false;
-      }
-
-    if (stayApplicationStatus)
-      try {
-        stayOutgos = await this.stayManageService.getStudentStayOutgos(
+    const stayApplication = currentStay
+      ? await this.stayManageService.getStudentStayApplication(
           student._id,
           currentStay._id,
-        );
-        stayOutgosStatus = true;
-      } catch {
-        stayOutgosStatus = false;
-      }
+        )
+      : null;
 
-    let currentFrigoStatus = false;
-    let frigoApplicationStatus = false;
-
-    let currentFrigo: FrigoDocument | null;
-    let frigoApplication: FrigoApplicationDocument | null;
-
-    try {
-      currentFrigo = await this.frigoManageService.getCurrentFrigo();
-      currentFrigoStatus = true;
-    } catch {
-      currentFrigoStatus = false;
+    if (stayApplication) {
+      const stayOutgos = "송하영 예쁘다";
+      // todo: 대충 외출 가져오는 로직
     }
 
-    if (currentFrigoStatus)
-      try {
-        frigoApplication =
-          await this.frigoManageService.getStudentFrigoApplication(
-            student._id,
-            currentFrigo._id,
-          );
-        frigoApplicationStatus = true;
-      } catch {
-        frigoApplicationStatus = false;
-      }
+    const currentFrigo = await this.frigoManageService
+      .getCurrentFrigo()
+      .catch(() => null);
 
-    const laundry =
-      await this.laundryManageService.getStudentLaundryApplication(student._id);
+    const frigoApplication = currentFrigo
+      ? await this.frigoManageService.getStudentFrigoApplication(
+          student._id,
+          currentFrigo._id,
+        )
+      : null;
 
     return {
-      stay: stayApplicationStatus ? stayApplication : null,
-      stayOutgos: stayOutgosStatus
-        ? stayOutgos.length
-          ? stayOutgos
-          : null
-        : null,
-      frigo: frigoApplicationStatus ? frigoApplication : null,
+      stay: stayApplication,
+      frigo: frigoApplication,
       laundry: laundry ? laundry : null,
     };
   }

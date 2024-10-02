@@ -10,7 +10,6 @@ import {
   StayApplicationDocument,
   StayOutgoDocument,
   FrigoApplicationDocument,
-  LaundryApplicationDocument,
 } from "src/schemas";
 
 import { GetApplicationResponse } from "../dto";

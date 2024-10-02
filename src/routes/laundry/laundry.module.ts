@@ -10,8 +10,6 @@ import {
   LaundrySchema,
   LaundryTimetable,
   LaundryTimetableSchema,
-  LaundryApplication,
-  LaundryApplicationSchema,
 } from "src/schemas";
 
 import * as laundryControllers from "./controllers";
@@ -22,10 +20,6 @@ import * as laundryServices from "./providers";
     MongooseModule.forFeature([
       { name: Laundry.name, schema: LaundrySchema },
       { name: LaundryTimetable.name, schema: LaundryTimetableSchema },
-      {
-        name: LaundryApplication.name,
-        schema: LaundryApplicationSchema,
-      },
     ]),
     forwardRef(() => UserModule),
     StayModule,
