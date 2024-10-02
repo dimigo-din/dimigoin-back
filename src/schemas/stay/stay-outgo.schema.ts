@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { StatusValues, StatusType } from "src/lib";
 
-import { Stay, Student } from "src/schemas";
+import { Student } from "../user";
+
+import { Stay } from "./stay.schema";
 
 export type StayOutgoDocument = HydratedDocument<StayOutgo>;
 
@@ -13,7 +15,6 @@ const options: SchemaOptions = {
   versionKey: false,
 };
 
-@ApiExtraModels(Stay, Student)
 @Schema(options)
 export class StayOutgo {
   @ApiProperty()

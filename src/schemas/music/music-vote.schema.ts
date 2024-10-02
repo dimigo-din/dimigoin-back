@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 
-import { MusicList } from "./musicList.schema";
-import { Student } from "./student.schema";
+import { Student } from "../user";
+
+import { MusicList } from "./music-list.schema";
 
 @Schema({ timestamps: false, versionKey: false })
 export class MusicVote {

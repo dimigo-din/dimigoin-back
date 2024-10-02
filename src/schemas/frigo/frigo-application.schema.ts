@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { SeatValues, SeatType } from "src/lib/types";
+import { StatusValues, StatusType } from "src/lib";
 
-import { Stay, Student } from "src/schemas";
+import { Frigo, Student } from "src/schemas";
 
-export type StayApplicationDocument = HydratedDocument<StayApplication>;
+export type FrigoApplicationDocument = HydratedDocument<FrigoApplication>;
 
 const options: SchemaOptions = {
   timestamps: false,
@@ -14,21 +14,20 @@ const options: SchemaOptions = {
   virtuals: true,
 };
 
-@ApiExtraModels(Stay, Student)
 @Schema(options)
-export class StayApplication {
+export class FrigoApplication {
   @ApiProperty()
   _id: Types.ObjectId;
 
   @ApiProperty({
-    oneOf: [{ $ref: getSchemaPath(Stay) }],
+    oneOf: [{ $ref: getSchemaPath(Frigo) }],
   })
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "Stay",
+    ref: "Frigo",
   })
-  stay: Types.ObjectId;
+  frigo: string;
 
   @ApiProperty({
     oneOf: [{ $ref: getSchemaPath(Student) }],
@@ -44,17 +43,17 @@ export class StayApplication {
   @Prop({
     required: true,
     type: String,
-    enum: SeatValues,
   })
-  seat: SeatType;
+  reason: string;
 
   @ApiProperty()
   @Prop({
-    required: false,
+    required: true,
     type: String,
+    enum: StatusValues,
   })
-  reason: string;
+  status: StatusType;
 }
 
-export const StayApplicationSchema =
-  SchemaFactory.createForClass(StayApplication);
+export const FrigoApplicationSchema =
+  SchemaFactory.createForClass(FrigoApplication);

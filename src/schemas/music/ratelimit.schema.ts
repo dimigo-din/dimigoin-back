@@ -3,7 +3,7 @@ import { type HydratedDocument, Types } from "mongoose";
 
 import { RateLimitTypeValues } from "src/lib";
 
-import { Student } from "./student.schema";
+import { Student } from "../user/student.schema";
 
 @Schema({ timestamps: false, versionKey: false })
 export class RateLimit {

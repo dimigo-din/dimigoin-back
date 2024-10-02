@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { Teacher } from "src/schemas";
@@ -12,7 +12,6 @@ const options: SchemaOptions = {
   virtuals: true,
 };
 
-@ApiExtraModels(Teacher)
 @Schema(options)
 export class TeacherPassword {
   @ApiProperty()

@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { ApiProperty, ApiExtraModels, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
 import { GradeValues, GenderValues, GradeType, GenderType } from "src/lib";
 
-import { Laundry, Student } from "src/schemas";
+import { Student } from "../user";
+
+import { Laundry } from "./laundry.schema";
 
 export type LaundryTimetableDocument = HydratedDocument<LaundryTimetable>;
 
@@ -14,7 +16,6 @@ const options: SchemaOptions = {
   virtuals: true,
 };
 
-@ApiExtraModels(Student)
 @Schema(options)
 export class LaundryTimetableSequence {
   @ApiProperty()
@@ -41,7 +42,6 @@ export const LaundryTimetableSequenceSchema = SchemaFactory.createForClass(
   LaundryTimetableSequence,
 );
 
-@ApiExtraModels(Laundry)
 @Schema(options)
 export class LaundryTimetable {
   @ApiProperty()
