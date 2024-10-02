@@ -4,7 +4,7 @@ import helmet from "helmet";
 import { AppModule } from "./app";
 import {
   DIMINotFoundFilter,
-  DIMISwaggerSetup,
+  DIMISwaggerModule,
   DIMIWrapperInterceptor,
   DIMIValidationPipe,
 } from "./lib";
@@ -19,7 +19,8 @@ async function bootstrap() {
   app.useGlobalFilters(new DIMINotFoundFilter());
   app.useGlobalInterceptors(new DIMIWrapperInterceptor());
 
-  await DIMISwaggerSetup(app);
+  const swagger = new DIMISwaggerModule(app);
+  await swagger.setup();
 
   await app.listen(3000);
 }

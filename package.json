@@ -41,6 +41,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
+    "express-basic-auth": "^1.2.1",
     "google-auth-library": "^9.0.0",
     "helmet": "^7.0.0",
     "import-to-array": "^1.0.0",
