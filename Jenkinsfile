@@ -7,7 +7,9 @@ pipeline {
         IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
         IMAGE_URL = "${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
 
+        BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
         CONTAINER_NAME = sh(script: 'echo $GIT_URL | sed -E "s/.*[:\\/]([^\\/]+\\/[^\\/]+)\\.git$/\\1/" | tr "/" "-"', returnStdout: true).trim()
+        CONTAINER_NAME = "${CONTAINER_NAME}-${BRANCH_NAME}"
     }
 
     
