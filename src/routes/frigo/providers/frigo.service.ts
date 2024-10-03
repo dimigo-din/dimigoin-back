@@ -3,13 +3,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import {
-  FrigoDocument,
   FrigoApplication,
   FrigoApplicationDocument,
   StudentDocument,
 } from "src/schemas";
 
-import { ApplyFrigoDto } from "../dto";
+import { ApplyFrigoRequestDto } from "../dto";
 
 import { FrigoManageService } from "./frigo.manage.service";
 
@@ -22,15 +21,9 @@ export class FrigoService {
     private frigoManageService: FrigoManageService,
   ) {}
 
-  async getCurrentFrigo(): Promise<FrigoDocument> {
-    const frigo = this.frigoManageService.getCurrentFrigo();
-
-    return frigo;
-  }
-
   async applyFrigo(
     student: StudentDocument,
-    data: ApplyFrigoDto,
+    body: ApplyFrigoRequestDto,
   ): Promise<FrigoApplicationDocument> {
     const frigo = await this.frigoManageService.getCurrentFrigo();
 
@@ -41,15 +34,11 @@ export class FrigoService {
     if (existingApplication)
       throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
 
-    if (data.reason.indexOf("/") === -1) {
-      throw new HttpException("사유는 [사유/귀가시간] 형식입니다.", 400);
-    }
-
     const application = new this.frigoApplicationModel({
       frigo: frigo._id,
       student: student._id,
       status: "W",
-      ...data,
+      ...body,
     });
     await application.save();
 

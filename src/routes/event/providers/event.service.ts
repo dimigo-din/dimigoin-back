@@ -2,10 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { GradeValues } from "src/lib/types";
 import { StayManageService } from "src/routes/stay/providers";
 
-import { Event, EventDocument } from "src/schemas";
+import { Event, EventDocument, StudentDocument } from "src/schemas";
 
 @Injectable()
 export class EventService {
@@ -16,20 +15,12 @@ export class EventService {
     private stayManageService: StayManageService,
   ) {}
 
-  async getEvents(grade: keyof typeof GradeValues): Promise<{
-    events: EventDocument[];
-    isStaySchedule: boolean;
-  }> {
+  async getAllEvents(student: StudentDocument): Promise<EventDocument[]> {
     const isTodayStay = await this.stayManageService.isStay();
 
-    const events = await this.eventModel.find({
+    return await this.eventModel.find({
       isStaySchedule: isTodayStay,
-      grade: grade,
+      grade: student.grade,
     });
-
-    return {
-      events,
-      isStaySchedule: isTodayStay,
-    };
   }
 }

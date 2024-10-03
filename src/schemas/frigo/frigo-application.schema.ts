@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { StatusValues, StatusType } from "src/lib";
+import { StatusValues, StatusType, CurfewValues, CurfewType } from "src/lib";
 
 import { Frigo, Student } from "src/schemas";
 
@@ -45,6 +45,14 @@ export class FrigoApplication {
     type: String,
   })
   reason: string;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+    enum: CurfewValues,
+  })
+  curfew: CurfewType;
 
   @ApiProperty()
   @Prop({

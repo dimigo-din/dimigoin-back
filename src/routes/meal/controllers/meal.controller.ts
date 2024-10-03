@@ -32,8 +32,8 @@ export class MealController {
   })
   @UseGuards(DIMIJwtAuthGuard)
   @Get()
-  async getMeals(): Promise<MealDocument[]> {
-    return await this.mealService.getMeals();
+  async getWeeklyMeals(): Promise<MealDocument[]> {
+    return await this.mealService.getWeeklyMeals();
   }
 
   @ApiOperation(

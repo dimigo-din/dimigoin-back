@@ -1,11 +1,9 @@
-import { HttpException, Injectable, Inject, forwardRef } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as Excel from "exceljs";
 import moment from "moment/moment";
 import { Model, Types } from "mongoose";
 import { WorkSheet } from "xlsx";
-
-import { UserManageService } from "src/routes/user/providers";
 
 import { GradeValues, KorWeekDayValues } from "src/lib";
 
@@ -27,9 +25,6 @@ export class FrigoManageService {
 
     @InjectModel(FrigoApplication.name)
     private frigoApplicationModel: Model<FrigoApplicationDocument>,
-
-    @Inject(forwardRef(() => UserManageService))
-    private userManageService: UserManageService,
   ) {}
 
   async createFrigo(data: CreateFrigoDto): Promise<FrigoDocument> {
@@ -120,11 +115,10 @@ export class FrigoManageService {
     studentId: Types.ObjectId,
     frigoId: Types.ObjectId,
   ): Promise<FrigoApplicationDocument> {
-    const student = await this.userManageService.getStudent(studentId);
     const frigo = await this.getFrigo(frigoId);
     const application = await this.frigoApplicationModel
       .findOne({
-        student: student._id,
+        student: studentId,
         frigo: frigo._id,
       })
       .populate("frigo")

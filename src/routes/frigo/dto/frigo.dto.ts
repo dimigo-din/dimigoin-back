@@ -1,8 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsIn, IsString } from "class-validator";
 
-export class ApplyFrigoDto {
+import { CurfewType, CurfewValues } from "src/lib";
+
+export class ApplyFrigoRequestDto {
   @ApiProperty()
   @IsString()
   reason: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsIn(CurfewValues)
+  curfew: CurfewType;
 }

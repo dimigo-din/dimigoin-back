@@ -34,7 +34,7 @@ import * as userServices from "./providers";
     ]),
     forwardRef(() => StayModule),
     forwardRef(() => FrigoModule),
-    forwardRef(() => LaundryModule),
+    LaundryModule,
   ],
   controllers: importToArray(userControllers),
   providers: importToArray(userServices),

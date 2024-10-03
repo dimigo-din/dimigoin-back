@@ -24,9 +24,10 @@ export class DIMILoggerMiddleware implements NestMiddleware {
       );
       if (authorizationTmp.split(".").length === 3) {
         try {
-          authorization = `${this.parseJwt(authorizationTmp)._id}(${
-            this.parseJwt(authorizationTmp).name
-          })`;
+          const identity = this.parseJwt(authorizationTmp);
+          if (identity.grade)
+            authorization = `${identity._id} (${identity.grade}학년 ${identity.class}반 ${identity.number}번 ${identity.name})`;
+          else authorization = `${identity._id} (${identity.name})`;
         } catch (e) {
           authorization = "unknown";
         }

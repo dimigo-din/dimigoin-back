@@ -7,7 +7,7 @@ import { createOpertation } from "src/lib/utils";
 
 import { EventDocument, StudentDocument } from "src/schemas";
 
-import { GetEventResponse } from "../dto";
+import { GetAllEventResponseDto } from "../dto";
 import { EventService } from "../providers";
 
 @ApiTags("Event")
@@ -18,22 +18,17 @@ export class EventController {
   @ApiOperation(
     createOpertation({
       name: "이벤트",
-      description: "이벤트를 반환합니다.",
+      description: "Kinetic 아키텍쳐를 위한 시간 이벤트를 반환합니다.",
       studentOnly: true,
     }),
   )
   @ApiResponse({
     status: 200,
-    type: GetEventResponse,
+    type: GetAllEventResponseDto,
   })
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
-  async getEvent(@Req() req: Request): Promise<{
-    events: EventDocument[];
-    isStaySchedule: boolean;
-  }> {
-    const student = req.user as StudentDocument;
-
-    return await this.eventService.getEvents(student.grade);
+  async getEvent(@Req() req: Request): Promise<EventDocument[]> {
+    return await this.eventService.getAllEvents(req.user as StudentDocument);
   }
 }

@@ -1,4 +1,3 @@
-import { HttpService } from "@nestjs/axios";
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment";
@@ -22,19 +21,15 @@ export class MealService {
 
     @InjectModel(MealTimetable.name)
     private mealTimetableModel: Model<MealTimetableDocument>,
-
-    private readonly httpService: HttpService,
   ) {}
 
-  async getMeals(): Promise<MealDocument[]> {
-    const meals = await this.mealModel.find({
+  async getWeeklyMeals(): Promise<MealDocument[]> {
+    return await this.mealModel.find({
       date: {
         $gte: momentToStringDate(moment().startOf("week")),
         $lte: momentToStringDate(moment().endOf("week")),
       },
     });
-
-    return meals;
   }
 
   async getMealTimetable(

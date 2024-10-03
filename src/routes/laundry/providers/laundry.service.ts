@@ -7,7 +7,6 @@ import { StayManageService } from "src/routes/stay/providers";
 
 import {
   Laundry,
-  LaundryDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
   StudentDocument,
@@ -15,18 +14,12 @@ import {
 
 import { ApplyLaundryDto } from "../dto";
 
-import { LaundryManageService } from "./laundry.manage.service";
-
 @Injectable()
 export class LaundryService {
   constructor(
-    @InjectModel(Laundry.name)
-    private laundryModel: Model<LaundryDocument>,
-
     @InjectModel(LaundryTimetable.name)
     private laundryTimetableModel: Model<LaundryTimetableDocument>,
 
-    private laundryManageService: LaundryManageService,
     private stayManageService: StayManageService,
   ) {}
 
