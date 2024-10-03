@@ -39,8 +39,8 @@ lerna-debug.log*
 .env.dev
 
 # yarn
-.pnp.*
 .yarn/*
+!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
