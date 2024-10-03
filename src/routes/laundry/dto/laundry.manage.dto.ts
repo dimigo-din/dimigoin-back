@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsString,
   IsIn,
@@ -6,6 +7,8 @@ import {
   IsMongoId,
   IsArray,
   IsBoolean,
+  IsOptional,
+  ValidateNested,
 } from "class-validator";
 import { Types } from "mongoose";
 
@@ -41,14 +44,25 @@ export class CreateLaundryDto {
   position: PositionType;
 }
 
+class LaundryTimetableSequenceDto {
+  @ApiProperty()
+  @IsOptional()
+  applicant: Types.ObjectId;
+
+  @ApiProperty()
+  @IsString()
+  timetable: string;
+}
+
 export class CreateLaundryTimetableDto {
   @ApiProperty()
   @IsMongoId()
   laundryId: Types.ObjectId;
 
   @ApiProperty()
-  @IsArray()
-  sequence: string[];
+  @ValidateNested({ each: true })
+  @Type(() => LaundryTimetableSequenceDto)
+  sequence: LaundryTimetableSequenceDto[];
 
   @ApiProperty()
   @IsArray()
