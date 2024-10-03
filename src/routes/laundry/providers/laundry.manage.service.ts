@@ -62,7 +62,7 @@ export class LaundryManageService {
     if (ifLaundryExists)
       throw new HttpException("같은 정보의 세탁기가 존재합니다.", 403);
 
-    return this.laundryModel.create(data);
+    return await this.laundryModel.create(data);
   }
 
   async updateLaundryTimetable(

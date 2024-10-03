@@ -25,37 +25,36 @@ export class FrigoService {
     student: StudentDocument,
     body: ApplyFrigoRequestDto,
   ): Promise<FrigoApplicationDocument> {
-    const frigo = await this.frigoManageService.getCurrentFrigo();
+    const currentFrigo = await this.frigoManageService.getCurrentFrigo();
 
     const existingApplication = await this.frigoApplicationModel.findOne({
-      frigo: frigo._id,
+      frigo: currentFrigo._id,
       student: student._id,
     });
+
     if (existingApplication)
       throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
 
-    const application = new this.frigoApplicationModel({
-      frigo: frigo._id,
+    return await this.frigoApplicationModel.create({
+      frigo: currentFrigo._id,
       student: student._id,
       status: "W",
       ...body,
     });
-    await application.save();
-
-    return application;
   }
 
   async cancelFrigo(
     student: StudentDocument,
   ): Promise<FrigoApplicationDocument> {
-    const frigo = await this.frigoManageService.getCurrentFrigo();
+    const currentFrigo = await this.frigoManageService.getCurrentFrigo();
 
     const frigoApplication = await this.frigoApplicationModel.findOneAndDelete({
-      frigo: frigo._id,
+      frigo: currentFrigo._id,
       student: student._id,
     });
+
     if (!frigoApplication)
-      throw new HttpException("금요귀가를 신청하지 않았습니다.", 404);
+      throw new HttpException("신청한 금요귀가가 없습니다.", 404);
 
     return frigoApplication;
   }

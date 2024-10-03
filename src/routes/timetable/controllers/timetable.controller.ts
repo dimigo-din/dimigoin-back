@@ -17,7 +17,7 @@ export class TimetableController {
   @ApiOperation(
     createOpertation({
       name: "시간표",
-      description: "해당하는 학년 반의 시간표를 반환합니다.",
+      description: "해당하는 학년 반의 이번주 시간표를 반환합니다.",
     }),
   )
   @ApiResponse({
@@ -42,6 +42,6 @@ export class TimetableController {
     @Param("grade") _grade: GradeType,
     @Param("class") _class: ClassType,
   ): Promise<TimetableDocument[]> {
-    return await this.timetableService.getTimetable(_grade, _class);
+    return await this.timetableService.getWeeklyTimetable(_grade, _class);
   }
 }

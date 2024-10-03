@@ -7,10 +7,9 @@ import { Model } from "mongoose";
 
 import { GradeValues, ClassValues } from "src/lib/types";
 import { momentToStringDate } from "src/lib/utils";
+import aliases from "src/resources/timetable_aliases.json";
 
 import { Timetable, TimetableDocument } from "src/schemas";
-
-import aliases from "../resources/aliases.json";
 
 @Injectable()
 export class TimetableManageService {
@@ -23,13 +22,14 @@ export class TimetableManageService {
 
   @Cron(CronExpression.EVERY_6_HOURS)
   async updateTimetable(): Promise<Timetable[]> {
-    const weekStart = momentToStringDate(moment().startOf("week"));
-    const weekEnd = momentToStringDate(moment().endOf("week"));
+    // 여기 건들고 싶지만 너무 하드코딩
+    const startOfWeek = momentToStringDate(moment().startOf("week"));
+    const endOfWeek = momentToStringDate(moment().endOf("week"));
 
     const list = [];
     for (
-      let date = weekStart;
-      date < weekEnd;
+      let date = startOfWeek;
+      date < endOfWeek;
       date = momentToStringDate(moment(date).add(1, "days"))
     ) {
       for (const _grade of GradeValues) {
@@ -74,8 +74,8 @@ export class TimetableManageService {
 
     await this.timetableModel.deleteMany({
       date: {
-        $gte: weekStart,
-        $lte: weekEnd,
+        $gte: startOfWeek,
+        $lte: endOfWeek,
       },
     });
 

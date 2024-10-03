@@ -27,23 +27,21 @@ export class FrigoManageService {
     private frigoApplicationModel: Model<FrigoApplicationDocument>,
   ) {}
 
-  async createFrigo(data: CreateFrigoDto): Promise<FrigoDocument> {
-    const existingFrigo = await this.frigoModel.findOne({
-      date: data.date,
+  async createFrigo(body: CreateFrigoDto): Promise<FrigoDocument> {
+    const checkIfFrigoExists = await this.frigoModel.findOne({
+      date: body.date,
     });
-    if (existingFrigo)
+
+    if (checkIfFrigoExists)
       throw new HttpException("같은 정보의 금요귀가가 있습니다.", 403);
 
-    const frigo = new this.frigoModel({
-      ...data,
+    return await this.frigoModel.create({
+      ...body,
       current: false,
     });
-
-    await frigo.save();
-    return frigo;
   }
 
-  async getFrigos(): Promise<FrigoDocument[]> {
+  async getAllFrigos(): Promise<FrigoDocument[]> {
     return await this.frigoModel.find({ deleted: false });
   }
 
@@ -68,12 +66,14 @@ export class FrigoManageService {
   }
 
   async deleteFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
-    const frigo = await this.getFrigo(frigoId);
-    frigo.current = false;
-    frigo.deleted = true;
-    await frigo.save();
-
-    return frigo;
+    return await this.frigoModel.findByIdAndUpdate(
+      frigoId,
+      {
+        current: false,
+        deleted: true,
+      },
+      { new: true },
+    );
   }
 
   async getCurrentFrigo(): Promise<FrigoDocument> {
@@ -87,58 +87,47 @@ export class FrigoManageService {
   }
 
   async setCurrentFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
-    const frigo = await this.getFrigo(frigoId);
-    const currentFrigo = await this.frigoModel.findOne({
-      current: true,
-    });
-    if (currentFrigo) {
-      currentFrigo.current = false;
-      await currentFrigo.save();
-    }
+    await this.frigoModel.updateOne({ current: true }, { current: false });
 
-    frigo.current = true;
-
-    await frigo.save();
-    return frigo;
+    return await this.frigoModel.findByIdAndUpdate(
+      frigoId,
+      { current: true },
+      { new: true },
+    );
   }
 
-  async deleteCurrentFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
-    const frigo = await this.getFrigo(frigoId);
-
-    frigo.current = false;
-
-    await frigo.save();
-    return frigo;
+  async disableFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
+    return await this.frigoModel.findByIdAndUpdate(
+      frigoId,
+      {
+        current: false,
+      },
+      { new: true },
+    );
   }
 
   async getStudentFrigoApplication(
     studentId: Types.ObjectId,
     frigoId: Types.ObjectId,
   ): Promise<FrigoApplicationDocument> {
-    const frigo = await this.getFrigo(frigoId);
-    const application = await this.frigoApplicationModel
+    return await this.frigoApplicationModel
       .findOne({
         student: studentId,
-        frigo: frigo._id,
+        frigo: frigoId,
       })
       .populate("frigo")
       .populate("student");
-
-    return application;
   }
 
   async getStudentFrigoApplications(
     frigoId: Types.ObjectId,
   ): Promise<FrigoApplicationDocument[]> {
-    const frigo = await this.getFrigo(frigoId);
-    const applications = await this.frigoApplicationModel
+    return await this.frigoApplicationModel
       .find({
-        frigo: frigo._id,
+        frigo: frigoId,
       })
       .populate("frigo")
       .populate("student");
-
-    return applications;
   }
 
   async downloadStudentFrigoApplications(res, frigoId: Types.ObjectId) {
@@ -251,7 +240,7 @@ export class FrigoManageService {
       .populate("student");
   }
 
-  addSheet(wb: WorkSheet, grade, applicationsRaw: any[], day) {
+  private addSheet(wb: WorkSheet, grade, applicationsRaw: any[], day) {
     const frigoDay = moment(day);
     const sheet = wb.addWorksheet(`${grade}학년`);
 
@@ -410,7 +399,7 @@ export class FrigoManageService {
     footer.forEach((f) => (sheet.getCell(f).fill = fill));
   }
 
-  pad(num, size) {
+  private pad(num, size) {
     const s = "000000000" + num;
     return s.substring(s.length - size);
   }

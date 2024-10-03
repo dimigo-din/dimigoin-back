@@ -38,7 +38,7 @@ export class FrigoManageController {
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
   async getFrigos(): Promise<FrigoDocument[]> {
-    return await this.frigoManageService.getFrigos();
+    return await this.frigoManageService.getAllFrigos();
   }
 
   @ApiOperation(
@@ -113,7 +113,7 @@ export class FrigoManageController {
   async deleteCurrentFrigo(
     @Param("frigoId", ObjectIdPipe) frigoId: Types.ObjectId,
   ): Promise<FrigoDocument> {
-    return await this.frigoManageService.deleteCurrentFrigo(frigoId);
+    return await this.frigoManageService.disableFrigo(frigoId);
   }
 
   @ApiOperation(
@@ -158,7 +158,7 @@ export class FrigoManageController {
     description: "금요귀가의 ObjectId",
     type: String,
   })
-  // @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
+  @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get("/:frigoId/excel")
   async downloadFrigo(
     @Response() res,

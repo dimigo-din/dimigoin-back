@@ -33,7 +33,7 @@ import * as userServices from "./providers";
       { name: TeacherPassword.name, schema: TeacherPasswordSchema },
     ]),
     forwardRef(() => StayModule),
-    forwardRef(() => FrigoModule),
+    FrigoModule,
     LaundryModule,
   ],
   controllers: importToArray(userControllers),
