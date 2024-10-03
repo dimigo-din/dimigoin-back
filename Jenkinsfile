@@ -7,7 +7,9 @@ pipeline {
         IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
         IMAGE_URL = "${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-        CONTAINER_NAME = sh(script: 'echo $GIT_URL | sed -E "s/.*[:\\/]([^\\/]+\\/[^\\/]+)\\.git$/\\1/" | tr "/" "-"', returnStdout: true).trim()
+        BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
+        APP_NAME = sh(script: 'echo $GIT_URL | sed -E "s/.*[:\\/]([^\\/]+\\/[^\\/]+)\\.git$/\\1/" | tr "/" "-"', returnStdout: true).trim()
+        CONTAINER_NAME = "${APP_NAME}-${BRANCH_NAME}"
     }
 
     
@@ -52,10 +54,10 @@ pipeline {
                         --name ${env.CONTAINER_NAME} \
                         --restart always \
                         --network proxy \
-                        --volume /mnt/docker/services/dimigoin/back/.env:/app/.env \
+                        --volume /mnt/docker/services/dimigoin-${env.BRANCH_NAME}/back/.env:/app/.env \
                         --label io.portainer.accesscontrol.teams=din \
                         ${env.IMAGE_URL}"
-                    sh "docker network connect dimigoin ${env.CONTAINER_NAME}"
+                    sh "docker network connect dimigoin-${env.BRANCH_NAME} ${env.CONTAINER_NAME}"
                     sh "docker start ${env.CONTAINER_NAME}"
                 }
             }
