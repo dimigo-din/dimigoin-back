@@ -4,7 +4,8 @@ RUN apk add tzdata && ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 WORKDIR /app
 
-COPY ./package.json ./yarn.lock ./
+COPY ./package.json ./
+RUN yarn set version berry
 
 RUN yarn install
 

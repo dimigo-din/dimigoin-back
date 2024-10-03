@@ -38,7 +38,15 @@ lerna-debug.log*
 .env
 .env.dev
 
+# yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 # Dev Environment Testing
 docker-compose.yml
-.yarn/
 data/
