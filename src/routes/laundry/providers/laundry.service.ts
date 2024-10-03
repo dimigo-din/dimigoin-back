@@ -42,7 +42,7 @@ export class LaundryService {
         isStaySchedule: isTodayStay,
       })
       .populate({ path: "laundry" })
-      .populate({ path: "sequence.student" });
+      .populate({ path: "sequence.applicant" });
   }
 
   async applyLaundry(student: StudentDocument, body: ApplyLaundryDto) {
@@ -51,33 +51,36 @@ export class LaundryService {
 
     const isTodayStay = await this.stayManageService.isStay(); // 오늘이 잔류 시간표인가?
 
-    const checkTimetableExists = await this.laundryTimetableModel.findOne(
-      // 일단 시간표가 valid한지 먼저 확인
-      {
-        gender: student.gender,
-        grade: student.grade,
-        isStaySchedule: isTodayStay,
-        sequence: {
-          $elemMatch: { _id: body.laundryTimetableId },
+    const checkTimetableExists = await this.laundryTimetableModel
+      .findOne(
+        // 일단 시간표가 valid한지 먼저 확인
+        {
+          "laundry.laundryType": body.laundryType,
+          gender: student.gender,
+          grade: student.grade,
+          isStaySchedule: isTodayStay,
+          sequence: {
+            $elemMatch: { _id: body.laundryTimetableId },
+          },
         },
-      },
-      { "sequence.$": 1 },
-    );
+        { "sequence.$": 1 },
+      )
+      .populate("laundry");
 
     if (!checkTimetableExists)
-      throw new HttpException("신청 가능한 세탁기 시간표가 아닙니다.", 404); // 없으면 퉤
+      throw new HttpException("신청 가능한 시간표가 아닙니다.", 404); // 없으면 퉤
 
     const checkStudentAlreadyApplied = await this.laundryTimetableModel // 신청하려는 학생이 이미 건조기 or 세탁기를 신청했는지 확인
       .findOne({
         "laundry.laundryType": body.laundryType,
-        gender: student.gender,
-        grade: student.grade,
-        isStaySchedule: isTodayStay,
         sequence: {
-          student: student._id,
+          $elemMatch: {
+            applicant: student._id,
+          },
         },
-      })
-      .populate<{ laundry: Laundry }>({ path: "laundry" });
+      });
+
+    console.log(checkStudentAlreadyApplied);
 
     if (checkStudentAlreadyApplied)
       // 있으면 퉤
