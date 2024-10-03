@@ -89,7 +89,7 @@ export class LaundryManageService {
     return await this.laundryTimetableModel
       .find({ isStaySchedule: isTodayStay })
       .populate({ path: "laundry" })
-      .populate({ path: "sequence.student" });
+      .populate({ path: "sequence.applicant" });
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

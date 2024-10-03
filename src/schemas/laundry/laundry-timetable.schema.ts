@@ -2,7 +2,14 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { HydratedDocument, Types } from "mongoose";
 
-import { GradeValues, GenderValues, GradeType, GenderType } from "src/lib";
+import {
+  GradeValues,
+  GenderValues,
+  GradeType,
+  GenderType,
+  LaundryValues,
+  LaundryType,
+} from "src/lib";
 
 import { Student } from "../user";
 
@@ -56,6 +63,14 @@ export class LaundryTimetable {
     ref: "Laundry",
   })
   laundry: Types.ObjectId;
+
+  @ApiProperty()
+  @Prop({
+    required: true,
+    type: String,
+    enum: LaundryValues,
+  })
+  laundryTimetableType: LaundryType;
 
   @ApiProperty()
   @Prop({

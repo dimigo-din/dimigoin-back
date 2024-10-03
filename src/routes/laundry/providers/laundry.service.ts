@@ -53,9 +53,8 @@ export class LaundryService {
 
     const checkTimetableExists = await this.laundryTimetableModel
       .findOne(
-        // 일단 시간표가 valid한지 먼저 확인
         {
-          "laundry.laundryType": body.laundryType,
+          laundryTimetableType: body.laundryType,
           gender: student.gender,
           grade: student.grade,
           isStaySchedule: isTodayStay,
@@ -65,24 +64,29 @@ export class LaundryService {
         },
         { "sequence.$": 1 },
       )
-      .populate("laundry");
+      .populate<{ laundry: Laundry }>("laundry");
 
-    if (!checkTimetableExists)
+    if (
+      !checkTimetableExists ||
+      checkTimetableExists.laundry.laundryType != body.laundryType // 더블 체크를 예 곁들입니다
+    )
       throw new HttpException("신청 가능한 시간표가 아닙니다.", 404); // 없으면 퉤
 
     const checkStudentAlreadyApplied = await this.laundryTimetableModel // 신청하려는 학생이 이미 건조기 or 세탁기를 신청했는지 확인
       .findOne({
-        "laundry.laundryType": body.laundryType,
+        laundryTimetableType: body.laundryType,
         sequence: {
           $elemMatch: {
             applicant: student._id,
           },
         },
-      });
+      })
+      .populate<{ laundry: Laundry }>("laundry");
 
-    console.log(checkStudentAlreadyApplied);
-
-    if (checkStudentAlreadyApplied)
+    if (
+      checkStudentAlreadyApplied &&
+      checkStudentAlreadyApplied.laundry.laundryType == body.laundryType
+    )
       // 있으면 퉤
       throw new HttpException(
         `이미 신청한 ${

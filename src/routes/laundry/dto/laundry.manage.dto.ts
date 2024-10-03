@@ -60,6 +60,11 @@ export class CreateLaundryTimetableDto {
   laundryId: Types.ObjectId;
 
   @ApiProperty()
+  @IsString()
+  @IsIn(LaundryValues)
+  laundryTimetableType: LaundryType;
+
+  @ApiProperty()
   @ValidateNested({ each: true })
   @Type(() => LaundryTimetableSequenceDto)
   sequence: LaundryTimetableSequenceDto[];
