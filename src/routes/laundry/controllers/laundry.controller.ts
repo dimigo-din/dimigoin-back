@@ -15,6 +15,8 @@ import { Types } from "mongoose";
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
 import { createOpertation } from "src/lib/utils";
 
+import { ObjectIdPipe } from "src/lib";
+
 import { StudentDocument, LaundryTimetableDocument } from "src/schemas";
 
 import { ApplyLaundryDto } from "../dto";
@@ -76,7 +78,8 @@ export class LaundryController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   async cancelLaundry(
     @Req() req: Request,
-    @Param("laundryApplicationId") laundryApplicationId: Types.ObjectId,
+    @Param("laundryApplicationId", ObjectIdPipe)
+    laundryApplicationId: Types.ObjectId,
   ) {
     return await this.laundryService.cancelLaundry(
       req.user as StudentDocument,

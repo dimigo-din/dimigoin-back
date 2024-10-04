@@ -5,7 +5,7 @@ import moment from "moment/moment";
 import { Model, Types } from "mongoose";
 import { WorkSheet } from "xlsx";
 
-import { GradeValues, KorWeekDayValues } from "src/lib";
+import { GradeValues, KorWeekDayValues, StatusType } from "src/lib";
 
 import {
   Frigo,
@@ -15,7 +15,7 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { CreateFrigoDto } from "../dto";
+import { ApplyStudentFrigoRequestDto, CreateFrigoRequestDto } from "../dto";
 
 @Injectable()
 export class FrigoManageService {
@@ -27,7 +27,7 @@ export class FrigoManageService {
     private frigoApplicationModel: Model<FrigoApplicationDocument>,
   ) {}
 
-  async createFrigo(body: CreateFrigoDto): Promise<FrigoDocument> {
+  async createFrigo(body: CreateFrigoRequestDto): Promise<FrigoDocument> {
     const checkIfFrigoExists = await this.frigoModel.findOne({
       date: body.date,
     });
@@ -54,7 +54,7 @@ export class FrigoManageService {
 
   async editFrigo(
     frigoId: Types.ObjectId,
-    data: CreateFrigoDto,
+    data: CreateFrigoRequestDto,
   ): Promise<FrigoDocument> {
     const frigo = await this.getFrigo(frigoId);
     for (const newKey of Object.keys(data)) {
@@ -86,7 +86,7 @@ export class FrigoManageService {
     return frigo;
   }
 
-  async setCurrentFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
+  async enableFrigo(frigoId: Types.ObjectId): Promise<FrigoDocument> {
     await this.frigoModel.updateOne({ current: true }, { current: false });
 
     return await this.frigoModel.findByIdAndUpdate(
@@ -130,77 +130,49 @@ export class FrigoManageService {
       .populate("student");
   }
 
-  async downloadStudentFrigoApplications(res, frigoId: Types.ObjectId) {
+  async downloadStudentFrigoApplications(frigoId: Types.ObjectId) {
     const frigo = await this.frigoModel.findById(frigoId);
-    const frigoList = await this.frigoApplicationModel
+    const studentApplications = await this.frigoApplicationModel
       .find({
         frigo: frigoId,
         status: "A",
       })
-      .populate("student");
+      .populate<{ student: StudentDocument }>("student");
 
-    if (frigoList.length === 0)
+    if (!studentApplications.length)
       throw new HttpException("승인된 금요귀가 목록이 없습니다.", 404);
 
     const wb = new Excel.Workbook();
-    GradeValues.forEach((grade) => {
-      if (
-        frigoList.find(
-          (frigo) =>
-            (frigo.student as unknown as StudentDocument).grade === grade,
-        )
-      )
-        this.addSheet(
-          wb,
-          grade,
-          frigoList.filter(
-            (frigo) =>
-              (frigo.student as unknown as StudentDocument).grade === grade,
-          ),
-          frigo.date,
-        );
-    });
 
-    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-    res.setHeader("Content-Type", "application/vnd.openxmlformats");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=" +
-        encodeURI(
-          `${moment().year()}년도 ${moment().week()}주차 금요귀가 명단.xlsx`,
-        ),
-    );
+    for (const grade of GradeValues) {
+      const filteredStudentApplication = studentApplications.filter(
+        (frigo) => frigo.student.grade === grade,
+      );
+      if (filteredStudentApplication.length)
+        this.addSheet(wb, grade, filteredStudentApplication, frigo.date);
+    }
 
-    await wb.xlsx.write(res);
+    return wb;
   }
 
   async applyStudentFrigo(
     frigo: Types.ObjectId,
     studentId: Types.ObjectId,
-    reason: string,
+    body: ApplyStudentFrigoRequestDto,
   ) {
     const existingApplication = await this.frigoApplicationModel.findOne({
       frigo: frigo,
       student: studentId,
     });
     if (existingApplication)
-      throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
+      throw new HttpException("이미 해당 학생이 금요귀가를 신청했습니다.", 403);
 
-    if (reason.indexOf("/") === -1) {
-      throw new HttpException(
-        "사유는 [사유/귀가시간] 형식으로 대괄호 없이 기입해주세요.",
-        400,
-      );
-    }
-
-    const application = await new this.frigoApplicationModel({
+    return await this.frigoApplicationModel.create({
       frigo: frigo,
       student: studentId,
-      reason,
       status: "A",
-    }).save();
-
-    return application;
+      ...body,
+    });
   }
 
   async cancelStudentFrigo(frigo: Types.ObjectId, student: Types.ObjectId) {
@@ -214,23 +186,20 @@ export class FrigoManageService {
     return this.frigoApplicationModel.findOne({ frigo, student });
   }
 
-  async setStudentFrigoApprove(
+  async setStudentFrigoStatus(
     frigo: Types.ObjectId,
     student: Types.ObjectId,
-    approve: boolean,
+    status: StatusType,
   ) {
-    const currentStatus = (
-      await this.frigoApplicationModel.findOne({ frigo, student })
-    ).status;
     const frigoApplication = await this.frigoApplicationModel.findOneAndUpdate(
       { frigo, student },
       {
         $set: {
-          status:
-            (approve ? "A" : "R") === currentStatus ? "W" : approve ? "A" : "R",
+          status,
         },
       },
     );
+
     if (!frigoApplication)
       throw new HttpException("해당 금요귀가 신청이 없습니다.", 404);
 

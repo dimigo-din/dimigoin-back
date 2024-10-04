@@ -13,6 +13,8 @@ import { Types } from "mongoose";
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
 import { createOpertation } from "src/lib/utils";
 
+import { ObjectIdPipe } from "src/lib";
+
 import { GroupDocument } from "src/schemas";
 
 import { CreateGroupDto } from "../dto";
@@ -62,7 +64,7 @@ export class GroupManageController {
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Put(":groupId")
   async editGroup(
-    @Param("groupId") groupId: Types.ObjectId,
+    @Param("groupId", ObjectIdPipe) groupId: Types.ObjectId,
     @Body() data: CreateGroupDto,
   ): Promise<GroupDocument> {
     return await this.groupManageService.editGroup(groupId, data);

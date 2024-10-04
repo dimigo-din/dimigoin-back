@@ -56,7 +56,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "xlsx": "^0.18.5",
-    "youtube-search": "^1.1.6"
+    "youtube-search": "^1.1.6",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

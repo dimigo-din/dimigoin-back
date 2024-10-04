@@ -38,14 +38,22 @@ const SeatNameValues = [
   "L",
   "M",
   "N",
-];
+] as const;
 export const SeatValues = ["NONE"];
 for (let i = 0; i < SeatNameValues.length; i++) {
   for (let j = 0; j < 18; j++) {
     SeatValues.push(SeatNameValues[i] + (j + 1));
   }
 }
-export const KorWeekDayValues = ["일", "월", "화", "수", "목", "금", "토"];
+export const KorWeekDayValues = [
+  "일",
+  "월",
+  "화",
+  "수",
+  "목",
+  "금",
+  "토",
+] as const;
 export const RateLimitTypeValues = ["YoutubeSearch"] as const;
 
 export const CurfewValues = ["RIGHT_NOW", "AS1", "AS2", "DINNER", "NS1", "NS2"]; // 종례 후, 방과후 1타임, 방과후 2타임, 저녁시간, 야자 1타임, 야자 2타임
