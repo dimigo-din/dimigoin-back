@@ -7,7 +7,7 @@
 
 ## Installation
 
-> Only **yarn** is allowed
+> Only **yarn (berry)** is allowed
 
 ```bash
 yarn install
