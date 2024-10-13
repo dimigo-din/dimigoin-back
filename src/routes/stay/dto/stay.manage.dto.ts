@@ -65,12 +65,12 @@ export class CreateStayDto {
   @ApiProperty()
   @IsObject()
   seat: {
-    M1: Seat;
-    M2: Seat;
-    M3: Seat;
-    F1: Seat;
-    F2: Seat;
-    F3: Seat;
+    M1: Seat[];
+    M2: Seat[];
+    M3: Seat[];
+    F1: Seat[];
+    F2: Seat[];
+    F3: Seat[];
   };
 }
 
