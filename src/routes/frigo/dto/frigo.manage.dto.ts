@@ -1,9 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsIn, IsString } from "class-validator";
 
-import { IsCustomDate } from "src/common/validators";
+import { IsCustomDate } from "src/lib/validators";
 
-export class CreateFrigoDto {
+import { CurfewType, CurfewValues } from "src/lib";
+
+export class CreateFrigoRequestDto {
   @ApiProperty()
   @IsCustomDate()
   date: string;
+}
+
+export class ApplyStudentFrigoRequestDto {
+  @ApiProperty()
+  @IsString()
+  reason: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsIn(CurfewValues)
+  curfew: CurfewType;
 }

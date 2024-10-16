@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { DIMIJwtAuthGuard, StudentGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import {
   FrigoApplicationDocument,
@@ -19,24 +19,27 @@ import {
   StudentDocument,
 } from "src/schemas";
 
-import { ApplyFrigoDto } from "../dto";
-import { FrigoService } from "../providers";
+import { ApplyFrigoRequestDto } from "../dto";
+import { FrigoManageService, FrigoService } from "../providers";
 
 @ApiTags("Frigo")
 @Controller("frigo")
 export class FrigoController {
-  constructor(private readonly frigoService: FrigoService) {}
+  constructor(
+    private readonly frigoService: FrigoService,
+    private readonly frigoManageService: FrigoManageService,
+  ) {}
 
   @ApiOperation(
     createOpertation({
       name: "현재 금요귀가 정보",
-      description: "금요귀가 정보를 반환합니다.",
+      description: "현재 활성화되어있는 금요귀가 정보를 반환합니다.",
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   async getCurrentFrigo(): Promise<FrigoDocument> {
-    return await this.frigoService.getCurrentFrigo();
+    return await this.frigoManageService.getCurrentFrigo();
   }
 
   @ApiOperation(
@@ -50,11 +53,11 @@ export class FrigoController {
   @Post()
   async applyFrigo(
     @Req() req: Request,
-    @Body() data: ApplyFrigoDto,
+    @Body() body: ApplyFrigoRequestDto,
   ): Promise<FrigoApplicationDocument> {
     return await this.frigoService.applyFrigo(
       req.user as StudentDocument,
-      data,
+      body,
     );
   }
 

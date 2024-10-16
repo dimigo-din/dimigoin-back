@@ -57,7 +57,7 @@ module.exports = {
             position: "after",
           },
           {
-            pattern: "src/common*",
+            pattern: "src/lib*",
             group: "internal",
             position: "after",
           },

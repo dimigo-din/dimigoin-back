@@ -37,3 +37,16 @@ lerna-debug.log*
 # USER DEFINE
 .env
 .env.dev
+
+# yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Dev Environment Testing
+docker-compose.yml
+data/

@@ -3,7 +3,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { UserModule } from "src/routes/user/user.module";
 
-import { DIMIConfigModule, DIMIJWTModule } from "src/common";
+import { DIMIConfigModule, DIMIJWTModule } from "src/lib";
 
 import {
   Student,
