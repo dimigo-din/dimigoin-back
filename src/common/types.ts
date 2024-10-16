@@ -55,3 +55,8 @@ export type Type = (typeof TypeValues)[number];
 export type ScheduleType = (typeof ScheduleTypeValues)[number];
 export type Seat = (typeof SeatValues)[number];
 export type RateLimitType = (typeof RateLimitTypeValues)[number];
+
+export type AuthUser = {
+  gender: Gender;
+  _id: string;
+};
