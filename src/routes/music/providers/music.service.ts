@@ -5,7 +5,7 @@ import moment from "moment-timezone";
 import { Model } from "mongoose";
 import youtubeSearch from "youtube-search";
 
-import { RateLimitType } from "src/lib";
+import { AuthUser, RateLimitType } from "src/lib";
 
 import {
   MusicList,
@@ -29,22 +29,27 @@ export class MusicService {
     private rateLimitModel: Model<RateLimitDocument>,
   ) {}
 
-  async list(user: string) {
+  async list(user: AuthUser) {
     const week = moment().format("yyyyww");
 
     // 이번주에 신청된 전체 기상송 목록
     const musics = await this.musicListModel.find({
       week,
+      gender: user.gender,
       selectedDate: null,
     });
 
     // 내 좋아요와 싫어요들
-    const myVotes = await this.musicVoteModel.find({ week, user });
+    const myVotes = await this.musicVoteModel.find({
+      week,
+      gender: user.gender,
+      user: user._id,
+    });
 
     // 기상송 별 좋아요 / 싫어요
     const votes = (
       await this.musicVoteModel.aggregate([
-        { $match: { week } },
+        { $match: { week, gender: user.gender } },
         {
           $group: {
             _id: {
@@ -100,10 +105,13 @@ export class MusicService {
     );
   }
 
-  async search(user: string, query: string) {
+  async search(user: AuthUser, query: string) {
     const type: RateLimitType = "YoutubeSearch";
 
-    const rateLimit = await this.rateLimitModel.findOne({ type, user });
+    const rateLimit = await this.rateLimitModel.findOne({
+      type,
+      user: user._id,
+    });
     if (
       process.env.NODE_ENV !== "dev" &&
       !!rateLimit &&
@@ -120,10 +128,10 @@ export class MusicService {
     };
     const { results } = await youtubeSearch(query, opts);
 
-    await this.rateLimitModel.deleteMany({ type, user });
+    await this.rateLimitModel.deleteMany({ type, user: user._id });
     await new this.rateLimitModel({
       type,
-      user,
+      user: user._id,
       time: moment().unix(),
     }).save();
 
@@ -152,7 +160,7 @@ export class MusicService {
     });
   }
 
-  async applyMusic(user: string, videoId: string) {
+  async applyMusic(user: AuthUser, videoId: string) {
     const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 
@@ -165,6 +173,7 @@ export class MusicService {
 
     const listCheck = await this.musicListModel.find({
       week,
+      gender: user.gender,
       videoId,
     });
     if (listCheck.length > 0)
@@ -177,30 +186,43 @@ export class MusicService {
       day,
       week,
       videoId,
-      user,
+      gender: user.gender,
+      user: user._id,
     }).save();
 
     return true;
   }
 
-  async voteMusic(user: string, videoId: string, isUpVote: boolean) {
+  async voteMusic(user: AuthUser, videoId: string, isUpVote: boolean) {
     const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 
-    const isApplied = await this.musicListModel.findOne({ week, videoId });
+    const isApplied = await this.musicListModel.findOne({
+      week,
+      videoId,
+      gender: user.gender,
+    });
     if (!isApplied) await this.applyMusic(user, videoId); // 이거 유지할지 고민중입니당.
 
-    const music = await this.musicListModel.findOne({ week, videoId }); // This cannot be null
+    const music = await this.musicListModel.findOne({
+      week,
+      gender: user.gender,
+      videoId,
+    }); // This cannot be null
 
     const userVote = await this.musicVoteModel.findOne({
       day,
-      user,
+      user: user._id,
       target: music._id,
     });
     if (userVote) userVote.deleteOne();
     if (userVote && userVote.isUpVote === isUpVote) return true;
 
-    const userVotes = await this.musicVoteModel.find({ day, user });
+    const userVotes = await this.musicVoteModel.find({
+      day,
+      gender: user.gender,
+      user: user._id,
+    });
     if (!!userVotes && userVotes.length > 3)
       throw new HttpException(
         "이미 할당된 투표권을 다 소진하였습니다.",
@@ -210,7 +232,7 @@ export class MusicService {
     await new this.musicVoteModel({
       week,
       day,
-      user,
+      user: user._id,
       target: music._id,
       isUpVote,
     }).save();

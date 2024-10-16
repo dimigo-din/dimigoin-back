@@ -1,5 +1,6 @@
 import { forwardRef, HttpException, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import * as Excel from "exceljs";
 import moment from "moment";
 import { Model, Types } from "mongoose";
@@ -52,6 +53,7 @@ export class StayManageService {
     const stay = new this.stayModel({
       current: false,
       ...data,
+      deleted: false,
     });
 
     await stay.save();
@@ -696,5 +698,43 @@ export class StayManageService {
       dates.push(date.format("YYYY-MM-DD"));
     } while (moment(date).isBefore(lastDate));
     return dates;
+  }
+
+  @Cron(CronExpression.EVERY_WEEK)
+  async addStay() {
+    const mon = 0;
+    const sat = 6;
+    const today = moment().isoWeekday();
+
+    const nextApply = [moment().isoWeekday(mon), moment().isoWeekday(mon + 1)];
+    const nextStay = [moment().isoWeekday(sat), moment().isoWeekday(sat + 1)];
+
+    const stay = new CreateStayDto();
+
+    const third = {
+      start: `${nextApply[0].format("yyyy-MM-dd")} 00:00:00`,
+      end: `${nextApply[0].format("yyyy-MM-dd")} 22:00:00`,
+    };
+    const others = {
+      start: `${nextApply[1].format("yyyy-MM-dd")} 00:00:00`,
+      end: `${nextApply[1].format("yyyy-MM-dd")} 22:00:00`,
+    };
+    stay.duration = [others, others, third];
+    stay.start = nextStay[0].format("yyyy-MM-dd");
+    stay.end = nextStay[1].format("yyyy-MM-dd");
+    stay.dates = [
+      { date: nextStay[0].format("yyyy-MM-dd"), free: false },
+      { date: nextStay[1].format("yyyy-MM-dd"), free: true },
+    ];
+    stay.seat = {
+      M1: ["NONE"],
+      M2: ["NONE"],
+      M3: ["NONE"],
+      F1: ["NONE"],
+      F2: ["NONE"],
+      F3: ["NONE"],
+    };
+
+    return await this.createStay(stay);
   }
 }

@@ -34,7 +34,7 @@ export class MusicController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Get()
   list(@Request() req) {
-    return this.musicService.list(req.user._id);
+    return this.musicService.list(req.user);
   }
 
   @ApiOperation(
@@ -51,7 +51,7 @@ export class MusicController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post("/search")
   search(@Request() req, @Body() data: SearchDTO) {
-    return this.musicService.search(req.user._id, data.query);
+    return this.musicService.search(req.user, data.query);
   }
 
   @ApiOperation(
@@ -68,7 +68,7 @@ export class MusicController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post("/apply")
   apply(@Request() req, @Body() data: MusicApplyDTO) {
-    return this.musicService.applyMusic(req.user._id, data.videoId);
+    return this.musicService.applyMusic(req.user, data.videoId);
   }
 
   @ApiOperation(
@@ -86,10 +86,6 @@ export class MusicController {
   @UseGuards(DIMIJwtAuthGuard, StudentGuard)
   @Post("/vote")
   vote(@Request() req, @Body() data: VoteDTO) {
-    return this.musicService.voteMusic(
-      req.user._id,
-      data.videoId,
-      data.isUpVote,
-    );
+    return this.musicService.voteMusic(req.user, data.videoId, data.isUpVote);
   }
 }
