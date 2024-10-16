@@ -4,7 +4,6 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment-timezone";
 
-import { AuthUser } from "../../../common";
 import {
   MusicList,
   MusicListDocument,
@@ -21,18 +20,17 @@ export class MusicManageService {
     private musicVoteModel: Model<MusicVoteDocument>,
   ) {}
 
-  async musicList(user: AuthUser) {
+  async musicList() {
     const week = moment().format("yyyyww");
 
     const musics = await this.musicListModel.find({
       week,
-      gender: user.gender,
       selectedDate: null,
     });
 
     const votes = (
       await this.musicVoteModel.aggregate([
-        { $match: { week, gender: user.gender } },
+        { $match: { week } },
         {
           $group: {
             _id: {
@@ -77,7 +75,7 @@ export class MusicManageService {
     );
   }
 
-  async applyMusic(user: AuthUser, videoId: string) {
+  async applyMusic(user: string, videoId: string) {
     const week = moment().format("yyyyww");
 
     const videoIdRegex = /[a-zA-Z0-9]*/;
@@ -103,25 +101,21 @@ export class MusicManageService {
     await new this.musicListModel({
       week,
       videoId: validatedVideoId,
-      user: user._id,
+      user,
     }).save();
 
     return true;
   }
 
-  async select(user: AuthUser, videoId: string) {
+  async select(user: string, videoId: string) {
     const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 
-    const isApplied = await this.musicListModel.findOne({
-      week,
-      user: user._id,
-      videoId,
-    });
+    const isApplied = await this.musicListModel.findOne({ week, videoId });
     if (!isApplied) await this.applyMusic(user, videoId);
 
     await this.musicListModel.findOneAndUpdate(
-      { week, gender: user.gender, videoId },
+      { week, videoId },
       {
         $set: {
           selectedDate: day,
@@ -132,14 +126,10 @@ export class MusicManageService {
     return true;
   }
 
-  async delete(user: AuthUser, videoId: string) {
+  async delete(videoId: string) {
     const week = moment().format("yyyyww");
 
-    const target = await this.musicListModel.findOne({
-      week,
-      user: user._id,
-      videoId,
-    });
+    const target = await this.musicListModel.findOne({ week, videoId });
     if (!target)
       throw new HttpException(
         "신청되지 않은 기상곡입니다.",

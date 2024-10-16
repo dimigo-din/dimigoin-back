@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Post,
   UseGuards,
-  Req,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
@@ -35,8 +34,8 @@ export class MusicManageController {
   })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Get()
-  list(@Req() req) {
-    return this.musicManageService.musicList(req.user);
+  list() {
+    return this.musicManageService.musicList();
   }
 
   @ApiOperation(
@@ -53,7 +52,7 @@ export class MusicManageController {
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Post()
   select(@Request() req, @Body() data: SelectDTO) {
-    return this.musicManageService.select(req.user, data.videoId);
+    return this.musicManageService.select(req.user._id, data.videoId);
   }
 
   @ApiOperation(
@@ -69,7 +68,7 @@ export class MusicManageController {
   })
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)
   @Delete()
-  delete(@Request() req, @Body() data: DeleteDTO) {
-    return this.musicManageService.delete(req.user, data.videoId);
+  delete(@Body() data: DeleteDTO) {
+    return this.musicManageService.delete(data.videoId);
   }
 }

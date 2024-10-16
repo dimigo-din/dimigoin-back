@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument, Types } from "mongoose";
 
-import { Gender, GenderValues } from "../common";
-
-import { Student } from "./student.schema";
+import { Student } from "../user";
 
 @Schema({ timestamps: false, versionKey: false })
 export class MusicList {
@@ -24,12 +22,6 @@ export class MusicList {
     type: String,
   })
   videoId: string;
-
-  @Prop({
-    required: true,
-    type: GenderValues,
-  })
-  gender: Gender;
 
   @Prop({
     required: true,
