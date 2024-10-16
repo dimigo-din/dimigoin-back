@@ -11,8 +11,8 @@ import {
   IsNumber,
 } from "class-validator";
 
-import { Grade, Seat } from "src/common/types";
-import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
+import { GradeType, SeatType } from "src/lib/types";
+import { IsCustomDate, IsCustomDateTime } from "src/lib/validators";
 
 export class StayDateDto {
   @ApiProperty()
@@ -65,17 +65,17 @@ export class CreateStayDto {
   @ApiProperty()
   @IsObject()
   seat: {
-    M1: Seat[];
-    M2: Seat[];
-    M3: Seat[];
-    F1: Seat[];
-    F2: Seat[];
-    F3: Seat[];
+    M1: SeatType[];
+    M2: SeatType[];
+    M3: SeatType[];
+    F1: SeatType[];
+    F2: SeatType[];
+    F3: SeatType[];
   };
 }
 
 export class DownloadStayExcelDTO {
   @ApiProperty()
   @IsNumber()
-  grade: Grade;
+  grade: GradeType;
 }

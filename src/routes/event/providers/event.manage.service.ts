@@ -13,7 +13,7 @@ export class EventManageService {
     private eventModel: Model<EventDocument>,
   ) {}
 
-  async uploadEvent(file: Express.Multer.File): Promise<Event[]> {
+  async uploadEventFile(file: Express.Multer.File): Promise<Event[]> {
     const workbook = XLSX.read(file.buffer, { type: "buffer" });
     const fileData = XLSX.utils.sheet_to_json(
       workbook.Sheets[workbook.SheetNames[0]],

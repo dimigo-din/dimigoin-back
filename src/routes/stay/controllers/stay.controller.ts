@@ -13,7 +13,9 @@ import { Request } from "express";
 import { Types } from "mongoose";
 
 import { StudentGuard, DIMIJwtAuthGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
+
+import { ObjectIdPipe } from "src/lib";
 
 import {
   StayDocument,
@@ -126,7 +128,7 @@ export class StayController {
   @Delete("outgo/:stayOutgoId")
   async cancelStayOutgo(
     @Req() req: Request,
-    @Param("stayOutgoId") stayOutgoId: Types.ObjectId,
+    @Param("stayOutgoId", ObjectIdPipe) stayOutgoId: Types.ObjectId,
   ): Promise<StayOutgo> {
     return await this.stayService.cancelStayOutgo(
       req.user as StudentDocument,

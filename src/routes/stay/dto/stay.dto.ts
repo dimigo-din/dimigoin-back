@@ -2,8 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsObject, IsString, IsIn } from "class-validator";
 
-import { SeatValues } from "src/common/types";
-import { IsCustomDate, IsCustomDateTime } from "src/common/validators";
+import { SeatValues } from "src/lib/types";
+import { IsCustomDate, IsCustomDateTime } from "src/lib/validators";
 
 import { Stay, StayApplication } from "src/schemas";
 

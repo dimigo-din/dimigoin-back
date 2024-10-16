@@ -1,17 +1,14 @@
-import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model, Types } from "mongoose";
-
-import { UserManageService } from "src/routes/user/providers";
 
 import {
   Laundry,
   LaundryDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
-  LaundryApplication,
-  LaundryApplicationDocument,
+  LaundryTimetableSequence,
 } from "src/schemas";
 
 import { StayManageService } from "../../stay/providers";
@@ -26,33 +23,29 @@ export class LaundryManageService {
     @InjectModel(LaundryTimetable.name)
     private laundryTimetableModel: Model<LaundryTimetableDocument>,
 
-    @InjectModel(LaundryApplication.name)
-    private laundryApplicationModel: Model<LaundryApplicationDocument>,
-
-    @Inject(forwardRef(() => UserManageService))
-    private userManageService: UserManageService,
-
-    @Inject(forwardRef(() => StayManageService))
     private stayManageService: StayManageService,
   ) {}
 
-  async getLaundries(): Promise<any[]> {
-    const laundries = await this.laundryModel
+  async getAllLaundry(): Promise<LaundryDocument[]> {
+    return await this.laundryModel
       .find()
       .sort({ gender: -1 })
       .sort({ floor: 1 })
       .sort({ position: 1 });
+  }
 
-    const timetable = await this.getLaundryTimetables();
-
-    return laundries.map((laundry) => {
-      return {
-        ...laundry,
-        timetable: timetable.filter(
-          (time) => time.laundry && laundry._id.equals(time.laundry._id),
-        ),
-      };
-    });
+  async getStudentLaundryApplication(
+    studentId: Types.ObjectId,
+  ): Promise<LaundryTimetableSequence[]> {
+    const applicationsUnfiltered = await this.laundryTimetableModel.find(
+      {
+        sequence: {
+          $elemMatch: { applicant: studentId },
+        },
+      },
+      { "sequence.$": 1 },
+    );
+    return applicationsUnfiltered.map((item) => item.sequence[0]);
   }
 
   async getLaundry(laundryId: Types.ObjectId): Promise<LaundryDocument> {
@@ -64,26 +57,21 @@ export class LaundryManageService {
   }
 
   async createLaundry(data: CreateLaundryDto): Promise<LaundryDocument> {
-    const existingLaundry = await this.laundryModel.findOne(data);
-    if (existingLaundry)
+    const ifLaundryExists = await this.laundryModel.findOne(data);
+
+    if (ifLaundryExists)
       throw new HttpException("같은 정보의 세탁기가 존재합니다.", 403);
 
-    const laundry = new this.laundryModel(data);
-
-    await laundry.save();
-
-    return laundry;
+    return await this.laundryModel.create(data);
   }
 
   async updateLaundryTimetable(
     data: CreateLaundryTimetableDto,
   ): Promise<LaundryTimetableDocument> {
-    const laundry = await this.getLaundry(data.laundryId);
-
-    const laundryTimetable = this.laundryTimetableModel.findOneAndUpdate(
+    return this.laundryTimetableModel.findOneAndUpdate(
       {
-        laundry: laundry._id,
-        type: data.type,
+        laundry: data.laundryId,
+        isStaySchedule: data.isStaySchedule,
       },
       {
         $set: data,
@@ -93,65 +81,22 @@ export class LaundryManageService {
         new: true,
       },
     );
-
-    return laundryTimetable;
   }
 
-  async getStudentLaundryApplication(
-    studentId: Types.ObjectId,
-  ): Promise<LaundryApplicationDocument> {
-    const student = await this.userManageService.getStudent(studentId);
-    const laundryApplication = await this.laundryApplicationModel
-      .findOne({
-        student: student._id,
-      })
-      .populate({
-        path: "timetable",
-        populate: {
-          path: "laundry",
-        },
-      });
+  async getAllLaundryTimetables(): Promise<LaundryTimetableDocument[]> {
+    const isTodayStay = await this.stayManageService.isStay();
 
-    return laundryApplication;
-  }
-
-  async getLaundryTimetables(): Promise<LaundryTimetableDocument[]> {
-    const laundries = await this.laundryTimetableModel
-      .find()
-      .populate("laundry");
-
-    return laundries;
-  }
-
-  async getLaundryApplications(): Promise<LaundryApplicationDocument[]> {
-    const type = await this.stayManageService.isStay();
-
-    const timetables = await this.laundryTimetableModel
-      .find({ type: type })
-      .populate("laundry");
-
-    const laundryTimetableIds = timetables.map((laundry) => laundry._id);
-
-    const laundryApplications = await this.laundryApplicationModel
-      .find({
-        timetable: { $in: laundryTimetableIds },
-      })
-      .populate({
-        path: "timetable",
-        populate: {
-          path: "laundry",
-        },
-      })
-      .populate({ path: "student", select: "name grade class number" });
-
-    return laundryApplications;
+    return await this.laundryTimetableModel
+      .find({ isStaySchedule: isTodayStay })
+      .populate({ path: "laundry" })
+      .populate({ path: "sequence.applicant" });
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async deleteLaundryApplications(): Promise<LaundryApplicationDocument[]> {
-    const laundryApplications = await this.laundryApplicationModel.find();
-    await this.laundryApplicationModel.deleteMany();
-
-    return laundryApplications;
+  async deleteLaundryApplications() {
+    return await this.laundryTimetableModel.updateMany(
+      {},
+      { $set: { "sequence.$[].applicant": null } },
+    );
   }
 }

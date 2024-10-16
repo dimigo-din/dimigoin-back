@@ -3,8 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment";
 import { Model } from "mongoose";
 
-import { GradeValues, ClassValues } from "src/common/types";
-import { momentToStringDate } from "src/common/utils";
+import { GradeValues, ClassValues } from "src/lib/types";
+import { momentToStringDate } from "src/lib/utils";
 
 import { TimetableDocument, Timetable } from "src/schemas";
 
@@ -15,21 +15,20 @@ export class TimetableService {
     private timetableModel: Model<TimetableDocument>,
   ) {}
 
-  async getTimetable(
+  async getWeeklyTimetable(
     _grade: keyof typeof GradeValues,
     _class: keyof typeof ClassValues,
   ): Promise<TimetableDocument[]> {
-    const weekStart = momentToStringDate(moment().startOf("week"));
-    const weekEnd = momentToStringDate(moment().endOf("week"));
+    const startOfWeek = momentToStringDate(moment().startOf("week"));
+    const endOfWeek = momentToStringDate(moment().endOf("week"));
 
-    const timetable = await this.timetableModel.find({
+    return await this.timetableModel.find({
       grade: _grade,
       class: _class,
       date: {
-        $gte: weekStart,
-        $lte: weekEnd,
+        $gte: startOfWeek,
+        $lte: endOfWeek,
       },
     });
-    return timetable;
   }
 }

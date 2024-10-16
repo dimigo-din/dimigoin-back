@@ -4,10 +4,10 @@ import helmet from "helmet";
 import { AppModule } from "./app";
 import {
   DIMINotFoundFilter,
-  DIMISwaggerSetup,
+  DIMISwaggerModule,
   DIMIWrapperInterceptor,
   DIMIValidationPipe,
-} from "./common";
+} from "./lib";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +19,8 @@ async function bootstrap() {
   app.useGlobalFilters(new DIMINotFoundFilter());
   app.useGlobalInterceptors(new DIMIWrapperInterceptor());
 
-  await DIMISwaggerSetup(app);
+  const swagger = new DIMISwaggerModule(app);
+  await swagger.setup();
 
   await app.listen(3000);
 }

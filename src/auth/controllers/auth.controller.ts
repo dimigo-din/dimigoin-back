@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 import {
   LoginDto,
   PasswordLoginDto,
@@ -34,7 +34,7 @@ export class AuthController {
     status: HttpStatus.OK,
     type: String,
   })
-  @Get("/ping")
+  @Get("/healthcheck")
   async ping(): Promise<string> {
     return "pong";
   }

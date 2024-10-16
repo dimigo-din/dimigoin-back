@@ -4,7 +4,7 @@ import * as moment from "moment-timezone";
 
 import { AuthModule } from "src/auth";
 
-import { DIMIEssentialModules, DIMILoggerMiddleware } from "src/common";
+import { DIMIEssentialModules, DIMILoggerMiddleware } from "src/lib";
 
 import * as routes from "src/routes";
 

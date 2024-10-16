@@ -5,7 +5,8 @@ import moment from "moment-timezone";
 import { Model } from "mongoose";
 import youtubeSearch from "youtube-search";
 
-import { AuthUser, RateLimitType } from "../../../common";
+import { AuthUser, RateLimitType } from "src/lib";
+
 import {
   MusicList,
   MusicListDocument,
@@ -13,8 +14,6 @@ import {
   MusicVoteDocument,
   RateLimit,
   RateLimitDocument,
-  Student,
-  StudentDocument,
 } from "../../../schemas";
 
 @Injectable()
@@ -22,8 +21,6 @@ export class MusicService {
   constructor(
     private configService: ConfigService,
 
-    @InjectModel(Student.name)
-    private studentModel: Model<StudentDocument>,
     @InjectModel(MusicList.name)
     private musicListModel: Model<MusicListDocument>,
     @InjectModel(MusicVote.name)

@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import moment from "moment";
 import { Model, Types } from "mongoose";
 
-import { stringDateTimeToMoment } from "src/common/utils";
+import { stringDateTimeToMoment } from "src/lib/utils";
 
 import {
   Stay,

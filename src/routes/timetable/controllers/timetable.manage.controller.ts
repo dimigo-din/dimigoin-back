@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard, PermissionGuard } from "src/auth/guards";
-import { createOpertation } from "src/common/utils";
+import { createOpertation } from "src/lib/utils";
 
 import { Timetable } from "src/schemas";
 
@@ -18,7 +18,8 @@ export class TimetableManageController {
   @ApiOperation(
     createOpertation({
       name: "시간표 업데이트",
-      description: "시간표를 업데이트합니다.",
+      description:
+        "NEIS에서 시간표를 fetch하여 수동으로 시간표를 업데이트합니다.",
     }),
   )
   @UseGuards(DIMIJwtAuthGuard, PermissionGuard)

@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { Event } from "src/schemas";
 
-export class GetEventResponse {
+export class GetAllEventResponseDto {
   @ApiProperty({
     type: [Event],
   })

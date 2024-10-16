@@ -3,13 +3,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import {
-  FrigoDocument,
   FrigoApplication,
   FrigoApplicationDocument,
   StudentDocument,
 } from "src/schemas";
 
-import { ApplyFrigoDto } from "../dto";
+import { ApplyFrigoRequestDto } from "../dto";
 
 import { FrigoManageService } from "./frigo.manage.service";
 
@@ -22,51 +21,40 @@ export class FrigoService {
     private frigoManageService: FrigoManageService,
   ) {}
 
-  async getCurrentFrigo(): Promise<FrigoDocument> {
-    const frigo = this.frigoManageService.getCurrentFrigo();
-
-    return frigo;
-  }
-
   async applyFrigo(
     student: StudentDocument,
-    data: ApplyFrigoDto,
+    body: ApplyFrigoRequestDto,
   ): Promise<FrigoApplicationDocument> {
-    const frigo = await this.frigoManageService.getCurrentFrigo();
+    const currentFrigo = await this.frigoManageService.getCurrentFrigo();
 
     const existingApplication = await this.frigoApplicationModel.findOne({
-      frigo: frigo._id,
+      frigo: currentFrigo._id,
       student: student._id,
     });
+
     if (existingApplication)
       throw new HttpException("이미 금요귀가를 신청했습니다.", 403);
 
-    if (data.reason.indexOf("/") === -1) {
-      throw new HttpException("사유는 [사유/귀가시간] 형식입니다.", 400);
-    }
-
-    const application = new this.frigoApplicationModel({
-      frigo: frigo._id,
+    return await this.frigoApplicationModel.create({
+      frigo: currentFrigo._id,
       student: student._id,
       status: "W",
-      ...data,
+      ...body,
     });
-    await application.save();
-
-    return application;
   }
 
   async cancelFrigo(
     student: StudentDocument,
   ): Promise<FrigoApplicationDocument> {
-    const frigo = await this.frigoManageService.getCurrentFrigo();
+    const currentFrigo = await this.frigoManageService.getCurrentFrigo();
 
     const frigoApplication = await this.frigoApplicationModel.findOneAndDelete({
-      frigo: frigo._id,
+      frigo: currentFrigo._id,
       student: student._id,
     });
+
     if (!frigoApplication)
-      throw new HttpException("금요귀가를 신청하지 않았습니다.", 404);
+      throw new HttpException("신청한 금요귀가가 없습니다.", 404);
 
     return frigoApplication;
   }

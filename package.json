@@ -1,7 +1,7 @@
 {
   "name": "dimigoin-back-v4",
   "version": "0.2.1",
-  "description": "한국디지털미디어고등학교 인트라넷, 디미고인의 백엔드 v4입니다.",
+  "description": "한국디지털미디어고등학교 인트라넷, 디미고인의 백엔드 패키지입니다.",
   "author": "디미고 인트라넷 개발팀, DIN",
   "private": true,
   "license": "UNLICENSED",
@@ -30,10 +30,10 @@
     "@nestjs/passport": "^10.0.1",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^3.0.1",
-    "@nestjs/swagger": "^7.1.1",
+    "@nestjs/swagger": "^7.4.2",
     "@types/cron": "^2.0.1",
     "@types/multer": "^1.4.7",
-    "axios": "1.7.3",
+    "axios": "1.7.4",
     "bcrypt": "^5.1.0",
     "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",
@@ -41,6 +41,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
+    "express-basic-auth": "^1.2.1",
     "google-auth-library": "^9.0.0",
     "helmet": "^7.0.0",
     "import-to-array": "^1.0.0",
@@ -48,14 +49,15 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "mongoose": "7.3.3",
-    "nestjs-swagger-dto": "^3.5.0",
+    "nestjs-swagger-dto": "^3.8.2",
     "node-ical": "^0.16.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "xlsx": "^0.18.5",
-    "youtube-search": "^1.1.6"
+    "youtube-search": "^1.1.6",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -99,5 +101,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "packageManager": "yarn@4.5.0"
 }
