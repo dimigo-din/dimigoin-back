@@ -10,7 +10,6 @@ import {
   StayDocument,
   StayApplication,
   StayApplicationDocument,
-  StayOutgo,
   StayOutgoDocument,
   StudentDocument,
 } from "src/schemas";
@@ -28,22 +27,13 @@ export class StayService {
     @InjectModel(StayApplication.name)
     private stayApplicationModel: Model<StayApplicationDocument>,
 
-    @InjectModel(StayOutgo.name)
-    private stayOutgoModel: Model<StayOutgoDocument>,
-
     private stayManageService: StayManageService,
   ) {}
-
-  async getCurrentStay(): Promise<StayDocument> {
-    const currentStay = await this.stayManageService.getCurrentStay();
-
-    return currentStay;
-  }
 
   async getCurrentStayApplications(): Promise<StayApplicationDocument[]> {
     const currentStay = await this.stayManageService.getCurrentStay();
 
-    const stayApplications = await this.stayApplicationModel
+    return await this.stayApplicationModel
       .find({
         stay: currentStay._id,
       })
@@ -51,8 +41,6 @@ export class StayService {
         path: "student",
         select: "name grade class number",
       });
-
-    return stayApplications;
   }
 
   async applyStay(
@@ -118,8 +106,6 @@ export class StayService {
     if (!stay)
       throw new HttpException("해당 잔류일정이 존재하지 않습니다.", 404);
 
-    const appliers = await this.stayApplicationModel.find({ stay: stay._id });
-
-    return appliers;
+    return await this.stayApplicationModel.find({ stay: stay._id });
   }
 }

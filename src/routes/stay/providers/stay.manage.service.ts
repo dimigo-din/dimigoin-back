@@ -43,19 +43,14 @@ export class StayManageService {
   ) {}
 
   async getStays(): Promise<StayDocument[]> {
-    const stays = await this.stayModel.find({ deleted: false });
-
-    return stays;
+    return await this.stayModel.find({ deleted: false });
   }
 
   async createStay(data: CreateStayDto): Promise<StayDocument> {
-    const stay = new this.stayModel({
+    return this.stayModel.create({
       current: false,
       ...data,
     });
-
-    await stay.save();
-    return stay;
   }
 
   async editStay(
@@ -325,7 +320,7 @@ export class StayManageService {
     const stay = await this.getStay(stayId);
     const student = await this.userManageService.getStudent(studentId);
 
-    const outgos = await this.stayOutgoModel
+    return await this.stayOutgoModel
       .find({
         stay: stay._id,
         student: student._id,
@@ -333,8 +328,6 @@ export class StayManageService {
       .sort({ date: 1 })
       .populate("stay")
       .populate("student");
-
-    return outgos;
   }
 
   async applyStudentStayOutgo(
@@ -383,7 +376,7 @@ export class StayManageService {
       delete application["reason"];
       delete application["meal"];
 
-      const stayOutgo = new this.stayOutgoModel({
+      return await this.stayOutgoModel.create({
         stay: stay._id,
         student: student._id,
         status: "A",
@@ -394,9 +387,6 @@ export class StayManageService {
           dinner: false,
         },
       });
-
-      await stayOutgo.save();
-      return stayOutgo;
     } else {
       const targetStayOutgoStart = stringDateToMoment(
         targetStayOutgo.date,
@@ -412,15 +402,12 @@ export class StayManageService {
       )
         throw new HttpException("올바른 잔류외출 신청이 아닙니다.", 400);
 
-      const stayOutgo = new this.stayOutgoModel({
+      return await this.stayOutgoModel.create({
         stay: stay._id,
         student: student._id,
         status: "W",
         ...application,
       });
-
-      await stayOutgo.save();
-      return stayOutgo;
     }
   }
 

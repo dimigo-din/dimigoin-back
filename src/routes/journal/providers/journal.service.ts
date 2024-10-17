@@ -9,8 +9,6 @@ export class JournalService {
   constructor(private journalManageService: JournalManageService) {}
 
   async getJournals(student: StudentDocument): Promise<JournalDocument[]> {
-    const journals = this.journalManageService.getStudentJournals(student._id);
-
-    return journals;
+    return await this.journalManageService.getStudentJournals(student._id);
   }
 }

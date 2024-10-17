@@ -14,9 +14,7 @@ export class GroupManageService {
   ) {}
 
   async getGroups(): Promise<GroupDocument[]> {
-    const groups = await this.groupModel.find();
-
-    return groups;
+    return await this.groupModel.find();
   }
 
   async getGroup(groupId: Types.ObjectId): Promise<GroupDocument> {
@@ -31,10 +29,7 @@ export class GroupManageService {
     if (existingGroup)
       throw new HttpException("같은이름의 그룹이 존재합니다.", 404);
 
-    const group = new this.groupModel(data);
-
-    await group.save();
-    return group;
+    return await this.groupModel.create(data);
   }
 
   async editGroup(

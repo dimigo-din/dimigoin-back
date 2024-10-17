@@ -18,10 +18,8 @@ export class UserService {
     @Inject(forwardRef(() => StayManageService))
     private stayManageService: StayManageService,
 
-    @Inject(forwardRef(() => FrigoManageService))
     private frigoManageService: FrigoManageService,
 
-    @Inject(forwardRef(() => LaundryManageService))
     private laundryManageService: LaundryManageService,
   ) {}
 

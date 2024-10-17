@@ -30,12 +30,15 @@ import {
   ApplyStayDto,
   ApplyStayOutgoDto,
 } from "../dto";
-import { StayService } from "../providers";
+import { StayManageService, StayService } from "../providers";
 
 @ApiTags("Stay")
 @Controller("stay")
 export class StayController {
-  constructor(private readonly stayService: StayService) {}
+  constructor(
+    private readonly stayService: StayService,
+    private readonly stayManageService: StayManageService,
+  ) {}
 
   @ApiOperation(
     createOpertation({
@@ -54,7 +57,7 @@ export class StayController {
     stay: StayDocument;
     applications: StayApplicationDocument[];
   }> {
-    const currentStay = await this.stayService.getCurrentStay();
+    const currentStay = await this.stayManageService.getCurrentStay();
     const currentApplications =
       await this.stayService.getCurrentStayApplications();
     return {

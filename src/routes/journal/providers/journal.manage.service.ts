@@ -20,24 +20,16 @@ export class JournalManageService {
   async getStudentJournals(
     studentId: Types.ObjectId,
   ): Promise<JournalDocument[]> {
-    const student = await this.userManageService.getStudent(studentId);
-    const journals = await this.journalModel
-      .find({ student: student._id })
+    return await this.journalModel
+      .find({ student: studentId })
       .sort({ date: -1 });
-
-    return journals;
   }
 
   async createStudentJournal(
     studentId: Types.ObjectId,
     data: CreateJournalDto,
   ): Promise<JournalDocument> {
-    const student = await this.userManageService.getStudent(studentId);
-    const journal = new this.journalModel({ student: student._id, ...data });
-
-    await journal.save();
-
-    return journal;
+    return await this.journalModel.create({ student: studentId, ...data });
   }
 
   async editStudentJournal(
